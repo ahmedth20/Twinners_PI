@@ -1,5 +1,5 @@
 // assets
-import logo from '@assets/logo.svg'
+import logo from '@assets/favicon-96x96.png'
 
 // styling
 import styled from 'styled-components/macro';
@@ -13,32 +13,37 @@ import {NavLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const Img = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   will-change: transform;
   transition: transform var(--transition);
+ margin-left: 0%; /* Adjust as needed */
+
 `
 
 const Wrapper = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;
+  margin: 0;
+  padding: 0;
 
   &:hover, &:focus {
     Img {
       transform: scale(1.2);
     }
   }
-`
+`;
+
 
 const Text = styled.span`
   font-weight: 700;
+
   font-family: ${fonts.accent};
   font-size: ${textSizes['24']};
+ margin-right: 20 %; /* Adjust as needed */
 
   .highlight {
     color: ${theme('theme', {
-      light: colors.blue,
+      light: colors.red,
       dark: 'inherit'
     })};
   }
@@ -55,7 +60,7 @@ const Logo = ({compact}) => {
             {
                 !compact ?
                     <Text>
-                        med<span className="highlight">ux</span>
+                        Smart<span className="highlight">190</span>
                     </Text>
                     : null
             }

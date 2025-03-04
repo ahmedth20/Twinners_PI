@@ -48,7 +48,7 @@ const Avatar = ({ avatar, alt, size, online = false }) => {
                       justifyContent: 'center', 
                       width: '100%', 
                       height: '100%',
-                      backgroundColor: '#007bff',  // Bleu
+                      backgroundColor: '#414d55',  // Bleu
                       borderRadius: '50%'
                   }}
               >

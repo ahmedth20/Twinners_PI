@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Consultation = require("../models/consultation");
 const MedicalRecord = require("../models/medicalRecord");
 const mongoose = require("mongoose");
-
+const bcrypt = require('bcryptjs');
 const patientController = {
   // 📌 Récupérer tous les patients
   async getAllPatients(req, res) {
@@ -25,6 +25,67 @@ const patientController = {
       res.status(500).json({ message: "Erreur lors de la récupération du patient", error });
     }
   },
+
+
+  async createSimplePatient(req, res) {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+  
+      try {
+          console.log("🟢 Début de la création d'un patient");
+          console.log("Données reçues :", req.body);
+  
+          const { firstName, lastName, email, sex, age, phone, address } = req.body;
+  
+          // Vérification des données requises
+          if (!firstName || !lastName || !email) {
+              throw new Error("Données utilisateur manquantes !");
+          }
+  
+          console.log("✅ Données utilisateur valides");
+  
+          // Générer un mot de passe aléatoire (8 caractères)
+          const generatedPassword = Math.random().toString(36).slice(-8);
+          console.log("🔑 Mot de passe généré :", generatedPassword);
+  
+          // Hasher le mot de passe avant de l'enregistrer
+          const hashedPassword = bcrypt.hashSync(generatedPassword, 10); // Utilisation de hashSync
+  
+          // Création et enregistrement de l'utilisateur
+          const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+          const savedUser = await newUser.save({ session });
+  
+          console.log("✅ Utilisateur enregistré :", savedUser._id);
+  
+          // Création et enregistrement du patient
+          const newPatient = new Patient({ 
+              reference: Math.floor(Math.random() * 10000), 
+              sex, age, phone, address, 
+              user: savedUser._id, 
+          });
+  
+          const savedPatient = await newPatient.save({ session });
+          console.log("✅ Patient enregistré :", savedPatient._id);
+  
+          // Validation de la transaction
+          await session.commitTransaction();
+          session.endSession();
+  
+          res.status(201).json({ 
+              message: "Patient et utilisateur enregistrés avec succès",
+              patient: savedPatient
+          });
+  
+      } catch (error) {
+          await session.abortTransaction();
+          session.endSession();
+  
+          console.error("❌ Erreur lors de l'enregistrement :", error);
+          res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
+      }
+  },
+  
+  
 
   // 📌 Ajouter un nouveau patient
   async createPatient(req, res) {

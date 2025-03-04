@@ -1,4 +1,50 @@
-import styled, { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle,keyframes  } from "styled-components";
+
+
+// Animation d’apparition
+export const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+// Boutons groupés
+export const Error = styled.span`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+`;
+
+// Boutons groupés
+export const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+`;
+
+// Style général des boutons
+export const ModalButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  background: ${(props) => (props.variant === "simple" ? "#3498db" : "#2ecc71")};
+  color: white;
+
+  &:hover {
+    background: ${(props) => (props.variant === "simple" ? "#2980b9" : "#27ae60")};
+  }
+`;
 
 
 export const GlobalStyles = createGlobalStyle`
@@ -72,9 +118,6 @@ export const CloseButton = styled.button`
   font-size: 18px;
   cursor: pointer;
 `;
-
-
-
 
 export  const Title = styled.h1`
   font-size: 28px;

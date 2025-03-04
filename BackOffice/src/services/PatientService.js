@@ -32,7 +32,15 @@ const PatientService = {
       throw error;
     }
   },
-
+  createSimplePatient: async (patientData) => {
+    try {
+      const response = await axios.post(`${API_URL}/createSimplePatient`, patientData);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la création du patient:", error);
+      throw error;
+    }
+  },
   updatePatient: async (id, patientData) => {
     try {
       const response = await axios.put(`${API_URL}/${id}`, patientData);

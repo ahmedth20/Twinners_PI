@@ -50,7 +50,7 @@ const Page = ({title, children, hasBadge, hasTitle = true, qty}) => {
     return (
         <Content ref={pageRef}>
             <Helmet>
-                <title>{`MedUX | ${title}`}</title>
+                <title>{`Smart190 | ${title}`}</title>
             </Helmet>
             <Widgets>
                 <Wrapper as={motion.div}
