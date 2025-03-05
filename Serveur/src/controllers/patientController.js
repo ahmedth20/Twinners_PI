@@ -4,6 +4,7 @@ const Consultation = require("../models/consultation");
 const MedicalRecord = require("../models/medicalRecord");
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
+const Operation = require('../models/operation');
 const patientController = {
   // 📌 Récupérer tous les patients
   async getAllPatients(req, res) {
@@ -85,96 +86,113 @@ const patientController = {
       }
   },
   
-  
-
   // 📌 Ajouter un nouveau patient
   async createPatient(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction();
-
+  
     try {
-        console.log("🟢 Début de la création d'un patient");
-        console.log("Données reçues :", req.body);
-
-        const { 
-            firstName, lastName, email, password, // Données User
-            sex, age, phone, address, // Données Patient
-            consultations, // Liste des consultations
-            medicalRecord // Données du dossier médical
-        } = req.body;
-
-        // Vérification des données reçues
-        if (!firstName || !lastName || !email || !password) {
-            throw new Error("Données utilisateur manquantes !");
-        }
-
-        console.log("✅ Données utilisateur valides");
-
-        // 1️⃣ Création et enregistrement de l'utilisateur
-        const newUser = new User({ firstName, lastName, email, password });
-        const savedUser = await newUser.save({ session });
-
-        console.log("✅ Utilisateur enregistré :", savedUser._id);
-
-        // 2️⃣ Création et enregistrement du patient
-        const newPatient = new Patient({ 
-            reference: Math.floor(Math.random() * 10000), 
-            sex, age, phone, address, 
-            user: savedUser._id, 
-            consultations: [], 
-            medicalRecord: null 
+      console.log("🟢 Début de la création d'un patient");
+      console.log("Données reçues :", req.body);
+  
+      const { 
+        firstName, lastName, email, password, // Données User
+        sex, age, phone, address, // Données Patient
+        consultations, // Liste des consultations
+        medicalRecord // Données du dossier médical
+      } = req.body;
+  
+      if (!firstName || !lastName || !email || !password) {
+        throw new Error("Données utilisateur manquantes !");
+      }
+  
+      if (!medicalRecord || !medicalRecord.diagnostic || 
+          !medicalRecord.diagnostic.condition || 
+          !medicalRecord.diagnostic.severity) {
+        return res.status(400).json({ 
+          message: "Les champs 'condition' et 'severity' du diagnostic sont requis" 
         });
+      }
+  
+      console.log("✅ Données utilisateur valides");
+  
+      // 1️⃣ Création et enregistrement de l'utilisateur
+      const newUser = new User({ firstName, lastName, email, password });
+      const savedUser = await newUser.save({ session });
+      console.log("✅ Utilisateur enregistré :", savedUser._id);
+  
+      // 2️⃣ Création et enregistrement du patient
+      const newPatient = new Patient({ 
+        reference: Math.floor(Math.random() * 10000), 
+        sex, age, phone, address, 
+        user: savedUser._id, 
+        consultations: [], 
+        medicalRecord: null 
+      });
+      const savedPatient = await newPatient.save({ session });
+      console.log("✅ Patient enregistré :", savedPatient._id);
+  
+      // 3️⃣ Création et enregistrement des opérations
+      const operationDocs = await Promise.all(
+        (medicalRecord.operations || []).map(async (operation) => {
+          console.log("🔵 Création opération :", operation);
+          const newOperation = new Operation({ 
+            ...operation, 
+            medicalRecord: savedPatient._id 
+          });
+          return await newOperation.save({ session });
+        })
+      );
+      const operationIds = operationDocs.map(op => op._id);
+      console.log("✅ Opérations enregistrées :", operationIds);
 
-        const savedPatient = await newPatient.save({ session });
-        console.log("✅ Patient enregistré :", savedPatient._id);
-
-        // 3️⃣ Création et enregistrement du dossier médical
-        const newMedicalRecord = new MedicalRecord({ 
-            reference: Math.floor(Math.random() * 10000),
-            ...medicalRecord,
+      // 4️⃣ Création et enregistrement du dossier médical
+      const newMedicalRecord = new MedicalRecord({ 
+        reference: Math.floor(Math.random() * 10000),
+        ...medicalRecord,
+        patient: savedPatient._id,
+        operations: operationIds
+      });
+      const savedMedicalRecord = await newMedicalRecord.save({ session });
+      console.log("✅ Dossier médical enregistré :", savedMedicalRecord._id);
+  
+      // 5️⃣ Création et enregistrement des consultations
+      const consultationDocs = await Promise.all(
+        (consultations || []).map(async (consultation) => {
+          console.log("🔵 Création consultation :", consultation);
+          const newConsultation = new Consultation({ 
+            ...consultation, 
             patient: savedPatient._id 
-        });
-
-        const savedMedicalRecord = await newMedicalRecord.save({ session });
-        console.log("✅ Dossier médical enregistré :", savedMedicalRecord._id);
-
-        // 4️⃣ Création et enregistrement des consultations
-        const consultationDocs = await Promise.all(
-            consultations.map(async (consultation) => {
-                console.log("🔵 Création consultation :", consultation);
-                const newConsultation = new Consultation({ 
-                    ...consultation, 
-                    patient: savedPatient._id 
-                });
-                return await newConsultation.save({ session });
-            })
-        );
-
-        console.log("✅ Consultations enregistrées :", consultationDocs.map(doc => doc._id));
-
-        // 5️⃣ Mise à jour du patient
-        savedPatient.medicalRecord = savedMedicalRecord._id;
-        savedPatient.consultations = consultationDocs.map(doc => doc._id);
-        await savedPatient.save({ session });
-
-        console.log("✅ Patient mis à jour :", savedPatient._id);
-
-        // ✅ Validation et fin de la transaction
-        await session.commitTransaction();
-        session.endSession();
-
-        res.status(201).json({ 
-            message: "Patient, utilisateur, dossier médical et consultations enregistrés avec succès",
-            patient: savedPatient
-        });
-
+          });
+          return await newConsultation.save({ session });
+        })
+      );
+      console.log("✅ Consultations enregistrées :", consultationDocs.map(doc => doc._id));
+  
+      // 6️⃣ Mise à jour du patient
+      savedPatient.medicalRecord = savedMedicalRecord._id;
+      savedPatient.consultations = consultationDocs.map(doc => doc._id);
+      await savedPatient.save({ session });
+      console.log("✅ Patient mis à jour :", savedPatient._id);
+  
+      // ✅ Validation et fin de la transaction
+      await session.commitTransaction();
+      session.endSession();
+  
+      res.status(201).json({ 
+        message: "Patient, utilisateur, dossier médical, opérations et consultations enregistrés avec succès",
+        patient: savedPatient
+      });
+  
     } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        console.error("❌ Erreur lors de l'enregistrement :", error);
-        res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
+      await session.abortTransaction();
+      session.endSession();
+      console.error("❌ Erreur lors de l'enregistrement :", error);
+      res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
     }
 }
+
+  
 
 ,
 

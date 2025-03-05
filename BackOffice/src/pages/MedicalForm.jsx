@@ -1,279 +1,257 @@
 import React, { useState } from "react";
 import Page from "@layout/Page";
-import { Container, Title, SectionTitle,SectionSecondTitle,SectionThirdTitle,Select,Input,TextArea,ButtonContainer,Button,Row,Column,RemoveButton } from "../styles/medicalForm";
+import { Container, Title, SectionTitle, SectionSecondTitle, SectionThirdTitle, Form, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
+import PatientService from "../services/PatientService";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-
-const FormSection = ({ title, children }) => (
-  <div>
-    <SectionTitle>{title}</SectionTitle>
-    {children}
-  </div>
-);
+// Définition du schéma Zod (utilisé dans votre code)
 
 const MedicalForm = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
   const [symptoms, setSymptoms] = useState([""]);
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-  const [lifestyleRecommendations, setLifestyleRecommendations] = useState([""]);
   const [allergies, setAllergies] = useState([""]);
   const [operations, setOperations] = useState([{ type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
 
-  // Fonctions pour ajouter des entrées dynamiques
   const addField = (setState) => setState((prev) => [...prev, ""]);
   const addMedication = () => setMedications([...medications, { name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-  const addOperation = () => {
-    setOperations([...operations, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
-  };
-  
-  const removeOperation = (index) => {
-    setOperations(operations.filter((_, i) => i !== index));
-  };
-  // Fonctions pour supprimer des entrées dynamiques
+  const addOperation = () => setOperations([...operations, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+
   const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
   const removeMedication = (index) => setMedications(medications.filter((_, i) => i !== index));
+  const removeOperation = (index) => setOperations(operations.filter((_, i) => i !== index));
+
+  const onSubmit = async (data) => {
+    try {
+      await PatientService.createPatient(data);
+      alert("✅ Patient ajouté avec succès !");
+    } catch (error) {
+      alert("❌ Erreur lors de l'ajout du patient.");
+      console.error(" l'erreur :", error.response?.data);
+    }
+  };
 
   return (
-    <Page title="Medical Record">
+    <Page>
       <Container>
-        <Title>Medical Record Form</Title>
-
-        {/* User Information */}
-        <FormSection title="User Information">
-          <Row>
-            <Column><Input placeholder="First Name" type="text" /></Column>
-            <Column><Input placeholder="Last Name" type="text" /></Column>
-          </Row>
-          <Row>
-            <Column><Input placeholder="Email" type="email" /></Column>
-            <Column><Input placeholder="Password" type="password" /></Column>
-          </Row>
-        </FormSection>
-
-        {/* Patient Information */}
-        <FormSection title="Patient Information">
-          <Row>
-            <Column><Input placeholder="Phone" type="tel" /></Column>
-            <Column><Input placeholder="Address" type="text" /></Column>
-          </Row>
-          <Row>
-            <Column><Input placeholder="Age" type="number" /></Column>
-            <Column> <Select>
-                <option value="">Select Gender</option>
-                <option value="Female">Female</option>
-                <option value="Female">Male</option>
-              </Select>
+        <Title>Formulaire d'ajout de patient</Title>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <FormSection title="Informations Générales">
+            <Row>
+              <Column>
+                <Input {...register("firstName")} placeholder="Prénom" />
+                {errors.firstName && <span>{errors.firstName.message}</span>}
               </Column>
-          </Row>
-          <Row>
-          <Column><Input placeholder="Height (cm)" type="number" /></Column>
+              <Column>
+                <Input {...register("lastName")} placeholder="Nom" />
+                {errors.lastName && <span>{errors.lastName.message}</span>}
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Input {...register("email")} placeholder="Email" />
+                {errors.email && <span>{errors.email.message}</span>}
+              </Column>
+              <Column>
+                <Input {...register("phone")} placeholder="Téléphone" />
+                {errors.phone && <span>{errors.phone.message}</span>}
+              </Column>
+            </Row>
+            <Input {...register("address")} placeholder="Adresse" />
+            {errors.address && <span>{errors.address.message}</span>}
+            <Row>
+              <Column>
+                <Input type="number" {...register("age")} placeholder="Âge" />
+                {errors.age && <span>{errors.age.message}</span>}
+              </Column>
+              <Column>
+                <Select {...register("sex")}>
+                  <option value="Male">Homme</option>
+                  <option value="Female">Femme</option>
+                  <option value="Other">Autre</option>
+                </Select>
+                {errors.sex && <span>{errors.sex.message}</span>}
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Input type="number" {...register("height")} placeholder="Taille (cm)" />
+                {errors.height && <span>{errors.height.message}</span>}
+              </Column>
+              <Column>
+                <Input type="number" {...register("weight")} placeholder="Poids (kg)" />
+                {errors.weight && <span>{errors.weight.message}</span>}
+              </Column>
+            </Row>
+          </FormSection>
 
-            <Column><Input placeholder="Weight (kg)" type="number" /></Column>
-          </Row>
-        </FormSection>
+          <FormSection title="Historique Médical">
+            <SectionSecondTitle>Diagnostic</SectionSecondTitle>
+            <Input {...register("medicalRecord.diagnostic.condition")} placeholder="Condition" />
+            {errors.medicalRecord?.diagnostic?.condition && <span>{errors.medicalRecord.diagnostic.condition.message}</span>}
+            <Select {...register("medicalRecord.diagnostic.severity")}>
+              <option value="Mild">Légère</option>
+              <option value="Moderate">Modérée</option>
+              <option value="Severe">Sévère</option>
+            </Select>
+            <SectionThirdTitle>Symptômes</SectionThirdTitle>
+            {symptoms.map((symptom, index) => (
+              <Row key={index}>
+                <Column>
+                  <Input
+                    value={symptom}
+                    onChange={(e) => {
+                      const newSymptoms = [...symptoms];
+                      newSymptoms[index] = e.target.value;
+                      setSymptoms(newSymptoms);
+                    }}
+                    placeholder="Symptôme"
+                  />
+                  {errors.medicalRecord?.diagnostic?.symptoms && <span>{errors.medicalRecord.diagnostic.symptoms.message}</span>}
+                </Column>
+                <RemoveButton onClick={() => removeField(setSymptoms, index)}>Supprimer</RemoveButton>
+              </Row>
+            ))}
+            <Button onClick={() => addField(setSymptoms)}>Ajouter un symptôme</Button>
 
-        {/* Consultation Details */}
-        <FormSection title="Consultation">
-          <Row>
-             <Select>
-                <option value="">Select Doctor</option>
-                <option value="Planned">John</option>
-              </Select></Row>
-          <Row>
-            <Column><Input placeholder="Duration (minutes)" type="number" /></Column>
-            <Column><Input placeholder="Date" type="date" /></Column>
-          </Row>
-          <Row>
-            <Column>
-              <Select>
-                <option value="">Select Status</option>
-                <option value="Planned">Planned</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </Select>
-            </Column>
-            <Column><TextArea placeholder="Diagnostic (Key: Result)" /></Column>
-          </Row>
-        </FormSection>
+            <SectionSecondTitle>Médicaments</SectionSecondTitle>
+            {medications.map((medication, index) => (
+              <div key={index}>
+                <Input
+                  value={medication.name}
+                  onChange={(e) => {
+                    const newMedications = [...medications];
+                    newMedications[index].name = e.target.value;
+                    setMedications(newMedications);
+                  }}
+                  placeholder="Médicament"
+                />
+                <Input
+                  value={medication.dosage}
+                  onChange={(e) => {
+                    const newMedications = [...medications];
+                    newMedications[index].dosage = e.target.value;
+                    setMedications(newMedications);
+                  }}
+                  placeholder="Dosage"
+                />
+                <Input
+                  value={medication.frequency}
+                  onChange={(e) => {
+                    const newMedications = [...medications];
+                    newMedications[index].frequency = e.target.value;
+                    setMedications(newMedications);
+                  }}
+                  placeholder="Fréquence"
+                />
+                <Input
+                  value={medication.duration}
+                  onChange={(e) => {
+                    const newMedications = [...medications];
+                    newMedications[index].duration = e.target.value;
+                    setMedications(newMedications);
+                  }}
+                  placeholder="Durée"
+                />
+                <TextArea
+                  value={medication.notes}
+                  onChange={(e) => {
+                    const newMedications = [...medications];
+                    newMedications[index].notes = e.target.value;
+                    setMedications(newMedications);
+                  }}
+                  placeholder="Notes"
+                />
+                <RemoveButton onClick={() => removeMedication(index)}>Supprimer</RemoveButton>
+              </div>
+            ))}
+            <Button onClick={addMedication}>Ajouter un médicament</Button>
 
-        {/* Medical Record */}
-        <FormSection title="Medical Record">
-        <SectionSecondTitle>Diagnostics</SectionSecondTitle>
+            <SectionSecondTitle>Allergies</SectionSecondTitle>
+            {allergies.map((allergy, index) => (
+              <Row key={index}>
+                <Column>
+                  <Input
+                    value={allergy}
+                    onChange={(e) => {
+                      const newAllergies = [...allergies];
+                      newAllergies[index] = e.target.value;
+                      setAllergies(newAllergies);
+                    }}
+                    placeholder="Allergie"
+                  />
+                </Column>
+                <RemoveButton onClick={() => removeField(setAllergies, index)}>Supprimer</RemoveButton>
+              </Row>
+            ))}
+            <Button onClick={() => addField(setAllergies)}>Ajouter une allergie</Button>
 
-          <Row>
-            <Column><Input placeholder="Condition" type="text" /></Column>
-            <Column><Input placeholder="Severity" type="text" /></Column>
-          </Row>
-        
-          {symptoms.map((symptom, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center" }}>
-            <Input
-              type="text"
-              placeholder="Symptom"
-              value={symptom}
-              onChange={(e) => {
-                const newSymptoms = [...symptoms];
-                newSymptoms[index] = e.target.value;
-                setSymptoms(newSymptoms);
-              }}
-            />
-            {index > 0 && <RemoveButton onClick={() => removeField(setSymptoms, index)}>X</RemoveButton>}
-          </div>
-        ))}
-        <ButtonContainer><Button onClick={() => addField(setSymptoms)}>Add Other Symptom</Button></ButtonContainer>
-        <SectionSecondTitle>Allergies</SectionSecondTitle>
+            <SectionSecondTitle>Opérations</SectionSecondTitle>
+            {operations.map((operation, index) => (
+              <div key={index}>
+                <Input
+                  value={operation.type}
+                  onChange={(e) => {
+                    const newOperations = [...operations];
+                    newOperations[index].type = e.target.value;
+                    setOperations(newOperations);
+                  }}
+                  placeholder="Type d'opération"
+                />
+                <Input
+                  value={operation.estimatedTime}
+                  onChange={(e) => {
+                    const newOperations = [...operations];
+                    newOperations[index].estimatedTime = e.target.value;
+                    setOperations(newOperations);
+                  }}
+                  placeholder="Temps estimé"
+                />
+                <Input
+                  value={operation.date}
+                  onChange={(e) => {
+                    const newOperations = [...operations];
+                    newOperations[index].date = e.target.value;
+                    setOperations(newOperations);
+                  }}
+                  placeholder="Date"
+                />
+                <Input
+                  value={operation.roomNumber}
+                  onChange={(e) => {
+                    const newOperations = [...operations];
+                    newOperations[index].roomNumber = e.target.value;
+                    setOperations(newOperations);
+                  }}
+                  placeholder="Numéro de salle"
+                />
+                <Select
+                  value={operation.status}
+                  onChange={(e) => {
+                    const newOperations = [...operations];
+                    newOperations[index].status = e.target.value;
+                    setOperations(newOperations);
+                  }}
+                >
+                  <option value="completed">Terminé</option>
+                  <option value="pending">En attente</option>
+                  <option value="in-progress">En cours</option>
+                </Select>
+                <RemoveButton onClick={() => removeOperation(index)}>Supprimer</RemoveButton>
+              </div>
+            ))}
+            <Button onClick={addOperation}>Ajouter une opération</Button>
+          </FormSection>
 
-            <Column><TextArea placeholder="Notes" /></Column>
-         
-          {allergies.map((allergy, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center" }}>
-            <Input
-              type="text"
-              placeholder="Allergy"
-              value={allergy}
-              onChange={(e) => {
-                const newAllergies = [...allergies];
-                newAllergies[index] = e.target.value;
-                setAllergies(newAllergies);
-              }}
-            />
-            {index > 0 && <RemoveButton onClick={() => removeField(setAllergies, index)}>X</RemoveButton>}
-          </div>
-        ))}
-        <ButtonContainer><Button onClick={() => addField(setAllergies)}>Add Other Allergy</Button></ButtonContainer>
-        </FormSection>
-
-        {/* Treatment */}
-          
-        <SectionSecondTitle>Treatments</SectionSecondTitle>
-        <SectionThirdTitle>Medications</SectionThirdTitle>
-          {medications.map((med, index) => (
-          <div key={index} style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "8px", marginBottom: "10px" }}>
-            <Input type="text" placeholder="Name" value={med.name} onChange={(e) => {
-              const newMeds = [...medications];
-              newMeds[index].name = e.target.value;
-              setMedications(newMeds);
-            }} />
-            <Input type="text" placeholder="Dosage" value={med.dosage} onChange={(e) => {
-              const newMeds = [...medications];
-              newMeds[index].dosage = e.target.value;
-              setMedications(newMeds);
-            }} />
-            <Input type="text" placeholder="Frequency" value={med.frequency} onChange={(e) => {
-              const newMeds = [...medications];
-              newMeds[index].frequency = e.target.value;
-              setMedications(newMeds);
-            }} />
-            <Input type="text" placeholder="Duration" value={med.duration} onChange={(e) => {
-              const newMeds = [...medications];
-              newMeds[index].duration = e.target.value;
-              setMedications(newMeds);
-            }} />
-            <TextArea placeholder="Notes" value={med.notes} onChange={(e) => {
-              const newMeds = [...medications];
-              newMeds[index].notes = e.target.value;
-              setMedications(newMeds);
-            }} />
-            {index > 0 && <RemoveButton onClick={() => removeMedication(index)}>Remove</RemoveButton>}
-          </div>
-        ))}
-        <ButtonContainer><Button onClick={addMedication}>Add Other Medication</Button></ButtonContainer>
-
-
-          <SectionThirdTitle>Procedures</SectionThirdTitle>
-          <Row>
-            <Column><Input placeholder="Name" type="text" /></Column>
-            <Column><Input placeholder="Duration" type="text" /></Column>
-          </Row>
-
-          <SectionThirdTitle>Lifestyle Recommendations</SectionThirdTitle>
-          {lifestyleRecommendations.map((rec, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center" }}>
-            <TextArea
-              placeholder="Recommendation"
-              value={rec}
-              onChange={(e) => {
-                const newRecs = [...lifestyleRecommendations];
-                newRecs[index] = e.target.value;
-                setLifestyleRecommendations(newRecs);
-              }}
-            />
-            {index > 0 && <RemoveButton onClick={() => removeField(setLifestyleRecommendations, index)}>X</RemoveButton>}
-          </div>
-        ))}
-        <ButtonContainer><Button onClick={() => addField(setLifestyleRecommendations)}>Add Other Recommendation</Button></ButtonContainer>
-
-        {/* Test Results & Allergies */}
-        <SectionSecondTitle>Test Results</SectionSecondTitle>
-        
-          <Row>
-            <Column><Input placeholder="Chest X-ray" type="text" /></Column>
-            <Column><Input placeholder="Blood Test" type="text" /></Column>
-          </Row>
-          <Column><Input placeholder="Oxygen Saturation" type="text" /></Column>
-       
-          <SectionSecondTitle>Operations</SectionSecondTitle>
-    {operations.map((operation, index) => (
-      <div key={index} style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "8px", marginBottom: "10px" }}>
-        <Input 
-          type="text" 
-          placeholder="Type" 
-          value={operation.type} 
-          onChange={(e) => {
-            const newOperations = [...operations];
-            newOperations[index].type = e.target.value;
-            setOperations(newOperations);
-          }} 
-        />
-        <Input 
-          type="number" 
-          placeholder="Estimated Time" 
-          value={operation.estimatedTime} 
-          onChange={(e) => {
-            const newOperations = [...operations];
-            newOperations[index].estimatedTime = e.target.value;
-            setOperations(newOperations);
-          }} 
-        />
-        <Input 
-          type="date" 
-          placeholder="Date" 
-          value={operation.date} 
-          onChange={(e) => {
-            const newOperations = [...operations];
-            newOperations[index].date = e.target.value;
-            setOperations(newOperations);
-          }} 
-        />
-        <Input 
-          type="number" 
-          placeholder="Room Number" 
-          value={operation.roomNumber} 
-          onChange={(e) => {
-            const newOperations = [...operations];
-            newOperations[index].roomNumber = e.target.value;
-            setOperations(newOperations);
-          }} 
-        />
-        <Select 
-          value={operation.status} 
-          onChange={(e) => {
-            const newOperations = [...operations];
-            newOperations[index].status = e.target.value;
-            setOperations(newOperations);
-          }} 
-        >
-          <option value="">Select Status</option>
-          <option value="scheduled">Scheduled</option>
-          <option value="completed">Completed</option>
-          <option value="canceled">Canceled</option>
-        </Select>
-        {index > 0 && <RemoveButton onClick={() => removeOperation(index)}>Remove</RemoveButton>}
-      </div>
-    ))}
-    <ButtonContainer>
-      <Button onClick={addOperation}>Add Other Operation</Button>
-    </ButtonContainer>
-          <ButtonContainer> <Button type="submit">Submit</Button></ButtonContainer>
+          <ButtonContainer>
+            <Button type="submit">Ajouter le patient</Button>
+          </ButtonContainer>
+        </Form>
       </Container>
     </Page>
   );
