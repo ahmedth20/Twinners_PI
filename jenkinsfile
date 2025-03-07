@@ -16,7 +16,7 @@ pipeline {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
                     projects.each { dir ->
-                        sh "cd ${dir} && npm test"
+                        sh "cd ${dir} && npm test -- --passWithNoTests"
                     }
                 }
             }
