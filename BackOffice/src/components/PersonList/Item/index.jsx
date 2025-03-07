@@ -99,6 +99,8 @@ const Item = ({ type, data }) => {
               {visibleInfo[data._id] && phone && (
                 <div className="phone-number">{phone}</div>
               )}
+              <ShapeButton icon="trash" label="Trash" />
+           
             </Block>
           </>
         );
