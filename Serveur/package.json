@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 'No build process required'" 
   },
   "keywords": [],
   "author": "",
