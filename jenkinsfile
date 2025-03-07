@@ -6,7 +6,7 @@ pipeline {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
                     projects.each { dir ->
-                        sh "cd ${dir} && npm install"
+                        sh "cd ${dir} && npm install --legacy-peer-deps"
                     }
                 }
             }
