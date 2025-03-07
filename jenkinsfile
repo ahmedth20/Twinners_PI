@@ -1,26 +1,35 @@
-pipeline{
+pipeline {
     agent any
-        stages {
-          stage('Install dependencies') {
+    stages {
+        stage('Install dependencies') {
             steps {
-              script {
-                sh('npm install')
-             }
-        }
-    }
-        stage('Unit Test') {
-          steps {
-            script {
-              sh('npm test')
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm install"
+                    }
+                }
             }
-          }
+        }
+        stage('Unit Test') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm test"
+                    }
+                }
+            }
         }
         stage('Build application') {
-          steps {
-            script {
-              sh('npm run build-dev')
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm run build-dev"
+                    }
+                }
             }
-          }
         }
     }
- }
+}
