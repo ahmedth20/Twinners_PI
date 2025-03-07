@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    stages {
+        stage('Install dependencies') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm install --legacy-peer-deps"
+                    }
+                }
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm test"
+                    }
+                }
+            }
+        }
+        stage('Build application') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm run build-dev"
+                    }
+                }
+            }
+        }
+    }
+}
