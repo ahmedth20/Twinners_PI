@@ -20,6 +20,7 @@ const CurrentUser = () => {
     // 🔹 Récupération des données de l'utilisateur depuis Redux
     const user = useSelector((state) => state.auth.user?.user1); 
 console.log("🔍 Données de l'utilisateur :", user);
+
  
 
     const handleClickAway = () => setOpen(false);
@@ -40,6 +41,10 @@ console.log("🔍 Données de l'utilisateur :", user);
                 <div className="info">
                     {/* 🔹 Affichage du nom uniquement */}
                     <span className="h3">{user?.name}</span>
+                     {/* 🔹 Affichage de la spécialité uniquement si elle existe
+                     <span className="position">
+                        {user?.role ? user.role : "Aucune spécialité"}
+                    </span> */}
 
                     <Menu className={open ? 'visible' : ''}>
                         <button>

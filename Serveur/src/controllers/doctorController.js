@@ -37,10 +37,10 @@ async createDoctor(req, res) {
       // Extraire les données de la requête
       const { firstName, lastName, email, password, badgeNumber, departement, speciality, emailPerso, phone } = req.body;
   
-      // Vérification des données requises
-      if (!firstName || !lastName || !email || !password || !badgeNumber || !departement || !speciality || !emailPerso || !phone) {
-        throw new Error("Données manquantes ! Veuillez vérifier tous les champs.");
-      }
+      // // Vérification des données requises
+      // if (!firstName || !lastName || !email || !password || !badgeNumber || !departement || !speciality || !emailPerso || !phone) {
+      //   throw new Error("Données manquantes ! Veuillez vérifier tous les champs.");
+      // }
   
       console.log("✅ Données utilisateur valides");
   
@@ -88,27 +88,77 @@ async createDoctor(req, res) {
     }
   },
 
-  // 📌 Mettre à jour un médecin
-  async updateDoctor(req, res) {
-    try {
-      const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedDoctor) return res.status(404).json({ message: "Médecin non trouvé" });
-      res.json(updatedDoctor);
-    } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la mise à jour du médecin", error });
-    }
-  },
+// 📌 Mettre à jour un médecin
+async updateDoctor(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  // 📌 Supprimer un médecin
-  async deleteDoctor(req, res) {
-    try {
-      const deletedDoctor = await Doctor.findByIdAndDelete(req.params.id);
-      if (!deletedDoctor) return res.status(404).json({ message: "Médecin non trouvé" });
-      res.json({ message: "Médecin supprimé avec succès" });
-    } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la suppression du médecin", error });
+  try {
+    const doctorId = req.params.id;
+    const { firstName, lastName, email, password } = req.body;
+
+    // Récupérer le médecin existant
+    const doctor = await Doctor.findById(doctorId).populate("user");
+    if (!doctor) return res.status(404).json({ message: "Médecin non trouvé" });
+
+    // Mettre à jour les informations de l'utilisateur
+    if (firstName || lastName || email || password) {
+      const userUpdates = {};
+      if (firstName) userUpdates.firstName = firstName;
+      if (lastName) userUpdates.lastName = lastName;
+      if (email) userUpdates.email = email;
+      if (password) userUpdates.password = bcrypt.hashSync(password, 10); // Hash du mot de passe
+
+      await User.findByIdAndUpdate(doctor.user._id, userUpdates, { session });
     }
-  },
+
+    // Mettre à jour les informations du médecin
+    const updatedDoctor = await Doctor.findByIdAndUpdate(doctorId, req.body, { new: true, session });
+    if (!updatedDoctor) return res.status(404).json({ message: "Médecin non trouvé" });
+
+    // ✅ Validation et fin de la transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    res.json(updatedDoctor);
+  } catch (error) {
+    // En cas d'erreur, annuler la transaction
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: "Erreur lors de la mise à jour du médecin", error });
+  }
+},
+
+// 📌 Supprimer un médecin
+async deleteDoctor(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const doctorId = req.params.id;
+
+    // Récupérer le médecin existant
+    const doctor = await Doctor.findById(doctorId).populate("user");
+    if (!doctor) return res.status(404).json({ message: "Médecin non trouvé" });
+
+    // Supprimer l'utilisateur associé
+    await User.findByIdAndDelete(doctor.user._id, { session });
+
+    // Supprimer le médecin
+    await Doctor.findByIdAndDelete(doctorId, { session });
+
+    // ✅ Validation et fin de la transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    res.json({ message: "Médecin et utilisateur supprimés avec succès" });
+  } catch (error) {
+    // En cas d'erreur, annuler la transaction
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: "Erreur lors de la suppression du médecin", error });
+  }
+},
 };
 
 module.exports = doctorController;

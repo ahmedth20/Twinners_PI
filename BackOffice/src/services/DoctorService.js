@@ -46,6 +46,7 @@ const DoctorService = {
   updateDoctor: async (id, doctorData) => {
     try {
       const response = await axios.put(`${API_URL}/${id}`, doctorData);
+      console.log("Response from update:", response.data); // Ajoutez cette ligne
       return response.data;
     } catch (error) {
       console.error("Erreur lors de la mise à jour du médecin:", error);

@@ -1,3 +1,4 @@
+import React, { useState, useRef, useEffect } from 'react';
 import { Header } from '@components/Widget/style';
 import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
 
@@ -8,141 +9,149 @@ import GenderNav from '@components/GenderNav';
 import MonthNavigator from '@ui/Navigator/MonthNavigator';
 import Group from './Group';
 import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
 
 // utils
 import { generateAlphabet } from '@utils/helpers';
-import { nanoid } from 'nanoid';
 
 // hooks
-import { useState, useRef, useEffect } from 'react';
 import useGenderFilter from '@hooks/useGenderFilter';
+import DoctorService from 'services/DoctorService';
 
-// import corrected
-import DoctorService from 'services/DoctorService'; // Assurez-vous que ce service existe
-import { doctors } from '@db/doctors';
-
-const DoctorsList = () => {
+const DoctorsList = ({ variant = "doctor" }) => {
   const contentRef = useRef(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [lastGender, setLastGender] = useState(null);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  const handleLetterClick = (char) => {
-      setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
-  };
-  
-  const handleGenderClick = (newGender) => {
-      if (lastGender === newGender.value) {
-          // Double-clic : Réinitialiser la sélection de lettre
-          setSelectedLetter(null);
-      }
-      setLastGender(newGender.value);
-      setGender(newGender);
-  };
-  
-  
-  
+  // Fetch doctors on component mount
   useEffect(() => {
-      const fetchDoctors = async () => {
-          try {
-              const data = await DoctorService.getAllDoctors();
-              setDoctors(data);
-              console.log(data);
-          } catch (error) {
-              console.error("Failed to fetch Doctors", error);
-          }
-      };
-      fetchDoctors();
+    const fetchDoctors = async () => {
+      try {
+        const data = await DoctorService.getAllDoctors();
+        setDoctors(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Failed to fetch Doctors', error);
+      }
+    };
+    fetchDoctors();
   }, []);
 
-  // current filter by month
+  // Current filter by month
   const [month, setMonth] = useState({ label: 'This month', number: new Date().getMonth() });
   const dateFilteredArr = doctors;
-  // current filter by gender
+
+  // Current filter by gender
   const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
-  console.log(genderArr(gender));
-  const filteredDoctors = genderArr(gender);
+  const filteredDoctors = genderArr(gender) || [];
 
   const displayedDoctors = selectedLetter
-  ? filteredDoctors.filter(doctors => 
-      doctors.user?.lastName?.[0]?.toLowerCase() === selectedLetter
-  ) 
-  : filteredDoctors;
+    ? filteredDoctors.filter(
+        (doctor) => doctor.user?.lastName?.[0]?.toLowerCase() === selectedLetter
+      )
+    : filteredDoctors;
 
-
-  // generate an array containing alphabet
-  const alphabet = generateAlphabet();
+  // Generate an array containing alphabet
+  const alphabet = generateAlphabet() || [];
 
   const isCharInDoctors = (char, arr) => {
-      return arr.some(doctors => doctors.user?.lastName[0].toLowerCase() === char);
+    return arr.some((doctor) => doctor.user?.lastName[0]?.toLowerCase() === char);
   };
 
   useEffect(() => {
-      contentRef.current?.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-      });
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [month, gender]);
 
+  const handleLetterClick = (char) => {
+    setSelectedLetter((prevLetter) => (prevLetter === char ? null : char));
+  };
+
+  const handleGenderClick = (newGender) => {
+    if (lastGender === newGender.value) {
+      setSelectedLetter(null); // Reset letter selection on double click
+    }
+    setLastGender(newGender.value);
+    setGender(newGender);
+  };
+
+  const handleEditDoctor = (doctor) => {
+    setSelectedDoctor(doctor); // Store selected doctor
+    setIsEditPopupOpen(true); // Open the popup
+  };
+
   return (
-      <Widget name="DoctorsList">
-          <Header sidePadding={true}>
-              <NavWrapper>
-                  <GenderNav state={gender} handler={setGender} />
-                  <MonthNavigator state={month} handler={setMonth} />
-              </NavWrapper>
-              <LetterNavWrapper>
-                  <LetterNav>
-                      {alphabet.map(char => (
-                          <li key={nanoid(3)}>
-                           <LetterNavItem
-                              className={`${isCharInDoctors(char, filteredDoctors) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
-                              href={`#${char}`}
-                              onClick={() => handleLetterClick(char)}
-                          >
-                              {char}
-                          </LetterNavItem>
+    <Widget name="DoctorsList">
+      <Header sidePadding={true}>
+        <NavWrapper>
+          <GenderNav state={gender} handler={setGender} />
+          <MonthNavigator state={month} handler={setMonth} />
+        </NavWrapper>
+        <LetterNavWrapper>
+          <LetterNav>
+            {alphabet.length > 0 ? (
+              alphabet.map((char) => (
+                <li key={char}>
+                  <LetterNavItem
+                    className={`${
+                      isCharInDoctors(char, filteredDoctors) ? 'active' : ''
+                    } ${selectedLetter === char ? 'selected' : ''}`}
+                    href={`#${char}`}
+                    onClick={() => handleLetterClick(char)}
+                  >
+                    {char}
+                  </LetterNavItem>
+                </li>
+              ))
+            ) : (
+              <NoDataPlaceholder />
+            )}
+          </LetterNav>
+        </LetterNavWrapper>
+      </Header>
+      <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
+        {filteredDoctors.length !== 0 ? (
+          <>
+            {selectedLetter ? (
+              <Group
+                key={`patients-${selectedLetter}`}
+                gender={gender.value}
+                char={selectedLetter}
+                type={'patient'}
+                arr={displayedDoctors}
+                onEditDoctor={handleEditDoctor}
+              />
+            ) : (
+              alphabet.map((char) => (
+                <Group
+                  key={`patients-${char}`}
+                  gender={gender.value}
+                  char={char}
+                  type={'patient'}
+                  arr={filteredDoctors.filter(
+                    (doctor) => doctor.user?.lastName?.[0]?.toLowerCase() === char
+                  ) || []}
+                  onEditDoctor={handleEditDoctor}
+                />
+              ))
+            )}
+          </>
+        ) : (
+          <NoDataPlaceholder />
+        )}
+      </WidgetBody>
 
-
-                          </li>
-                      ))}
-                  </LetterNav>
-              </LetterNavWrapper>
-          </Header>
-          <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
-              {dateFilteredArr.length !== 0 ? (
-                  <>
-                  {selectedLetter ? (
-  // Si une lettre est sélectionnée, afficher uniquement ce groupe
-  <Group
-      key={`patients-${selectedLetter}`}
-      gender={gender.value}
-      char={selectedLetter}
-      type={'patient'}
-      arr={displayedDoctors} // Patients filtrés par lettre
-  />
-) : (
-  // Sinon, afficher tous les groupes classés par lettre
-  alphabet.map(char => (
-      <Group
-          key={`patients-${char}`}
-          gender={gender.value}
-          char={char}
-          type={'patient'}
-          arr={filteredDoctors.filter(doctors => 
-              doctors.user?.lastName?.[0]?.toLowerCase() === char
-          )}
-      />
-  ))
-)}
-
-
-                  </>
-              ) : (
-                  <NoDataPlaceholder />
-              )}
-          </WidgetBody>
-      </Widget>
+      {/* UpdateDoctorPopup */}
+      {isEditPopupOpen && (
+        <UpdateDoctorPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          doctor={selectedDoctor} // Pass the selected doctor data
+        />
+      )}
+    </Widget>
   );
 };
 
