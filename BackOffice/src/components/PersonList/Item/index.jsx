@@ -247,8 +247,8 @@ const Item = ({ type, data }) => {
       )}
 
    
-       <UpdateSimplePatientPopup isOpen={isUpdateModalOpen} onClose={handleCancelUpdate} patientId={data._id}/>
-
+{isUpdateModalOpen && <UpdateSimplePatientPopup isOpen={isUpdateModalOpen} onClose={handleCancelUpdate} data={data} />}
+  
      
    
 

@@ -23,31 +23,32 @@ const steps = [
   { number: 2, label: "Personal Information" },
 ];
 
-const UpdateSimplePatientPopup = ({ isOpen, onClose, patientId }) => {
+const UpdateSimplePatientPopup = ({ isOpen, onClose, data }) => {
   const [step, setStep] = useState(1);
-  const [patientData, setPatientData] = useState(null);
- console.log(patientId);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(patientSchema),
-    defaultValues: {},
-  });
+ console.log(data);
+ const {
+  register,
+  handleSubmit,
+  setValue,
+  getValues,
+  formState: { errors },
+} = useForm({
+  resolver: zodResolver(patientSchema),
+  defaultValues: {},
+});
 
-  useEffect(() => {
-    if (patientId) {
-      PatientService.getPatientById(patientId).then(response => {
-        if (response.data) {
-          setPatientData(response.data);
-          Object.keys(response.data || {}).forEach(key => setValue(key, response.data[key]));
-        }
-      }).catch(error => console.error("Erreur de récupération du patient :", error));
-    }
-  }, [patientId, setValue]);
+useEffect(() => {
+  if (data) {
+    Object.keys(data).forEach((key) => {
+      if (key === "user") {
+        setValue("firstName", data.user?.firstName || "");
+        setValue("lastName", data.user?.lastName || "");
+      } else {
+        setValue(key, data[key]);
+      }
+    });
+  }
+}, [data, setValue]);
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -55,16 +56,22 @@ const UpdateSimplePatientPopup = ({ isOpen, onClose, patientId }) => {
   const onSubmit = async () => {
     try {
       const updatedData = {};
-      if (patientData) {
-        Object.keys(patientData).forEach((key) => {
-          if (getValues(key) !== patientData[key]) {
-            updatedData[key] = getValues(key);
-          }
-        });
-      }
       
+      if (getValues("firstName") !== data.user?.firstName) {
+        updatedData.firstName = getValues("firstName");
+      }
+      if (getValues("lastName") !== data.user?.lastName) {
+        updatedData.lastName = getValues("lastName");
+      }
+  
+      Object.keys(data || {}).forEach((key) => {
+        if (key !== "user" && getValues(key) !== data[key]) {
+          updatedData[key] = getValues(key);
+        }
+      });
+  
       if (Object.keys(updatedData).length > 0) {
-        await PatientService.updateSimplePatient(patientId, updatedData);
+        await PatientService.updateSimplePatient(data._id, updatedData);
         alert("✅ Patient mis à jour avec succès !");
       } else {
         alert("Aucune modification détectée.");
@@ -75,6 +82,7 @@ const UpdateSimplePatientPopup = ({ isOpen, onClose, patientId }) => {
       console.error("Détails de l'erreur :", error.response?.data);
     }
   };
+  
 
   if (!isOpen) return null;
 
@@ -142,9 +150,9 @@ const UpdateSimplePatientPopup = ({ isOpen, onClose, patientId }) => {
           )}
 
           <ButtonContainer>
-            {step > 1 && <NavButton type="button" onClick={prevStep}>Back</NavButton>}
+            {step > 1 && <NavButton type="button" onClick={() => setStep(step - 1)}>Back</NavButton>}
             {step < steps.length ? (
-              <NextButton type="button" style={step === 1 ? { marginLeft: "auto" } : {}} onClick={nextStep}>Next →</NextButton>
+              <NextButton type="button" style={step === 1 ? { marginLeft: "auto" } : {}} onClick={() => setStep(step + 1)}>Next →</NextButton>
             ) : (
               <SubmitButton type="submit">Submit</SubmitButton>
             )}

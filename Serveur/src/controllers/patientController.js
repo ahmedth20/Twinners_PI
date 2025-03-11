@@ -30,7 +30,6 @@ const patientController = {
     }
   },
 
-
   async createSimplePatient(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction();
