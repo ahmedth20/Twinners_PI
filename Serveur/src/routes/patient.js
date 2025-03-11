@@ -9,6 +9,7 @@ router.get("/:id", patientController.getPatientById);
 router.post("/", patientController.createPatient);
 router.post("/createSimplePatient", patientController.createSimplePatient);
 router.put("/:id", patientController.updatePatient);
+router.put("/updateSimplePatient/:id", patientController.updateSimplePatient);
 router.delete("/:id", patientController.deletePatient);
 router.put("/toggle-status/:id", patientController.toggleUserStatus);
 module.exports = router;

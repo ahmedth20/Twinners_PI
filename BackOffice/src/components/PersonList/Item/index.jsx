@@ -22,6 +22,7 @@ import PatientService from 'services/PatientService';
 import axios from "axios";
 // Modal for confirmation
 import ConfirmActionModal from '@ui/ConfirmActionModal'
+import UpdateSimplePatientPopup from '@pages/UpdateSimplePatientPopup';
 
 const StyledClipboardIcon = styled(CiMedicalClipboard)`
   color: rgb(129, 135, 139);
@@ -38,7 +39,7 @@ const StyledText = styled.span`
     color: white;
   }
 `;
-const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen, onToggleStatus, isActive }) => {
+const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen,onUpdate, onToggleStatus, isActive }) => {
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen, onToggleStatus, isA
   }, [toggleMenu]);
 
   const menuItems = [
-    { id: "edit", icon: <FaEdit />, label: "Edit" },
+    { id: "edit", icon: <FaEdit />, label: "Edit",onClick: onUpdate  },
     { id: "open", icon: <FiExternalLink />, label: "Open",onClick: onOpen },
     { id: "view", icon: <FaEye />, label: "View Details" },
     { id: "toggle", icon: isActive ? <FaUserSlash /> : <FaUserPlus />, label: isActive ? "Deactivate" : "Activate", onClick: () => onToggleStatus(isActive) },
@@ -80,10 +81,11 @@ const Item = ({ type, data }) => {
   const [visibleInfo, setVisibleInfo] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false); // Modal de confirmation pour activer/désactiver
   const [isActive, setIsActive] = useState(data.user.isActive); // Ajouter l'état isActive
 
-  console.log(isActive);
+ 
   const navigate = useNavigate();
 
   const toggleMenu = (state) => {
@@ -105,6 +107,9 @@ const Item = ({ type, data }) => {
   const handleOpen = async () => {
     navigate("/dashboard_f", { state: { data } })
   };
+  const handleUpdate = async () => {
+    setIsUpdateModalOpen(true);
+  };
   const handleConfirmDelete = async () => {
     try {
       await PatientService.deletePatient(data._id);
@@ -117,7 +122,9 @@ const Item = ({ type, data }) => {
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
   };
-
+  const handleCancelUpdate = () => {
+    setIsUpdateModalOpen(false);
+  };
   const handleToggleStatus = async () => {
     setIsStatusModalOpen(true); // Afficher le modal de confirmation avant de basculer l'état
   };
@@ -191,6 +198,7 @@ const Item = ({ type, data }) => {
                   isOpen={isOpen} 
                   toggleMenu={toggleMenu} 
                   onDelete={handleDelete} 
+                  onUpdate={handleUpdate} 
                   onOpen={handleOpen} 
                   onToggleStatus={handleToggleStatus} 
                   isActive={isActive} 
@@ -237,6 +245,14 @@ const Item = ({ type, data }) => {
           iconColor={isActive ? "#e53e3e" : "#38B2AC"}
         />
       )}
+
+   
+       <UpdateSimplePatientPopup isOpen={isUpdateModalOpen} onClose={handleCancelUpdate} patientId={data._id}/>
+
+     
+   
+
+
     </AnimatePresence>
   );
 };

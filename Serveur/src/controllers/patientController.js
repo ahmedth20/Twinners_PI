@@ -296,15 +296,111 @@ const patientController = {
 }
 ,
   // 📌 Mettre à jour un patient
-  async updatePatient(req, res) {
+  async updateSimplePatient(req, res) {
     try {
-      const updatedPatient = await Patient.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedPatient) return res.status(404).json({ message: "Patient non trouvé" });
-      res.json(updatedPatient);
+        console.log("🟡 Mise à jour simple du patient", req.params.id);
+        console.log("Données reçues :", req.body);
+
+        const { firstName, lastName, sex, age, phone, address } = req.body;
+
+        // Vérifier si le patient et l'utilisateur existent
+        const patient = await Patient.findById(req.params.id);
+        if (!patient) return res.status(404).json({ message: "Patient non trouvé" });
+
+        const user = await User.findById(patient.user);
+        if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+        // Mise à jour des informations utilisateur (sans modifier l'email ni le password)
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        await user.save();
+
+        // Mise à jour des informations patient
+        patient.sex = sex || patient.sex;
+        patient.age = age || patient.age;
+        patient.phone = phone || patient.phone;
+        patient.address = address || patient.address;
+
+        await patient.save();
+
+        console.log("✅ Patient mis à jour :", patient._id);
+        res.json({ message: "Mise à jour réussie", patient });
     } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la mise à jour du patient", error });
+        console.error("❌ Erreur lors de la mise à jour :", error);
+        res.status(500).json({ message: "Erreur lors de la mise à jour du patient", error: error.message });
     }
-  },
+}
+,
+async updatePatient(req, res) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        console.log("🟡 Mise à jour complète du patient", req.params.id);
+        console.log("Données reçues :", req.body);
+
+        const { firstName, lastName, sex, age, phone, address, consultations = [], medicalRecord = {} } = req.body;
+
+        // Vérifier si le patient existe
+        const patient = await Patient.findById(req.params.id).session(session);
+        if (!patient) return res.status(404).json({ message: "Patient non trouvé" });
+
+        // Vérifier si l'utilisateur existe
+        const user = await User.findById(patient.user).session(session);
+        if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+        // Mise à jour des informations utilisateur (sans modifier l'email ni le password)
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        await user.save({ session });
+
+        // Mise à jour des informations patient
+        patient.sex = sex || patient.sex;
+        patient.age = age || patient.age;
+        patient.phone = phone || patient.phone;
+        patient.address = address || patient.address;
+
+        // Mise à jour des consultations
+        const consultationDocs = await Promise.all(
+            consultations.map(async (consultation) => {
+                if (!consultation._id) {
+                    // Nouvelle consultation
+                    const newConsultation = new Consultation({ ...consultation, patient: patient._id });
+                    return await newConsultation.save({ session });
+                } else {
+                    // Mise à jour de la consultation existante
+                    return await Consultation.findByIdAndUpdate(consultation._id, consultation, { new: true, session });
+                }
+            })
+        );
+
+        patient.consultations = consultationDocs.map(doc => doc._id);
+
+        // Mise à jour du dossier médical
+        if (patient.medicalRecord) {
+            await MedicalRecord.findByIdAndUpdate(patient.medicalRecord, medicalRecord, { session });
+        } else {
+            const newMedicalRecord = new MedicalRecord({ ...medicalRecord, patient: patient._id });
+            const savedMedicalRecord = await newMedicalRecord.save({ session });
+            patient.medicalRecord = savedMedicalRecord._id;
+        }
+
+        await patient.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        console.log("✅ Mise à jour complète réussie pour le patient :", patient._id);
+        res.json({ message: "Mise à jour complète réussie", patient });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error("❌ Erreur lors de la mise à jour :", error);
+        res.status(500).json({ message: "Erreur lors de la mise à jour du patient", error: error.message });
+    }
+}
+,
 
   // 📌 Supprimer un patient
   async deletePatient(req, res) {

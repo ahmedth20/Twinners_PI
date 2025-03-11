@@ -41,6 +41,15 @@ const PatientService = {
       throw error;
     }
   },
+  updateSimplePatient: async (id, patientData) => {
+    try {
+      const response = await axios.put(`${API_URL}/updateSimplePatient/${id}`, patientData);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du patient:", error);
+      throw error;
+    }
+  },
   updatePatient: async (id, patientData) => {
     try {
       const response = await axios.put(`${API_URL}/${id}`, patientData);
@@ -50,7 +59,6 @@ const PatientService = {
       throw error;
     }
   },
-
   deletePatient: async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
