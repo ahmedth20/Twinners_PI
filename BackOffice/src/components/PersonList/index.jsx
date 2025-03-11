@@ -1,6 +1,7 @@
 // styling
 import styled from 'styled-components/macro';
 import {flex} from '@styles/vars';
+import { nanoid } from 'nanoid';
 
 // components
 import Item from '@components/PersonList/Item';
@@ -16,15 +17,16 @@ const List = styled.ul`
 
 const PersonList = ({ arr, type, gender, deps }) => {
   const { search, category } = deps ? deps : { search: '', category: '' };
-
   return (
       <List>
           {arr.map((item, i) => (
-              <Item 
-                  key={`${item.id}-${gender}-${search}-${category}`} 
-                  data={{ ...item, phone: String(item.phone) }} // Convertir phone en string
-                  type={type} 
-              />
+           <Item 
+           key={item.id || nanoid()} // Utilisation de l'ID ou génération d'un ID unique 
+           data={{ ...item, phone: String(item.phone) }} 
+           type={type} 
+       />
+       
+         
           ))}
       </List>
   );

@@ -113,6 +113,7 @@ export const Wrapper = styled.div`
 
     &:hover, &:focus {
       background-color: ${colors.blue};
+      color:${colors.white};
     }
   }
 
@@ -210,3 +211,49 @@ export const Button = styled.button`
     }
   }
 `
+export const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+export const Menu = styled.ul`
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  list-style: none;
+  padding: 8px 0;
+  min-width: 160px;
+  z-index: 100;
+`;
+
+export const MenuItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  &:last-child {
+    border-top: 1px solid #ddd;
+    color: red;
+  }
+`;
+
+
+/*const actionIcons = {
+  delete: <FaTrash style={{ fontSize: '1.5rem', color: '#e53e3e' }} />,
+  update: <FaEdit style={{ fontSize: '1.5rem', color: '#f6ad55' }} />,
+  add: <FaPlus style={{ fontSize: '1.5rem', color: '#48bb78' }} />,
+  deactivate: <FaRegPauseCircle style={{ fontSize: '1.5rem', color: '#fbbf24' }} />,
+  activate: <FaCheckCircle style={{ fontSize: '1.5rem', color: '#38a169' }} />
+};*/

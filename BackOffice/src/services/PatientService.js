@@ -59,6 +59,27 @@ const PatientService = {
       throw error;
     }
   },
+
+  toggleUserStatus: async (id) => {
+    try {
+      console.log("ID envoyé à l'API:", id);
+      const response = await axios.put(`${API_URL}/toggle-status/${id}`, {}, { withCredentials: true });
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la désactivation / activation du patient:", error);
+      throw error;
+    }
+  },
+  getAllDoctors: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/listDoctors`);
+         return response.data;
+    } catch (error) {
+          console.error("Erreur lors du chargement des doctors:", error);
+          throw error;
+    }
+  },
+  
 };
 
 export default PatientService;
