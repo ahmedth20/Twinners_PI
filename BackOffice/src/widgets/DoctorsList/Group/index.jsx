@@ -1,29 +1,33 @@
-// components
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import GroupSeparator from '@ui/GroupSeparator';
-import PersonList from '@components/PersonList';
+import PersonList from '@components/DoctorList';
+import { depsOptions } from '@constants/options';
+import PropTypes from "prop-types";
 
-// helpers
-import {depsOptions} from '@constants/options';
 
-export default function Group({arr, variant, ...props}) {
-    // get unique departments list
-    const deps = [...new Set(arr.flatMap(item => item.department.map(item => item.id)))];
-    // filter by department
-    const arrByDep = dep => arr.filter(item => item.department.some(item => item.id === dep));
+
+const Group = ({char, arr, type, gender}) => {
+    const data = arr.filter(item =>item.user?.lastName[0].toLowerCase() === char);
 
     return (
         <>
             {
-                deps.map(dep => {
-                    const label = depsOptions.find(item => item.value === dep).label;
-                    return (
-                        <div key={dep}>
-                            <GroupSeparator text={label}/>
-                            <PersonList arr={arrByDep(dep)} type={variant} gender={props.gender} deps={props.deps} />
-                        </div>
-                    )
-                })
+                data.length !== 0 ?
+                    <div id={char}>
+                        <GroupSeparator text={char} />
+                        <PersonList arr={data} type={type} gender={gender} />
+                    </div> : null
+
             }
         </>
     )
 }
+
+Group.propTypes = {
+    char: PropTypes.string.isRequired,
+    arr: PropTypes.array.isRequired,
+    type: PropTypes.oneOf(['patient', 'doctor', 'staff']).isRequired,
+}
+
+export default Group;

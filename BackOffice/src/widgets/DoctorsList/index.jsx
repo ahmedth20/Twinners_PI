@@ -1,92 +1,158 @@
-// styling
-import styled from 'styled-components/macro';
-import {flex, breakpoints} from '@styles/vars';
-
-// styled components
-import {Header} from '@components/Widget/style';
+import React, { useState, useRef, useEffect } from 'react';
+import { Header } from '@components/Widget/style';
+import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
 
 // components
 import Widget from '@components/Widget';
 import WidgetBody from '@components/Widget/WidgetBody';
-import CustomSelect from '@ui/Select';
 import GenderNav from '@components/GenderNav';
-import SearchBar from '@ui/SearchBar';
+import MonthNavigator from '@ui/Navigator/MonthNavigator';
 import Group from './Group';
 import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
 
 // utils
-import {depsOptions} from '@constants/options';
-import {useState} from 'react';
+import { generateAlphabet } from '@utils/helpers';
 
 // hooks
 import useGenderFilter from '@hooks/useGenderFilter';
+import DoctorService from 'services/DoctorService';
 
-// data placeholder
-import {staff} from '@db/staff';
+const DoctorsList = ({ variant = "doctor" }) => {
+  const contentRef = useRef(null);
+  const [doctors, setDoctors] = useState([]);
+  const [selectedLetter, setSelectedLetter] = useState(null);
+  const [lastGender, setLastGender] = useState(null);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-export const ListHeader = styled(Header)`
-  padding: 24px 0 20px;
-
-  .wrapper {
-    padding: 0 24px;
-    ${flex.col};
-    gap: 20px;
-  }
-
-  .wrapper, form {
-    flex-grow: 1;
-    width: 100%;
-  }
-
-  ${breakpoints.tablet} {
-    .wrapper {
-      flex-direction: row;
-      ${flex.between};
-
-      .gender {
-        width: 300px;
+  // Fetch doctors on component mount
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const data = await DoctorService.getAllDoctors();
+        setDoctors(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Failed to fetch Doctors', error);
       }
+    };
+    fetchDoctors();
+  }, []);
+
+  // Current filter by month
+  const [month, setMonth] = useState({ label: 'This month', number: new Date().getMonth() });
+  const dateFilteredArr = doctors;
+
+  // Current filter by gender
+  const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
+  const filteredDoctors = genderArr(gender) || [];
+
+  const displayedDoctors = selectedLetter
+    ? filteredDoctors.filter(
+        (doctor) => doctor.user?.lastName?.[0]?.toLowerCase() === selectedLetter
+      )
+    : filteredDoctors;
+
+  // Generate an array containing alphabet
+  const alphabet = generateAlphabet() || [];
+
+  const isCharInDoctors = (char, arr) => {
+    return arr.some((doctor) => doctor.user?.lastName[0]?.toLowerCase() === char);
+  };
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [month, gender]);
+
+  const handleLetterClick = (char) => {
+    setSelectedLetter((prevLetter) => (prevLetter === char ? null : char));
+  };
+
+  const handleGenderClick = (newGender) => {
+    if (lastGender === newGender.value) {
+      setSelectedLetter(null); // Reset letter selection on double click
     }
-  }
-`;
+    setLastGender(newGender.value);
+    setGender(newGender);
+  };
 
-const DoctorsList = ({variant}) => {
-    const [category, setCategory] = useState(depsOptions[0]);
-    const [search, setSearch] = useState('');
-    const {gender, setGender} = useGenderFilter();
+  const handleEditDoctor = (doctor) => {
+    setSelectedDoctor(doctor); // Store selected doctor
+    setIsEditPopupOpen(true); // Open the popup
+  };
 
-    const filteredStaff = staff.filter(item => {
-        const name = `${item.firstName} ${item.lastName}`;
-        const depsNames = item.department.map(dep => dep.label).join(' ');
-        const depsIDs = item.department.map(dep => dep.id).join(' ');
-        const queryMatch = name.toLowerCase().includes(search.toLowerCase()) || depsNames.toLowerCase().includes(search.toLowerCase());
-        const categoryMatch = category.value === 'all' || depsIDs.toLowerCase().includes(category.value.toLowerCase());
-        const genderMatch = gender.value === 'all' || item.gender === gender.value
+  return (
+    <Widget name="DoctorsList">
+      <Header sidePadding={true}>
+        <NavWrapper>
+          <GenderNav state={gender} handler={setGender} />
+          <MonthNavigator state={month} handler={setMonth} />
+        </NavWrapper>
+        <LetterNavWrapper>
+          <LetterNav>
+            {alphabet.length > 0 ? (
+              alphabet.map((char) => (
+                <li key={char}>
+                  <LetterNavItem
+                    className={`${
+                      isCharInDoctors(char, filteredDoctors) ? 'active' : ''
+                    } ${selectedLetter === char ? 'selected' : ''}`}
+                    href={`#${char}`}
+                    onClick={() => handleLetterClick(char)}
+                  >
+                    {char}
+                  </LetterNavItem>
+                </li>
+              ))
+            ) : (
+              <NoDataPlaceholder />
+            )}
+          </LetterNav>
+        </LetterNavWrapper>
+      </Header>
+      <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
+        {filteredDoctors.length !== 0 ? (
+          <>
+            {selectedLetter ? (
+              <Group
+                key={`patients-${selectedLetter}`}
+                gender={gender.value}
+                char={selectedLetter}
+                type={'patient'}
+                arr={displayedDoctors}
+                onEditDoctor={handleEditDoctor}
+              />
+            ) : (
+              alphabet.map((char) => (
+                <Group
+                  key={`patients-${char}`}
+                  gender={gender.value}
+                  char={char}
+                  type={'patient'}
+                  arr={filteredDoctors.filter(
+                    (doctor) => doctor.user?.lastName?.[0]?.toLowerCase() === char
+                  ) || []}
+                  onEditDoctor={handleEditDoctor}
+                />
+              ))
+            )}
+          </>
+        ) : (
+          <NoDataPlaceholder />
+        )}
+      </WidgetBody>
 
-        return queryMatch && categoryMatch && genderMatch;
-    })
-
-    return (
-        <Widget name="DoctorsList">
-            <ListHeader>
-                <div className="wrapper">
-                    <CustomSelect options={depsOptions} variant="minimal" value={category} changeHandler={setCategory}/>
-                    <GenderNav state={gender} handler={setGender}/>
-                </div>
-                <SearchBar placeholder="Search a doctor or medical department" handler={setSearch} value={search}/>
-            </ListHeader>
-            <WidgetBody style={{padding: 0}}>
-                {
-                    filteredStaff.length !== 0 ?
-                        <Group arr={filteredStaff} variant={variant} gender={gender.value} deps={{
-                            category: category.value,
-                            search: search}}/>
-                        :
-                        <NoDataPlaceholder/>
-                }
-            </WidgetBody>
-        </Widget>
-    )
-}
+      {/* UpdateDoctorPopup */}
+      {isEditPopupOpen && (
+        <UpdateDoctorPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          doctor={selectedDoctor} // Pass the selected doctor data
+        />
+      )}
+    </Widget>
+  );
+};
 
 export default DoctorsList;

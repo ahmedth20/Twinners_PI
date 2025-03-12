@@ -1,13 +1,13 @@
 // styled components
-import {Menu, UserWrapper} from '../style';
+import { Menu, UserWrapper } from '../style';
 
 // components
 import Avatar from '@ui/Avatar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // utils
-import {ClickAwayListener} from '@mui/base/ClickAwayListener';
-import {useState} from 'react';
-import {logout} from '../../../slices/authSlice'
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
+import { useState } from 'react';
+import { logout } from '../../../slices/authSlice';
 // assets
 import doc1jpg from '@assets/avatars/doc1.jpg';
 import doc1webp from '@assets/avatars/doc1.jpg?as=webp';
@@ -15,39 +15,52 @@ import doc1webp from '@assets/avatars/doc1.jpg?as=webp';
 const CurrentUser = () => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
+    
+
+    // 🔹 Récupération des données de l'utilisateur depuis Redux
+    const user = useSelector((state) => state.auth.user?.user1); 
+console.log("🔍 Données de l'utilisateur :", user);
+
+ 
+
     const handleClickAway = () => setOpen(false);
     const handleClick = () => setOpen(!open);
-    const handleSubmit1 = () => {
+    const handleLogout = () => {
         dispatch(logout());
-      };
-    
+    };
+
     const src = {
         jpg: doc1jpg,
         webp: doc1webp
-    }
+    };
 
     return (
         <ClickAwayListener onClickAway={handleClickAway}>
             <UserWrapper>
-                <Avatar avatar={src} alt="avatar"/>
+                <Avatar avatar={src} alt="avatar" />
                 <div className="info">
-                    <span className="h3">Sallie McBride</span>
-                    <span className="position">Surgeon</span>
+                    {/* 🔹 Affichage du nom uniquement */}
+                    <span className="h3">{user?.name}</span>
+                     {/* 🔹 Affichage de la spécialité uniquement si elle existe
+                     <span className="position">
+                        {user?.role ? user.role : "Aucune spécialité"}
+                    </span> */}
+
                     <Menu className={open ? 'visible' : ''}>
                         <button>
-                            <i className="icon icon-circle-user" /> Change user
+                            <i className="icon icon-circle-user" /> Changer d'utilisateur
                         </button>
-                        <button onClick={handleSubmit1} >
-                            <i className="icon icon-logout" /> Logout
+                        <button onClick={handleLogout}>
+                            <i className="icon icon-logout" /> Déconnexion
                         </button>
                     </Menu>
                 </div>
-                <button className="trigger" onClick={handleClick} aria-label="Show menu">
+                <button className="trigger" onClick={handleClick} aria-label="Afficher le menu">
                     <i className="icon icon-chevron-down" />
                 </button>
             </UserWrapper>
         </ClickAwayListener>
-    )
-}
+    );
+};
 
 export default CurrentUser;
