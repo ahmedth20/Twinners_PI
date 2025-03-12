@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const patientSchema = new mongoose.Schema({
   reference: { type: Number, unique: true },
-  sex: { type: String, enum: ["Male", "Female"], required: true },
-  phone: { type: Number, required: true },
-  address: { type: String, required: true },
-  age: { type: Number, required: true },
+  sex: { type: String, enum: ["Male", "Female"] },
+  phone: { type: Number },
+  address: { type: String },
+  age: { type: Number },
   height: { type: Number }, 
   weight: { type: Number }, 
   consultations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Consultation" }],

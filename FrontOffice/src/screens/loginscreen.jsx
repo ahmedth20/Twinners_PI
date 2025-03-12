@@ -43,7 +43,6 @@ function Yosr() {
         googleId: decoded.sub,
         avatar: decoded.picture,
       };
-
       console.log("Google User Data:", userGoogleData);
 
       // 🔹 Enregistrement de l'utilisateur dans la base de données
@@ -55,9 +54,6 @@ function Yosr() {
         body: JSON.stringify(userGoogleData),
       });
       console.log("Google User Data:", response);
-
-
-
 
     } catch (error) {
       console.error("Erreur d'enregistrement Google :", error);
@@ -238,9 +234,9 @@ function Yosr() {
       const data = await response.json();
       console.log("aaa", data);
 
-      dispatch(login({ user: data })); if (data.role == "medecin") {
+      dispatch(login({ user: data })); 
         setTimeout(() => { navigate("/home"); }, 500)
-      }
+      
 
       setTimeout(() => {
         fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" });
@@ -303,44 +299,70 @@ function Yosr() {
                   <img src="/images/favicon-96x96.png" alt="Smart190" />
                   <h4>Smart190</h4>
                 </div>
-                <form >
-                  <h1>Sign in</h1>
-                  <a className="toggle" onClick={() => setIsSignUp(true)}>create account</a>
+                <form ><div>
+                <h1 className="text-lg font-bold text-center mb-2">Sign In</h1>
 
-                  <input
+<a style={{
+                   marginBottom:'20px' 
+                    
+                  }}
+  className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
+  onClick={() => setIsSignUp(true)}
+>
+  Create Account
+</a>
+
+                  <input style={{
+                   marginBottom:'10px' 
+                    
+                  }}
                     type="email"
                     placeholder="nom@gmail.com"
                     name="email"
                     required
                     onChange={handleEmailChange}
-                    className={emailError ? "input-error" : "bbb"}
-                  />
-                  {emailError && <small className="error-msg">Email invalide</small>}
-                  <input
+                    className={`p-2 w-full border rounded focus:outline-none ${
+    emailError ? "border-red-500" : "border-gray-300"
+  }`}                  />
+{emailError && <small className="text-red-500">Email invalide</small>}
+<input
                     type={showPassword ? "text" : "password"}
                     placeholder="mot de passe"
                     name="password"
                     required
                     onChange={handlePasswordChange}
-                    className={passwordError ? "input-error" : ""}
-                  />      {passwordError && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+                    className={`p-2 w-full border rounded focus:outline-none ${
+    passwordError ? "border-red-500" : "border-gray-300"
+  }`}
+                  />      {passwordError &&  ( <small className="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>)
+}
 
-                  <a href="/forgotpassword">Forgot your password?</a>
+                  <a  style={{
+                   marginTop:'50px' 
+                    
+                  }} href="/forgotpassword">Forgot your password?</a>
                   <button
-                    type="submit"
-                    disabled={!isFormValid()}
-                    onClick={handleSubmit}
-                  > Sign In
-                  </button>
-
-
-                  <GoogleLogin text="signin_with"
+      type="submit"
+      disabled={!isFormValid()}
+      onClick={handleSubmit}
+     className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
+        isFormValid() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+      }`}
+    > 
+      Sign In
+    </button>
+</div>
+<div>
+                  <GoogleLogin text="signin_with"   style={{
+                   marginBottom:'10px' 
+                    
+                  }}
                     onSuccess={handleGoogleLogin}
                     onError={() => alert("Échec de connexion avec Google.")}
                   />
-
+                  </div>
                   <FacebookLogin style={{
-                    backgroundColor: '#fff',
+                    backgroundColor: '#fff',marginTop:'10px' ,
                     color: '#4267b2',
                     fontSize: '14px',
                     border: '1 px solid blue', // Bordure noire
@@ -384,15 +406,24 @@ function Yosr() {
 
 
                   <h1>Create Account</h1>
-                  <a className="toggle" onClick={() => setIsSignUp(false)}>Se connecter</a>
+                  <a style={{
+                   marginBottom:'20px' 
+                    
+                  }}
+  className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
+  onClick={() => setIsSignUp(false)}
+>
+  Se connecter
+</a>
                   <input
                     type="email"
                     placeholder="nom@gmail.com"
                     name="email"
                     required
                     onChange={handleEmailChange1}
-                    className={emailError1 ? "input-error" : "bbb"}
-                  />
+                    className={`p-2 w-full border rounded focus:outline-none ${
+    emailError1 ? "border-red-500" : "border-gray-300"
+  }`}                  />
                   {emailError1 && <small className="error-msg">Email invalide</small>}
                   <input
                     type={showPassword1 ? "text" : "password"}
@@ -400,21 +431,27 @@ function Yosr() {
                     name="password"
                     required
                     onChange={handlePasswordChange1}
-                    className={passwordError1 ? "input-error" : ""}
-                  />      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+                    className={`p-2 w-full border rounded focus:outline-none ${
+    emailError1 ? "border-red-500" : "border-gray-300"
+  }`}                                   />      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
 
                   <input
                     type="text"
                     onChange={handletelChange}
                     placeholder="num tel"
+                    className={`p-2 w-full border rounded focus:outline-none }`}                 
                   />
                   <input
                     type="text"
                     onChange={handlenameChange}
                     placeholder="name"
+                    className={`p-2 w-full border rounded focus:outline-none }`}                 
+
                   />
                   <button
-                    type="submit"
+                    type="submit"  className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
+        isFormValid() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+      }`}
                     onClick={(e) => {
                       handleSubmit1(e);
                       alert("Inscription réussie !");

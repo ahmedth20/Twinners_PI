@@ -5,7 +5,11 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "jest",
+<<<<<<< HEAD
     "build": "echo 'No build process required'"
+=======
+    "build": "echo 'No build process required'" 
+>>>>>>> origin/KhelifaAymen
   },
   "keywords": [],
   "author": "",

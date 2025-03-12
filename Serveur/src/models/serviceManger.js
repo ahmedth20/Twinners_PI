@@ -6,6 +6,8 @@ const serviceManagerSchema = new mongoose.Schema({
   schedule: [{ type: mongoose.Schema.Types.ObjectId, ref: "Schedule" }],
   ressources: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ressource" }],
    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+   role: { type: String },
+
 }, { timestamps: false, versionKey: false });
 
 const ServiceManager = mongoose.model("ServiceManager", serviceManagerSchema);

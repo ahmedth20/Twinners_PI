@@ -66,7 +66,7 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-
+console.log(user)
 
   if (user && (await user.matchPassword(password))) {
     const userId = user._id;
@@ -76,7 +76,11 @@ const authUser = asyncHandler(async (req, res) => {
     });
     req.session.user = {
       id: user._id,
+<<<<<<< HEAD
       firstName: user.firstName,
+=======
+      lastName: user.lastName,
+>>>>>>> origin/KhelifaAymen
       email: user.email,
       role: user.role,
     };
@@ -105,13 +109,18 @@ const authUsergoogle = asyncHandler(async (req, res) => {
   
   if (user) {
     const userId = user._id;
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const role = user.role;
+    const token = jwt.sign({role, userId }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
     console.log(token)
     req.session.user = {
       id: user._id,
+<<<<<<< HEAD
       firstName: user.firstName,
+=======
+      lastName: user.lastName,
+>>>>>>> origin/KhelifaAymen
       email: user.email,
     };
     // Vérifier si l'utilisateur est actif
@@ -141,14 +150,19 @@ const authUserfacebook = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    const userId = user._id;
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const userId = user._id;    const role = user.role;
+
+    const token = jwt.sign({ role,userId }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
     console.log(token)
     req.session.user = {
       id: user._id,
+<<<<<<< HEAD
       firstName: user.firstName,
+=======
+      lastName: user.lastName,
+>>>>>>> origin/KhelifaAymen
       email: user.email,
     };
 
@@ -254,7 +268,11 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
+<<<<<<< HEAD
     firstName,
+=======
+    firstName:name,
+>>>>>>> origin/KhelifaAymen
     email,
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
@@ -265,14 +283,17 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
 const registerUserfacebook = asyncHandler(async (req, res) => {
   const { firstName, email } = req.body;
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     res.status(400);
     throw new Error('User already existxxs');
   }
 
   const user = await User.create({
+<<<<<<< HEAD
     firstName,
+=======
+    firstName:name,
+>>>>>>> origin/KhelifaAymen
     email,
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
@@ -299,23 +320,26 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
-    user.name = req.body.name || user.name;
+    user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
-
-    if (req.body.password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(req.body.password, salt);
+    user.firstName = req.body.firstName || user.firstName;
+    
+    if (req.file) {
+      user.picture = req.file.path; // Stocke le chemin du fichier
     }
 
     const updatedUser = await user.save();
 
     res.json({
       _id: updatedUser._id,
-      name: updatedUser.name,
+      lastName: updatedUser.lastName,
       email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      picture: updatedUser.picture, // Retourner l'image mise à jour
+
     });
   } else {
     res.status(404);

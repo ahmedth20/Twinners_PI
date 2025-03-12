@@ -99,6 +99,34 @@ const Item = ({ type, data }) => {
               {visibleInfo[data._id] && phone && (
                 <div className="phone-number">{phone}</div>
               )}
+              <ShapeButton icon="trash" label="Trash" />             
+
+
+           
+            </Block>
+          </>
+        );
+        case 'servicemanager':
+        return (
+          <>
+            <Common type={type} />
+            {data.reminder ? <Reminder reminder={data.reminder} /> : null}
+            <Block className="actions">
+              <div className="wrapper">
+              <Button className="btn-action" onClick={() => navigate("/dashboard_f", { state: { data} })}>
+                <i className="icon icon-doctor"></i>
+                <span className="text">Case history</span>
+              </Button>
+              </div>
+              <ShapeButton icon="comment-text" label="Message" shape="round" hasNotification={data.message} />
+              <ShapeButton icon="phone" label="Call" shape="round" onClick={() => togglePhoneVisibility(data._id)} />
+              {visibleInfo[data._id] && phone && (
+                <div className="phone-number">{phone}</div>
+              )}
+              <ShapeButton icon="trash" label="Trash" />              <ShapeButton icon="trash" label="Trash" />
+
+
+           
             </Block>
           </>
         );

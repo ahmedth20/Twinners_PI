@@ -34,5 +34,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
 router.post('/logout', logoutUser);
 router.route('/profile')
   .get(protect,verifymedecin,protectsession, getUserProfile)
-  .put(protect, updateUserProfile);
+  //.put(protect, updateUserProfile);
+    .put( updateUserProfile);
+    router.put('/editprofile/:id',upload.single('picture'),updateUserProfile);
 module.exports = router;

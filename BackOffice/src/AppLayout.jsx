@@ -44,6 +44,7 @@ const Settings = lazy(() => import('@pages/Settings'));
 const MedicalForm = lazy(() => import('@pages/MedicalForm'));
 const PageNotFound = lazy(() => import('@pages/PageNotFound'));
 
+const Servicemanager = lazy(() => import('@pages/srevicemanager'));
 
 
 const AppLayout = () => {
@@ -67,9 +68,7 @@ const AppLayout = () => {
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
-
       <Route path="/Paramedic" element={ <Paramedics /> } />
-
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
       <Route path="/staff" element={ <StaffList /> } />
