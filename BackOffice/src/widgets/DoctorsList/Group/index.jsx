@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import GroupSeparator from '@ui/GroupSeparator';
-import PersonList from '@components/PersonList';
+import PersonList from '@components/DoctorList';
 import { depsOptions } from '@constants/options';
 import PropTypes from "prop-types";
 

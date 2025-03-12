@@ -72,11 +72,10 @@ const UpdateDoctorPopup = ({ isOpen, onClose, doctor }) => {
         phone: parseInt(data.phone, 10),
       };
 
-      const response = await DoctorService.updateDoctor(doctor._id, updatedData);
-      console.log("Updated doctor response:", response);
-
+      await DoctorService.updateDoctor(doctor._id, updatedData);
       alert("✅ Doctor updated successfully!");
       onClose();
+      window.location.reload(); // Rafraîchir la page pour afficher les données mises à jour
     } catch (error) {
       console.error("Error updating doctor:", error);
       alert(`Error: ${error.response ? error.response.data.message : "Unknown error"}`);

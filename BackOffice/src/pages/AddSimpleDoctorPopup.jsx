@@ -9,18 +9,17 @@ import {
 } from "../styles/PopUpAddDoctor";
 import DoctorService from "services/DoctorService";
 
-// ✅ Mise à jour du schéma de validation avec les champs de `Doctor.js`
+// Validation schema
 const DoctorSchema = z.object({
-    firstName: z.string().min(2, { message: "First Name is required (min 2 caractères)" }),
-    lastName: z.string().min(2, { message: "Last Name is required (min 2 caractères)" }),
-    badgeNumber: z.coerce.number().min(100, { message: "Badge Number must be at least 100" }), // Correction ici
-    departement: z.string().min(3, { message: "Departement is required" }),
-    speciality: z.string().min(3, { message: "Speciality is required" }),
-    emailPerso: z.string().email({ message: "Invalid email format" }),
-    phone: z.coerce.number().min(10000000, { message: "Phone number must be at least 8 digits" }), // Correction ici
-    password: z.string().min(6, { message: "Password must be at least 6 characters" })
-  });
-  
+  firstName: z.string().min(2, { message: "First Name is required (min 2 caractères)" }),
+  lastName: z.string().min(2, { message: "Last Name is required (min 2 caractères)" }),
+  badgeNumber: z.coerce.number().min(100, { message: "Badge Number must be at least 100" }),
+  departement: z.string().min(3, { message: "Departement is required" }),
+  speciality: z.string().min(3, { message: "Speciality is required" }),
+  emailPerso: z.string().email({ message: "Invalid email format" }),
+  phone: z.coerce.number().min(10000000, { message: "Phone number must be at least 8 digits" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" })
+});
 
 const steps = [
   { number: 1, label: "Doctor Information" },
@@ -29,7 +28,7 @@ const steps = [
 
 const AddSimpleDoctorPopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -44,29 +43,32 @@ const AddSimpleDoctorPopup = ({ isOpen, onClose }) => {
 
   const onSubmit = async (data) => {
     try {
-        // Assurez-vous que badgeNumber et phone sont des nombres
-        const formattedData = {
-            ...data,
-            email: data.emailPerso,
-            badgeNumber: parseInt(data.badgeNumber, 10), // Utilisation de parseInt pour s'assurer que c'est un nombre
-            phone: parseInt(data.phone, 10), // Utilisation de parseInt pour s'assurer que c'est un nombre
-        };
+      setLoading(true);
+      const formattedData = {
+        ...data,
+        email: data.emailPerso,
+        badgeNumber: parseInt(data.badgeNumber, 10),
+        phone: parseInt(data.phone, 10),
+      };
 
-        if (isNaN(formattedData.badgeNumber) || isNaN(formattedData.phone)) {
-            // Validation rapide pour vérifier que les numéros sont valides
-            alert('Please provide valid numbers for badge number and phone.');
-            return;
-        }
+      if (isNaN(formattedData.badgeNumber) || isNaN(formattedData.phone)) {
+        alert('Please provide valid numbers for badge number and phone.');
+        return;
+      }
 
-        // Envoi des données à l'API
-        await DoctorService.createDoctor(formattedData);
-        alert("✅ Doctor added successfully!");
-        onClose();  // Fermer le modal
+      // Envoi des données à l'API
+      await DoctorService.createDoctor(formattedData);
+      alert("✅ Doctor added successfully!");
+      
+      onClose(); // Fermer le modal
+      window.location.reload(); // Rafraîchir la page pour afficher les nouvelles données
     } catch (error) {
-        console.error("Error creating doctor:", error);
-        alert(`Error: ${error.response ? error.response.data.message : "Unknown error"}`);
+      console.error("Error creating doctor:", error);
+      alert(`Error: ${error.response ? error.response.data.message : "Unknown error"}`);
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   if (!isOpen) return null;
 

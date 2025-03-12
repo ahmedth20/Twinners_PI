@@ -1,6 +1,6 @@
 // components
 import GroupSeparator from '@ui/GroupSeparator';
-import PersonList from '@components/PersonList';
+import PersonList from '@components/DoctorList';
 
 // utils
 import PropTypes from "prop-types";

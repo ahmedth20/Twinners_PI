@@ -34,7 +34,39 @@ export const Block = styled.div`
     }
   }
 `;
+export const DropdownMenu = styled.div`
+  position: relative;
 
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    min-width: 150px;
+
+    button {
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+
+      &:hover {
+        background: #f0f0f0;
+      }
+
+      &.delete {
+        color: red;
+      }
+    }
+  }
+`;
 export const Wrapper = styled.div`
   ${flex.col}
   border-radius: 8px;

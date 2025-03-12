@@ -10,9 +10,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadePresence } from '@constants/framer';
 import PropTypes from 'prop-types';
 import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
-import DoctorService from 'services/DoctorService'; // Import your service for API requests
+import DoctorService from 'services/DoctorService';
 
-const Item = ({ type, data, onDelete }) => { // Add onDelete as a prop
+const Item = ({ type, data, onDelete }) => {
   const [visibleInfo, setVisibleInfo] = useState({});
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,9 +30,10 @@ const Item = ({ type, data, onDelete }) => { // Add onDelete as a prop
 
   const handleDelete = async () => {
     try {
-      await DoctorService.deleteDoctor(data._id); // Use the ID from the data
-      onDelete(data._id); // Call the onDelete prop to update the parent state
+      await DoctorService.deleteDoctor(data._id);
+      onDelete(data._id); // Appel de la prop onDelete pour mettre à jour l'état parent
       console.log("Doctor deleted:", data._id);
+      window.location.reload(); // Recharger la page après la suppression
     } catch (error) {
       console.error("Error deleting doctor:", error);
       alert(error.response ? error.response.data.message : "Erreur lors de la suppression du médecin.");

@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import {flex} from '@styles/vars';
 
 // components
-import Item from '@components/PersonList/Item';
+import Item from '@components/DoctorList/Item';
 
 // utils
 import PropTypes from 'prop-types';
