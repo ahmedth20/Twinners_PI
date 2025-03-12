@@ -9,8 +9,12 @@ const connectDB = require("./src/configs/db.config.js");
 const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
+
+const staffRoutes = require("./src/routes/staff.js");
+
 const doctorRoutes = require("./src/routes/doctor.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
+
 
 
 dotenv.config();
@@ -56,8 +60,11 @@ app.use(cookieParser());
 // 🔹 4. Routes
 app.use("/users", userRoutes);
 app.use("/patient", patientRoutes);
+
+app.use("/staff", staffRoutes);
 app.use("/doctors", doctorRoutes);
 app.use('/paramedics', paramedicRoutes);
+
 
 // 🔹 5. Démarrer le serveur
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
