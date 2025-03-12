@@ -11,7 +11,6 @@ const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
   lastName: z.string().min(1, "Last Name is required"),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
   phone: z.string().min(1, "Phone is required"),
   address: z.string().min(1, "Address is required"),
   age: z.number().int().min(1, "Age is required"),
@@ -91,6 +90,7 @@ const MedicalForm = () => {
   const [lifestyleRecommendations, setLifestyleRecommendations] = useState([""]);
   const [allergies, setAllergies] = useState([""]);
   const [operations, setOperations] = useState([{ type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+  const [doctors, setDoctors] = useState([]);
 
   // Fonction d'ajout des champs dynamiques
   const addField = (setState) => setState(prev => [...prev, ""]);
@@ -105,12 +105,26 @@ const MedicalForm = () => {
     setOperations(operations.filter((_, i) => i !== index));
   };
 
+useEffect(() => {
+      const fetchDoctors = async () => {
+          try {
+              const data = await PatientService.getAllDoctors();
+              setDoctors(data);
+
+              console.log("doctorsssssssssss");
+              console.log(data);
+          } catch (error) {
+              console.error("Failed to fetch doctors", error);
+          }
+      };
+      fetchDoctors();
+  }, []);
   const onSubmit = async (data) => {
     try {
       // Créer une nouvelle consultation avec les valeurs du formulaire
       const newConsultation = {
-        doctor: "507f1f77bcf86cd799439011",  // L'ID du médecin
-        duration: Number(watch("duration")),  // Convertir la durée en nombre
+        doctor: watch("doctor"),  // L'ID du médecin
+       duration: Number(watch("duration")),  // Convertir la durée en nombre
         date: watch("date"),  // Date de la consultation
         status: watch("status"),  // Statut de la consultation
         notes: watch("notes") || "",  // Notes facultatives
@@ -173,10 +187,7 @@ const MedicalForm = () => {
               <Input {...register("email")} placeholder="Email" type="email" />
               {errors.email && <p>{errors.email.message}</p>}  {/* Message d'erreur */}
             </Column>
-            <Column>
-              <Input {...register("password")} placeholder="Password" type="password" />
-              {errors.password && <p>{errors.password.message}</p>}  {/* Message d'erreur */}
-            </Column>
+          
           </Row>
         </FormSection>
 
@@ -240,14 +251,16 @@ const MedicalForm = () => {
 
         <FormSection title="Consultation">
           <Row>
-           {/* <Select {...register("doctor")}>
-              <option value="">Select Doctor</option>
-              <option value="67c7a4d4d03b28fb26008a79">John</option>
+          <Select {...register("doctor", { required: "Veuillez sélectionner un docteur" })}>
+                <option value="">Sélectionner un docteur</option>
+                {doctors.map((doctor) => (
+                    <option key={doctor._id} value={doctor._id}>
+                        {doctor.user.firstName} {doctor.user.lastName}
+                    </option>
+                ))}
             </Select>
-            */ }
-            <Input {...register("doctor")} placeholder="Doctor" type="number" />
-
-            {errors.doctor && <p>{errors.doctor.message}</p>}  
+            
+            {errors.doctor && <p>{errors.doctor.message}</p>}
           </Row>
           <Row>
             <Column>

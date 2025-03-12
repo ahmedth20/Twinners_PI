@@ -6,6 +6,7 @@ import { depsOptions } from '@constants/options';
 import PropTypes from "prop-types";
 
 
+
 const Group = ({char, arr, type, gender}) => {
     const data = arr.filter(item =>item.user?.lastName[0].toLowerCase() === char);
 
@@ -17,6 +18,7 @@ const Group = ({char, arr, type, gender}) => {
                         <GroupSeparator text={char} />
                         <PersonList arr={data} type={type} gender={gender} />
                     </div> : null
+
             }
         </>
     )
