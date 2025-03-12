@@ -4,7 +4,7 @@ import {flex} from '@styles/vars';
 import { nanoid } from 'nanoid';
 
 // components
-import Item from '@components/PersonList/Item';
+import Item from '@components/PatientList/Item';
 
 // utils
 import PropTypes from 'prop-types';
@@ -15,7 +15,7 @@ const List = styled.ul`
   margin: 20px;
 `
 
-const PersonList = ({ arr, type, gender, deps }) => {
+const PatientList = ({ arr, type, gender, deps }) => {
   const { search, category } = deps ? deps : { search: '', category: '' };
   return (
       <List>
@@ -33,9 +33,9 @@ const PersonList = ({ arr, type, gender, deps }) => {
 };
 
 
-PersonList.propTypes = {
+PatientList.propTypes = {
     type: PropTypes.oneOf(['doctor', 'patient', 'staff']).isRequired,
     arr: PropTypes.array.isRequired
 }
 
-export default PersonList;
+export default PatientList;

@@ -1,6 +1,6 @@
 // components
 import GroupSeparator from '@ui/GroupSeparator';
-import PersonList from '@components/PersonList';
+import PatientList from '@components/PatientList';
 
 // helpers
 import {depsOptions} from '@constants/options';
@@ -19,7 +19,7 @@ export default function Group({arr, variant, ...props}) {
                     return (
                         <div key={dep}>
                             <GroupSeparator text={label}/>
-                            <PersonList arr={arrByDep(dep)} type={variant} gender={props.gender} deps={props.deps} />
+                            <PatientList arr={arrByDep(dep)} type={variant} gender={props.gender} deps={props.deps} />
                         </div>
                     )
                 })
