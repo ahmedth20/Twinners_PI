@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from '/images/favicon-96x96.png';
 import Logo2 from '/images/logo2.png';
-
 import './navbar.css';
 import { useEffect, useRef, useState } from 'react';
 import {

@@ -32,14 +32,7 @@ export const menu = [
             
         ]
     },
-    {
-        cat: 'patients',
-        icon: 'users',
-        links: [
-            { name: "Liste Of service managers", link: '/servicemanager' },
-        
-        ]
-    },
+    
     {
         cat: 'patients',
         icon: 'users',
@@ -52,10 +45,10 @@ export const menu = [
         cat: 'Medical Team',
         icon: 'stethoscope',
         links: [
-            { name: "Service Managers", link: '/service_manager' },
             { name: "Doctors", link: '/doctors' },
             { name: "Staff", link: '/staff' },
-            { name: "Paramedic", link: '/Paramedic' }
+            { name: "Paramedic", link: '/Paramedic' },
+            { name: "Service managers", link: '/servicemanager' },
         ]
     },
     {
