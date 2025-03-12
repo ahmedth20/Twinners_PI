@@ -78,7 +78,7 @@ const Item = ({ type, data, onEdit, onDelete }) => {
           <>
             <Common />
             <ShapeButton icon="edit" shape="round" label="Edit" onClick={handleEdit} /> {/* Bouton Edit */}
-            <ShapeButton icon="delete" shape="round" label="Delete" onClick={handleDelete} />
+            <ShapeButton icon="trash" shape="round" label="Delete" onClick={handleDelete} />
           </>
         );
       case 'patient':
