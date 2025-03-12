@@ -355,7 +355,6 @@ const patientController = {
         console.error("❌ Erreur lors de la mise à jour :", error);
         res.status(500).json({ message: "Erreur lors de la mise à jour du patient", error: error.message });
     }
-<<<<<<< HEAD
 }
 ,
 async updatePatient(req, res) {
@@ -428,9 +427,7 @@ async updatePatient(req, res) {
     }
 }
 ,
-=======
-},
->>>>>>> origin/KhelifaAymen
+
 
   // 📌 Supprimer un patient
   async deletePatient(req, res) {

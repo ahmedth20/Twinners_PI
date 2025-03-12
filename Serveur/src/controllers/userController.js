@@ -116,11 +116,8 @@ const authUsergoogle = asyncHandler(async (req, res) => {
     console.log(token)
     req.session.user = {
       id: user._id,
-<<<<<<< HEAD
       firstName: user.firstName,
-=======
       lastName: user.lastName,
->>>>>>> origin/KhelifaAymen
       email: user.email,
     };
     // Vérifier si l'utilisateur est actif
@@ -158,11 +155,8 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     console.log(token)
     req.session.user = {
       id: user._id,
-<<<<<<< HEAD
       firstName: user.firstName,
-=======
       lastName: user.lastName,
->>>>>>> origin/KhelifaAymen
       email: user.email,
     };
 
@@ -268,11 +262,8 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-<<<<<<< HEAD
     firstName,
-=======
     firstName:name,
->>>>>>> origin/KhelifaAymen
     email,
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
@@ -289,11 +280,8 @@ const registerUserfacebook = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-<<<<<<< HEAD
     firstName,
-=======
     firstName:name,
->>>>>>> origin/KhelifaAymen
     email,
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });

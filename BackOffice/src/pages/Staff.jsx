@@ -45,7 +45,7 @@ const Staff = () => {
       // Réinitialiser le formulaire et fermer la modale
       setFormData({ firstName: "", lastName: "", email: "", password: "", badgeNumber: "", service: "" });
       setIsOpen(false);
-      
+      window.location.reload();
     } catch (error) {
       console.error("❌ Erreur lors de l'ajout du staff :", error.response?.data || error);
     }

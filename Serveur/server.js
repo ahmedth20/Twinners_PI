@@ -61,15 +61,12 @@ app.use(cookieParser());
 // 🔹 4. Routes
 app.use("/users", userRoutes);
 app.use("/patient", patientRoutes);
-<<<<<<< HEAD
 
 app.use("/staff", staffRoutes);
 app.use("/doctors", doctorRoutes);
 app.use('/paramedics', paramedicRoutes);
 
-=======
 app.use("/servicemanager", sermanagerRoutes);
->>>>>>> origin/KhelifaAymen
 
 // 🔹 5. Démarrer le serveur
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));

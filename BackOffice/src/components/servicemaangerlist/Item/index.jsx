@@ -88,6 +88,7 @@ const styles = {
 };
 
 const ParamedicList = () => {
+  console.log("sss")
   const [paramedics, setParamedics] = useState([]);
   const [selectedParamedic, setSelectedParamedic] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,6 +116,7 @@ const ParamedicList = () => {
     try {
       await PatientService.deleteServiceManager(id);
       setParamedics((prev) => prev.filter((p) => p._id !== id));
+      window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la suppression', error);
     }

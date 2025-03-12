@@ -71,6 +71,7 @@ const AppLayout = () => {
       <Route path="/Paramedic" element={ <Paramedics /> } />
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
+      <Route path="/servicemanager" element={ <Servicemanager /> } />
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />

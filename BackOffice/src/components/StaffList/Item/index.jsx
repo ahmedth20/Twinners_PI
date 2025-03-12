@@ -29,6 +29,7 @@ const Item = ({ type, data, onEdit, onDelete }) => {
     try {
       await StaffService.deleteStaff(data._id);
       alert("Staff deleted successfully!");
+      window.location.reload();
     } catch (error) {
       alert("Failed to delete staff.");
     }
@@ -39,6 +40,10 @@ const Item = ({ type, data, onEdit, onDelete }) => {
   };
 
   const { user, online, avatar, phone, role } = data;
+  const [isActive, setIsActive] = useState(false);
+  const toggleActivation = () => {
+    setIsActive(!isActive);
+  };
 
   const Common = () => (
     <Block>

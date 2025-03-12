@@ -69,6 +69,7 @@ const EditStaffForm = ({ staffData, closeForm }) => {
         console.log("Personnel mis à jour", updatedStaff);
         alert("Mise à jour réussie !");
         closeForm();
+        window.location.reload();
     } catch (error) {
         // Gestion des erreurs avec des détails
         console.error("Erreur lors de la mise à jour :", error.response?.data || error.message);
