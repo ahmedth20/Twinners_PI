@@ -30,6 +30,33 @@ const patientController = {
     }
   },
 
+  async getPatientInfoById(req, res) {
+        try {
+          const patient = await Patient.findById(req.params.id)
+            .populate("user", "firstName lastName email ") // Récupérer les infos du user sans l'ID seulement
+            .populate({
+              path: "medicalRecord",
+              populate: [
+                { path: "operations" },
+                { path: "patientFiles" },
+                { path: "prescriptions" }
+              ]
+            })
+            .populate({
+              path: "consultations",
+              populate: { path: "doctor", select: "name specialty email phone" } // Charger les infos du médecin
+            });
+      
+          if (!patient) return res.status(404).json({ message: "Patient non trouvé" });
+      
+          res.json(patient);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Erreur lors de la récupération du patient", error: error.message });
+        }
+      }
+  
+,
   async createSimplePatient(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction();

@@ -23,6 +23,7 @@ import axios from "axios";
 // Modal for confirmation
 import ConfirmActionModal from '@ui/ConfirmActionModal'
 import UpdateSimplePatientPopup from '@pages/UpdateSimplePatientPopup';
+import DetailsPopUp from '@pages/DetailsPopUp';
 
 const StyledClipboardIcon = styled(CiMedicalClipboard)`
   color: rgb(129, 135, 139);
@@ -39,7 +40,7 @@ const StyledText = styled.span`
     color: white;
   }
 `;
-const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen,onUpdate, onToggleStatus, isActive }) => {
+const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen,onDetails,onUpdate, onToggleStatus, isActive }) => {
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ const DropdownMenu = ({ isOpen, toggleMenu, onDelete,onOpen,onUpdate, onToggleSt
   const menuItems = [
     { id: "edit", icon: <FaEdit />, label: "Edit",onClick: onUpdate  },
     { id: "open", icon: <FiExternalLink />, label: "Open",onClick: onOpen },
-    { id: "view", icon: <FaEye />, label: "View Details" },
+    { id: "view", icon: <FaEye />, label: "View Details",onClick:onDetails },
     { id: "toggle", icon: isActive ? <FaUserSlash /> : <FaUserPlus />, label: isActive ? "Deactivate" : "Activate", onClick: () => onToggleStatus(isActive) },
     { id: "delete", icon: <FaTrash />, label: "Delete", onClick: onDelete },
   ];
@@ -83,6 +84,7 @@ const Item = ({ type, data }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false); // Modal de confirmation pour activer/désactiver
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // Modal de confirmation pour activer/désactiver
   const [isActive, setIsActive] = useState(data.user.isActive); // Ajouter l'état isActive
 
  
@@ -100,9 +102,12 @@ const Item = ({ type, data }) => {
   };
 
   const { user, online, avatar, phone } = data;
-
+ 
   const handleDelete = async () => {
     setIsDeleteModalOpen(true);
+  };
+  const handleDetails = async () => {
+    setIsDetailsModalOpen(true);
   };
   const handleOpen = async () => {
     navigate("/dashboard_f", { state: { data } })
@@ -119,6 +124,9 @@ const Item = ({ type, data }) => {
     setIsDeleteModalOpen(false);
   };
 
+  const handleCancelDetails = () => {
+    setIsDetailsModalOpen(false);
+  };
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
   };
@@ -147,7 +155,6 @@ const Item = ({ type, data }) => {
     setIsStatusModalOpen(false);
 
   };
-  
 
 
   const handleCancelToggleStatus = () => {
@@ -186,8 +193,6 @@ const Item = ({ type, data }) => {
               </Button>
               <ShapeButton icon="comment-text" label="Message" shape="round" hasNotification={data.message} />
               <ShapeButton icon="phone" label="Call" shape="round" onClick={() => togglePhoneVisibility(data._id)} />
-              <ShapeButton icon="trash" label="Trash" shape="round" onClick={() => handleConfirmToggleStatus()} />
-            
             
               {visibleInfo[data._id] && phone && (
                 <div className="phone-number">{phone}</div>
@@ -200,6 +205,7 @@ const Item = ({ type, data }) => {
                   onDelete={handleDelete} 
                   onUpdate={handleUpdate} 
                   onOpen={handleOpen} 
+                  onDetails={handleDetails}
                   onToggleStatus={handleToggleStatus} 
                   isActive={isActive} 
                 />
@@ -219,7 +225,7 @@ const Item = ({ type, data }) => {
     </Wrapper>
   
 
-      {/* Confirm Delete Modal */}
+     
       {isDeleteModalOpen && (
         <ConfirmActionModal
           icon={<FaTrash />}
@@ -231,8 +237,6 @@ const Item = ({ type, data }) => {
           iconColor=" #e53e3e"
         />
       )}
-
-      {/* Confirm Status Modal */}
 
       {isStatusModalOpen && (
         <ConfirmActionModal
@@ -246,13 +250,18 @@ const Item = ({ type, data }) => {
         />
       )}
 
-   
-{isUpdateModalOpen && <UpdateSimplePatientPopup isOpen={isUpdateModalOpen} onClose={handleCancelUpdate} data={data} />}
-  
-     
-   
-
-
+      {isUpdateModalOpen &&
+       <UpdateSimplePatientPopup 
+       isOpen={isUpdateModalOpen} 
+       onClose={handleCancelUpdate} 
+       data={data} />}
+      
+      {isDetailsModalOpen &&
+       <DetailsPopUp 
+       isOpen={isDetailsModalOpen} 
+       onClose={handleCancelDetails} 
+       data={data} />}
+    
     </AnimatePresence>
   );
 };

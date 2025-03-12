@@ -22,7 +22,15 @@ const PatientService = {
       throw error;
     }
   },
-
+  getPatientInfoById: async (id) => {
+    try {
+      const response = await axios.get(`${API_URL}/details/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération du patient:", error);
+      throw error;
+    }
+  },
   createPatient: async (patientData) => {
     try {
       const response = await axios.post(API_URL, patientData);
