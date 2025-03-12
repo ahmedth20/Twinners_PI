@@ -31,6 +31,7 @@ const DashboardK = lazy(() => import('@pages/DashboardK'));
 const DoctorAppointments = lazy(() => import('@pages/DoctorAppointments'));
 const PatientAppointments = lazy(() => import('@pages/PatientAppointments'));
 const Patients = lazy(() => import('@pages/Patients'));
+const Paramedics = lazy(() => import('@pages/paramedics'));
 const Tests = lazy(() => import('@pages/Tests'));
 const Doctors = lazy(() => import('@pages/Doctors'));
 const StaffList = lazy(() => import('@pages/Staff'));
@@ -66,6 +67,9 @@ const AppLayout = () => {
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
+
+      <Route path="/Paramedic" element={ <Paramedics /> } />
+
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
       <Route path="/staff" element={ <StaffList /> } />

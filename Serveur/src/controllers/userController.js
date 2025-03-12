@@ -302,7 +302,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    user.firstName = req.body.firstName || user.firstName;
+    user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
 
     if (req.body.password) {
@@ -314,7 +314,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     res.json({
       _id: updatedUser._id,
-      firstName: updatedUser.firstName,
+      name: updatedUser.name,
       email: updatedUser.email,
     });
   } else {
