@@ -76,11 +76,7 @@ console.log(user)
     });
     req.session.user = {
       id: user._id,
-<<<<<<< HEAD
       firstName: user.firstName,
-=======
-      lastName: user.lastName,
->>>>>>> origin/KhelifaAymen
       email: user.email,
       role: user.role,
     };

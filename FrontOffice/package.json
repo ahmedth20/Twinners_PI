@@ -8,13 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-<<<<<<< HEAD
-    "test": "vitest",  
-    "test:coverage": "vitest --coverage"  
-=======
     "test": "vitest",
     "test:coverage": "vitest --coverage"
->>>>>>> origin/KhelifaAymen
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -23,14 +18,9 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.5.1",
     "aos": "^2.3.4",
-<<<<<<< HEAD
-=======
-    "axios": "^1.8.2",
-    "fslightbox-react": "^1.7.6",
-    "gsap": "^3.12.5",
-    "lenis": "^1.1.16",
-    "mediic": "file:",
->>>>>>> origin/KhelifaAymen
+    "axios": "^1.8.3",
+    "gsap": "^3.12.7",
+    "lenis": "^1.2.3",
     "react": "^18.2.0",
     "react-animated-progress-bar": "^1.1.2",
     "react-bootstrap": "^2.10.9",
