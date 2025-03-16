@@ -8,6 +8,7 @@ import {depsOptions} from '@constants/options';
 export default function Group({arr, variant, ...props}) {
     // get unique departments list
     const deps = [...new Set(arr.flatMap(item => item.department.map(item => item.id)))];
+    console.log(deps)
     // filter by department
     const arrByDep = dep => arr.filter(item => item.department.some(item => item.id === dep));
 

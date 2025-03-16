@@ -43,9 +43,10 @@ function Yosr() {
             const decoded = decodeJWT(credential); 
             const userGoogleData = {
                 email: decoded.email,
-                name: decoded.name,
+                firstName: decoded.name,
                 googleId: decoded.sub,
                 avatar: decoded.picture,
+                role:"patient"
             };
     
             console.log("Google User Data:", userGoogleData);
@@ -60,9 +61,7 @@ function Yosr() {
             });
             console.log("Google User Data:", response);
     
-           
-    
-           
+            
         } catch (error) {
             console.error("Erreur d'enregistrement Google :", error);
             alert("Échec de l'enregistrement avec Google. Veuillez réessayer.");
@@ -75,8 +74,8 @@ function Yosr() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
-            facebookId: response.id,
+            firstName: response.name,
+            facebookId: response.id, role:"patient"
          //   accessToken: response.accessToken,
           };
       
@@ -118,7 +117,7 @@ function Yosr() {
                 body: JSON.stringify({name:name,phoneNumber:phoneNumber,
                     email: email,
                     password: password,
-                    role: "medecin"
+                   
                 })
             });
             const data = await response.json(); // ✅ Vérifier la réponse JSON
@@ -144,16 +143,14 @@ function Yosr() {
           body: JSON.stringify({
               email: email,
               password: password,
-              role: "medecin"
+              
           })
       });              const data = await response.json();
       console.log(data)
 
       dispatch(login({ user: data }));
-      if(data.user1.role=="patient"){    setTimeout(()=>{navigate("/home");},200)
-      }
-      if(data.user1.role!="medecin"){    setTimeout(()=>{navigate("/patient");},500)
-      }  console.log(data)
+       setTimeout(()=>{navigate("/dashboard_a");},500)
+    
   setTimeout(() => {
     fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {
@@ -177,7 +174,7 @@ function Yosr() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
+            firstName: response.name,
             facebookId: response.id,
          //   accessToken: response.accessToken,
           };
@@ -220,7 +217,7 @@ function Yosr() {
                 console.log(credential)
                 const userGoogleData = {
                     email: decoded.email,
-                    name: decoded.name,
+                    firstName: decoded.name,
                 };
         
                 console.log("Google User Data:", userGoogleData); // Vérifier dans la console
@@ -332,7 +329,7 @@ function Yosr() {
   </button>
  
 
-      <GoogleLogin text="signin_with" 
+     {/* <GoogleLogin text="signin_with" 
         onSuccess={handleGoogleLogin}
         onError={() => alert("Échec de connexion avec Google.")}
         />
@@ -369,14 +366,14 @@ borderRadius: '4px',
             </button>
           )}
           onProfileSuccess={handleFacebookLoginA}
-        />
+        />*/}
     </form>
   </div>
 
             )}
 
             {/* Formulaire d'Inscription */}
-            {isSignUp && (
+           {/*  {isSignUp && (
            <div className="form-container sign-up-container">
                 <form >
                 
@@ -462,7 +459,7 @@ borderRadius: '4px',
                      />
                 </form>
               </div>
-            )}
+            )}*/}
           </div>
 
           {/* Section Droite avec Image et Animation */}

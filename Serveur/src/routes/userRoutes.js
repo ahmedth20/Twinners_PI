@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  authUser, updateUserProfile, getUserProfile, forgetpass,
+  authUser, updateUserProfile, getUserProfile, forgetpass,getUserProfile1,
   authUserfacebook, registerUserfacebook,registerUser,
   logoutUser, authUsergoogle, registerUsergoogle, resetpass, getAllUsers, uploadProfileImage
 } = require("../controllers/userController.js");
@@ -37,4 +37,6 @@ router.route('/profile')
   //.put(protect, updateUserProfile);
     .put( updateUserProfile);
     router.put('/editprofile/:id',upload.single('picture'),updateUserProfile);
+    router.get('/getprofile/:id',getUserProfile1);
+
 module.exports = router;

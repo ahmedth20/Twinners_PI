@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       
+    }, picture: {
+      type: String,
     },
   },
   {

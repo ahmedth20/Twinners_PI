@@ -138,18 +138,16 @@ function Yosr() {
       body: JSON.stringify({
         email: email,
         password: password,
-        role: "patient"
+       
       })
     }); const data = await response.json();
     console.log(data)
-
+    console.log(data.user1.role)
     dispatch(login({ user: data }));
     if (data.user1.role == "patient") {
       setTimeout(() => { navigate("/home"); }, 200)
     }
-    if (data.user1.role != "medecin") {
-      setTimeout(() => { navigate("/patient"); }, 500)
-    } console.log(data)
+    else{}
     setTimeout(() => {
       fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {

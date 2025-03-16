@@ -26,7 +26,7 @@ function SignInForm() {
       body: JSON.stringify({
         email: email,
         password: password,
-        role: "medecin"
+        
       })
     }); const data = await response.json();
     console.log(data)

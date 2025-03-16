@@ -39,7 +39,7 @@ function Connexion() {
         body: JSON.stringify({
             email: email,
             password: password,
-            role: "medecin"
+          
         })
     });              const data = await response.json();
     

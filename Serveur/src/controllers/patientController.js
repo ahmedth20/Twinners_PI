@@ -53,7 +53,7 @@ const patientController = {
           const hashedPassword = bcrypt.hashSync(generatedPassword, 10); // Utilisation de hashSync
   
           // Création et enregistrement de l'utilisateur
-          const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+          const newUser = new User({ firstName, lastName, email, password: generatedPassword ,role:"patient"});
           const savedUser = await newUser.save({ session });
   
           console.log("✅ Utilisateur enregistré :", savedUser._id);

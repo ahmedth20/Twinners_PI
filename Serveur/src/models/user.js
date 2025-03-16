@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   email: { type: String, unique: true, required: true },
   password: String,
+  picture:String,
 }, { timestamps: false, versionKey: false });
 
 // ✅ Évite la recréation du modèle s'il est déjà défini

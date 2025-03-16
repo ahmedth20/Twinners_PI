@@ -10,7 +10,7 @@ const cloudinary = require('../cloudinary.js');
 const mongoose = require('mongoose');
 
 
-const authUser = asyncHandler(async (req, res) => {
+const authUserfrontoff = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -46,7 +46,42 @@ console.log(user)
     throw new Error('Invalid email or password');
   }
 });
+const authUserbackoff = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
+  const user = await User.findOne({ email });
+console.log(user)
+
+  if (user && (await user.matchPassword(password))) {
+    const userId = user._id;
+    const role = user.role;
+    const token = jwt.sign({ userId, role }, process.env.JWT_SECRET, {
+      expiresIn: '30d',
+    });
+    req.session.user = {
+      id: user._id,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    };
+
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+      sameSite: 'strict', // Prevent CSRF attacks
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
+    res.json({
+      token: token,
+      message: "Connexion réussie",
+      user1: req.session.user,
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid email or password');
+  }
+});
 const authUsergoogle = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -202,6 +237,7 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
   const user = await User.create({
     firstName:name,
     email,
+    role:"patient"
 
   });
 
@@ -244,7 +280,19 @@ const logoutUser = async (req, res) => {
     }
   }
 };
-
+const getUserProfile1 = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    res.json({
+      _id: user._id,
+      lastName: user.lastName,      firstName: user.firstName,
+      picture:user.picture,role:user.role,
+      email: user.email,
+    });
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+});
 
 
 const getUserProfile = asyncHandler(async (req, res) => {
@@ -271,7 +319,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.firstName = req.body.firstName || user.firstName;
     
     if (req.file) {
-      user.picture = req.file.path; // Stocke le chemin du fichier
+      user.picture = req.file.path || user.picture; // Stocke le chemin du fichier
     }
 
     const updatedUser = await user.save();
@@ -397,7 +445,7 @@ const uploadProfileImage = async (req, res) => {
 
 
 module.exports= {
-    authUser, updateUserProfile, getUserProfile, forgetpass,registerUser,
-    authUserfacebook, registerUserfacebook,
+  authUserfrontoff, updateUserProfile, getUserProfile, forgetpass,registerUser,getUserProfile1,
+    authUserfacebook, registerUserfacebook,authUserbackoff,
     logoutUser, authUsergoogle, registerUsergoogle, resetpass, getAllUsers, uploadProfileImage
   };
