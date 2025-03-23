@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Heart from '/images/banner-heart.png';
+import Toast from 'react-bootstrap/Toast';
+import { Snackbar, Alert } from "@mui/material";
 
 const Appoinment = () => {
     const user = useSelector(state => state.auth.user.user1.id);
@@ -12,10 +14,13 @@ const Appoinment = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
-
+    const [err, setErr] = useState("");
+    const [success, setSuccess] = useState("");
     useEffect(() => {
         const fetchUser = async () => {
+         
             setLoading(true);
             try {
                 const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
@@ -35,15 +40,16 @@ const Appoinment = () => {
         };
         fetchUser();
     }, [user]);
+  const [shows, setShows] = useState(false);
 
     const handleFileChange = (e) => {
         setPicture(e.target.files[0]);
     };
-
+    console.log("aa",user1)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+console.log("zz")
         const formData = new FormData();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
@@ -52,6 +58,8 @@ const Appoinment = () => {
         if (picture) {
             formData.append("picture", picture);
         }
+        console.log(picture)
+        console.log("picture",picture)
 
         try {
             await axios.put(
@@ -59,8 +67,11 @@ const Appoinment = () => {
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-            window.location.reload().
-            alert("Profil mis à jour avec succès !");
+         //   window.location.reload().
+         console.log(formData)
+
+         setTimeout(() => {         setSuccess("profile updated");
+         }, 500)
         } catch (error) {
             console.error("Erreur lors de la mise à jour :", error);
         }
@@ -68,6 +79,18 @@ const Appoinment = () => {
 
     return (
         <section className='px-5 2xl:px-20 bg-BodyBg-0 pt-[40px] relative z-10 overflow-hidden'>
+        <Toast
+  onClose={() => setShows(false)}
+  show={shows}
+  delay={500}
+  autohide
+  className="position-absolute top-0 start-50 translate-middle-x bg-success text-white"
+>
+  <Toast.Header>
+    <strong className="me-auto">Bootstrap</strong>
+  </Toast.Header>
+  <Toast.Body>Woohoo,re reading this text in a Toast!</Toast.Body>
+</Toast>
            <div
         className='text-center mb-12'
         data-aos='fade-up'
@@ -115,6 +138,40 @@ const Appoinment = () => {
 </div>                    </form>
                 </div>
             </div>
+            <Snackbar
+        autoHideDuration={2500}
+        open={err === "" ? false : true}
+        onClose={() => {
+          setErr("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="error"
+          onClose={() => {
+            setErr("");
+          }}
+        >
+          {err}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        autoHideDuration={2500}
+        open={success === "" ? false : true}
+        onClose={() => {
+          setSuccess("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="success"
+          onClose={() => {
+            setSuccess("");
+          }}
+        >
+          {success}
+        </Alert>
+      </Snackbar>
         </section>
     );
 };

@@ -2,7 +2,7 @@
 import logo from '@assets/favicon-96x96.png'
 
 // styling
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import {colors, fonts, textSizes, breakpoints} from '@styles/vars';
 import theme from 'styled-theming';
 

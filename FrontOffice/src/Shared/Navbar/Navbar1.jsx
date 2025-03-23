@@ -48,10 +48,28 @@ const Navbar = () => {
   const sidebarContentRef = useRef(null);
   const bodyOverlay2Ref = useRef(null);
   const closeBtn2Ref = useRef(null);
-  const token = useSelector(state => state.auth.user.user1.lastName);
+  const [user1, setUser1] = useState({});
+  const user = useSelector(state => state.auth.user.user.id);
 
-  console.log(token);
-  
+  useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
+            if (!response.ok) {
+                throw new Error("Erreur lors du chargement des données");
+            }
+            const data = await response.json();
+            setUser1(data);
+          
+        } catch (error) {
+            console.error("Erreur lors du chargement des données", error);
+        } finally {
+          console.log("oks");
+
+        }
+    };
+    fetchUser();
+}, [user]);
   useEffect(() => {
     const menuSideBar = menuSideBarRef.current;
     const sidebarContent = sidebarContentRef.current;
@@ -88,27 +106,10 @@ const Navbar = () => {
   const offcanvasRef = useRef(null);
   const bodyOverlayRef = useRef(null);
   const closeBtnRef = useRef(null);
-  const user = useSelector(state => state.auth.user.user1.id);
-  const [user1, setUser1] = useState({});
+  //const user = useSelector(state => state.auth.user.user1.id);
+  //const [user1, setUser1] = useState({});
 
-  useEffect(() => {
-    const fetchUser = async () => {
-        try {
-            const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
-            if (!response.ok) {
-                throw new Error("Erreur lors du chargement des données");
-            }
-            const data = await response.json();
-            setUser1(data);
-          
-        } catch (error) {
-            console.error("Erreur lors du chargement des données", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    fetchUser();
-}, [user]);
+ 
   useEffect(() => {
     const menuBar = menuBarRef.current;
     const offcanvas = offcanvasRef.current;
@@ -463,7 +464,7 @@ const Navbar = () => {
 </div><div className='hidden 2xl:block ml-2'>
                   <div
                    style={{
-      backgroundImage: `url(${user1.picture})`,
+      backgroundImage: `url(${user1?.picture})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     }}

@@ -1,16 +1,14 @@
 import React, { useState } from "react";
+import { Snackbar, Alert } from "@mui/material";
 
 
-function SignInForm() {
+function ForgotPassword() {
  
 const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
-
-
-
-        
-  
-        const isFormValid = () => email && !emailError ;
+ const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
+  const isFormValid = () => email && !emailError ;
 
   const handleEmailChange = (event) => {
     const { value } = event.target;
@@ -20,7 +18,7 @@ const [email, setEmail] = useState("");
 
   const forgotPassword = async (e) => {
     e.preventDefault();
-    const response =await fetch('http://localhost:5000/users/getmail', {
+    const response =await fetch('http://localhost:5000/users/getmail1', {
              method: "POST",
           headers: {
               "Content-Type": "application/json", // ✅ Correction ici
@@ -31,17 +29,18 @@ const [email, setEmail] = useState("");
               email: email,
           })
       });           console.log(response)
+      if (response.ok) {
+        setSuccess("✅ L'e-mail a été envoyé avec succès !"); 
 
+        // Rediriger vers Gmail
+        window.open("https://mail.google.com/", "_blank"); }
   }
 
   return (
     <div className="center">
     
       <form >
-      <a style={{
- 
- marginRight: '294px',
-}} href="/">return</a>
+      <a style={{ marginRight: '294px',}} href="/">return</a>
 
         <h1  >forgotpassword </h1>
        
@@ -65,8 +64,42 @@ const [email, setEmail] = useState("");
 
        
       </form>
+        <Snackbar
+                   autoHideDuration={2500}
+                   open={err === "" ? false : true}
+                   onClose={() => {
+                     setErr("");
+                   }}
+                 >
+                   <Alert
+                     variant="filled"
+                     severity="error"
+                     onClose={() => {
+                       setErr("");
+                     }}
+                   >
+                     {err}
+                   </Alert>
+                 </Snackbar>
+                 <Snackbar
+                   autoHideDuration={2500}
+                   open={success === "" ? false : true}
+                   onClose={() => {
+                     setSuccess("");
+                   }}
+                 >
+                   <Alert
+                     variant="filled"
+                     severity="success"
+                     onClose={() => {
+                       setSuccess("");
+                     }}
+                   >
+                     {success}
+                   </Alert>
+                 </Snackbar>
     </div>
   );
 }
 
-export default SignInForm;
+export default ForgotPassword;

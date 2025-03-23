@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 function SignInForm() {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // État pour le message de succès
 
   const handleEmailChange = (event) => {
     const { value } = event.target;
@@ -23,7 +21,7 @@ function SignInForm() {
           "X-Requested-With": "XMLHttpRequest",
         },
         credentials: "include",
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email:email }),
       });
   
       if (response.ok) {
@@ -42,11 +40,11 @@ function SignInForm() {
   
   
   return (
-    <main className={isSignUp ? "sign-up-mode" : ""}>
+    <main >
       <div className="box">
         <div className="inner-box">
           <div className="forms-wrap">
-            {!isSignUp && (
+          
               <div className="form-container sign-in-container">
                 <div className="logo">
                   <img src="/images/favicon-96x96.png" alt="Smart190" />
@@ -66,10 +64,9 @@ function SignInForm() {
                   <button type="submit" onClick={forgotPassword}>
                     Send Mail
                   </button>
-                  {successMessage && <p className="success-msg">{successMessage}</p>}
                 </form>
               </div>
-            )}
+           
           </div>
 
           <div className="carousel">
