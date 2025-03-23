@@ -14,9 +14,10 @@ import useWindowSize from '@hooks/useWindowSize';
 import usePageIsOverflow from '@hooks/usePageIsOverflow';
 import {useRef, useEffect} from 'react';
 import { useSelector } from "react-redux";
+import Forgotpassword from '@pages/screens/forgotpassword'
+import Resetpassword1 from '@pages/screens/restpasswordslouma'
 
 // pages
-const Login = lazy(() => import('@pages/screens/HomeScreen'));
 const DashboardA = lazy(() => import('@pages/DashboardA'));
 const DashboardB = lazy(() => import('@pages/DashboardB'));
 const DashboardC = lazy(() => import('@pages/DashboardC'));
@@ -31,6 +32,7 @@ const DashboardK = lazy(() => import('@pages/DashboardK'));
 const DoctorAppointments = lazy(() => import('@pages/DoctorAppointments'));
 const PatientAppointments = lazy(() => import('@pages/PatientAppointments'));
 const Patients = lazy(() => import('@pages/Patients'));
+const Paramedics = lazy(() => import('@pages/paramedics'));
 const Tests = lazy(() => import('@pages/Tests'));
 const Doctors = lazy(() => import('@pages/Doctors'));
 const StaffList = lazy(() => import('@pages/Staff'));
@@ -43,6 +45,7 @@ const Settings = lazy(() => import('@pages/Settings'));
 const MedicalForm = lazy(() => import('@pages/MedicalForm'));
 const PageNotFound = lazy(() => import('@pages/PageNotFound'));
 
+const Servicemanager = lazy(() => import('@pages/srevicemanager'));
 
 
 const AppLayout = () => {
@@ -66,8 +69,10 @@ const AppLayout = () => {
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
+      <Route path="/Paramedic" element={ <Paramedics /> } />
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
+      <Route path="/servicemanager" element={ <Servicemanager /> } />
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
@@ -76,6 +81,10 @@ const AppLayout = () => {
       <Route path="/finances" element={ <Finances /> } />
       <Route path="/settings" element={ <Settings /> } />
       <Route path="/medical_form" element={ <MedicalForm/> } />
+      <Route path="/forgotpassword" element={ <Forgotpassword/> } />
+      <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
+
+    
 
                     </Routes>
                

@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from '/images/favicon-96x96.png';
 import Logo2 from '/images/logo2.png';
-import homeOne from '/images/home1.png';
-import homeTwo from '/images/home2.png';
-import homeThree from '/images/home3.png';
-import homeFour from '/images/home4.png';
-import btnArrow from '/images/arrow.png';
 import './navbar.css';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -22,8 +17,6 @@ import { IoMdPaperPlane } from 'react-icons/io';
 import { IoSearch } from 'react-icons/io5';
 import { CgMenuGridO } from 'react-icons/cg';
 import { LiaTimesSolid } from 'react-icons/lia';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../slices/authSlice';
 
 const Navbar = () => {
   //sticky
@@ -185,10 +178,7 @@ const Navbar = () => {
   const bodyOverlay3Ref = useRef(null);
   const searchInputRef = useRef(null); // Reference for the search input
   const [isSubmitting, setIsSubmitting] = useState(false); // State to track form submission
-  const dispatch =useDispatch()
-  const handleSubmit1 = () => {
-    dispatch(logout());
-  };
+ 
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission

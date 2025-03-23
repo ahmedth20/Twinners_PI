@@ -1,5 +1,5 @@
 // styling
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import {flex} from '@styles/vars';
 
 // components
@@ -32,7 +32,7 @@ const PersonList = ({ arr, type, gender, deps }) => {
 
 
 PersonList.propTypes = {
-    type: PropTypes.oneOf(['doctor', 'patient', 'staff']).isRequired,
+    type: PropTypes.oneOf(['doctor', 'patient', 'staff','servicemanager']).isRequired,
     arr: PropTypes.array.isRequired
 }
 

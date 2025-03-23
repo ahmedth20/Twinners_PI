@@ -2,6 +2,7 @@ const ServiceManager = require("../models/serviceManger");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 
 const serviceManagerController = {
   // 📌 Récupérer tous les service managers
@@ -51,7 +52,7 @@ const serviceManagerController = {
       const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
   
       // Création et enregistrement de l'utilisateur
-      const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+      const newUser = new User({ firstName, lastName, email, password: generatedPassword ,role:"service manager"});
       const savedUser = await newUser.save({ session });
   
       console.log("✅ Utilisateur enregistré :", savedUser._id);
@@ -64,6 +65,39 @@ const serviceManagerController = {
       const savedServiceManager = await newServiceManager.save({ session });
       console.log("✅ Service manager enregistré :", savedServiceManager._id);
   
+      
+
+      var transport = nodemailer.createTransport({
+        /*host: 'smtp.gmail.com',
+       port: 465,
+      secure: true,*/
+        service: "Gmail",
+        auth: {
+          user: "gytgutu@gmail.com",
+          pass: "strp rifw uhso ciin",
+        },
+      });
+      var mailOptions = {
+        from: "smart 190",
+        to: req.body.email,
+        subject: " votre compte est crée",
+        html: `
+         <div>
+          <h1>Email de confirmation de creation du compte </h1>
+            <h2>Bonjour </h2>
+          <a >voisci votre email:${email}</a>  
+           <a >voisci votre mot de passe: ${generatedPassword}  </a>  
+            <a href="http://localhost:5173/loginPage">Se connecter</a>
+                            
+           </div>`,
+      };
+      transport.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Mail sent successfully:-", info.response);
+        }
+      });
       // Validation de la transaction
       await session.commitTransaction();
       session.endSession();
@@ -72,6 +106,8 @@ const serviceManagerController = {
         message: "Service manager et utilisateur enregistrés avec succès", 
         serviceManager: savedServiceManager 
       });
+
+      
   
     } catch (error) {
       await session.abortTransaction();
@@ -85,13 +121,39 @@ const serviceManagerController = {
   // 📌 Mettre à jour un service manager
   async updateServiceManager(req, res) {
     try {
-      const updatedServiceManager = await ServiceManager.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedServiceManager) return res.status(404).json({ message: "Service manager non trouvé" });
-      res.json(updatedServiceManager);
+      const { firstName, lastName, email, badgeNumber, departement } = req.body;
+  
+      // Trouver et mettre à jour le ServiceManager
+      const updatedServiceManager = await ServiceManager.findByIdAndUpdate(
+        req.params.id,
+        { badgeNumber, departement },
+        { new: true }
+      );
+  
+      if (!updatedServiceManager) {
+        return res.status(404).json({ message: "Service manager non trouvé" });
+      }
+  
+      // Mettre à jour les informations de l'utilisateur associé
+      if (updatedServiceManager.user) {
+        await User.findByIdAndUpdate(
+          updatedServiceManager.user,
+          { firstName, lastName, email },
+          { new: true }
+        );
+      }
+  
+      // Renvoyer l'objet mis à jour
+      const finalData = await ServiceManager.findById(req.params.id).populate("user");
+      res.json(finalData);
     } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la mise à jour du service manager", error });
+      res.status(500).json({
+        message: "Erreur lors de la mise à jour du service manager",
+        error: error.message,
+      });
     }
   },
+  
 
   // 📌 Supprimer un service manager
   async deleteServiceManager(req, res) {
