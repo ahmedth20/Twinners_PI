@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import {useParams} from 'react-router-dom'
 
 function Resetpassword() {
-    const [isSignUp, setIsSignUp] = useState(false);
  
   const [password, setPassword] = useState("");
 const [passwordError, setPasswordError] = useState(false);
@@ -12,7 +11,7 @@ const [passwordError, setPasswordError] = useState(false);
 
         
   
- //       const isFormValid = () => password && !passwordError ;
+        const isFormValid = () => password && !passwordError ;
 
         const handlePasswordChange = (event) => {
           const { value } = event.target;
@@ -52,7 +51,7 @@ const [passwordError, setPasswordError] = useState(false);
 
     <button 
   type="submit"
-//  disabled={!isFormValid()} 
+  disabled={!isFormValid()} 
   onClick={forgotPassword}
 > update
 </button>

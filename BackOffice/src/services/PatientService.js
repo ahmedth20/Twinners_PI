@@ -22,7 +22,15 @@ const PatientService = {
       throw error;
     }
   },
-
+  getPatientInfoById: async (id) => {
+    try {
+      const response = await axios.get(`${API_URL}/details/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération du patient:", error);
+      throw error;
+    }
+  },
   createPatient: async (patientData) => {
     try {
       const response = await axios.post(API_URL, patientData);
@@ -41,6 +49,15 @@ const PatientService = {
       throw error;
     }
   },
+  updateSimplePatient: async (id, patientData) => {
+    try {
+      const response = await axios.put(`${API_URL}/updateSimplePatient/${id}`, patientData);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du patient:", error);
+      throw error;
+    }
+  },
   updatePatient: async (id, patientData) => {
     try {
       const response = await axios.put(`${API_URL}/${id}`, patientData);
@@ -50,7 +67,6 @@ const PatientService = {
       throw error;
     }
   },
-
   deletePatient: async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
@@ -59,6 +75,27 @@ const PatientService = {
       throw error;
     }
   },
+
+  toggleUserStatus: async (id) => {
+    try {
+      console.log("ID envoyé à l'API:", id);
+      const response = await axios.put(`${API_URL}/toggle-status/${id}`, {}, { withCredentials: true });
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la désactivation / activation du patient:", error);
+      throw error;
+    }
+  },
+  getAllDoctors: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/listDoctors`);
+         return response.data;
+    } catch (error) {
+          console.error("Erreur lors du chargement des doctors:", error);
+          throw error;
+    }
+  },
+  
 };
 
 export default PatientService;

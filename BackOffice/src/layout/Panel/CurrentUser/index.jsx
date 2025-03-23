@@ -2,146 +2,180 @@ import { Menu, UserWrapper, PopupOverlay, PopupContent } from '../style';
 import Avatar from '@ui/Avatar';
 import { useDispatch } from 'react-redux';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { logout } from '../../../slices/authSlice';
 import doc1jpg from '@assets/avatars/doc1.jpg';
 import doc1webp from '@assets/avatars/doc1.jpg?as=webp';
 import * as z from "zod";
-
+import { useSelector } from "react-redux";
+import axios from "axios";
 import {
   GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
-  ModalContent, ModalOverlay, CloseButton,Error, Title, StepContainer, Step, InputRow, Select, FormTitle
+  ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle
 } from "../../../styles/PopUpAddPatient";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 const CurrentUser = () => {
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-    const [formData, setFormData] = useState({
-        firstName: "Sallie",
-        lastName: "McBride",
-        position: "Surgeon",
-    });
-    const patientSchema = z.object({
-      firstName: z.string().min(2, { message: "First Name is required (min 2 caractères)" }),
-      lastName: z.string().min(2, { message: "Last Name is required (min 2 caractères)" }),
-      email: z.string().email({ message: "Invalid email format" }),
-      badgeNumber: z.string().min(2,{message: "badgeNumber is required (min 2 caractères)" }),
-    
-      departement: z.string().min(2, { message: "departement is required (min 2 caractères)" }),
-    
-    });
-const {
-    register,
-  } = useForm({
-    resolver: zodResolver(patientSchema),
-  });
-    const handleClickAway = () => setOpen(false);
-    const handleClick = () => setOpen(!open);
-    const handleLogout = () => dispatch(logout());
+    const [user1, setUser1] = useState({});
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [picture, setPicture] = useState(null);
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const user = useSelector(state => state.auth.user.user.id);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
+                if (!response.ok) {
+                    throw new Error("Erreur lors du chargement des données");
+                }
+                const data = await response.json();
+                setUser1(data);
+                setFirstName(data.firstName || "");
+                setLastName(data.lastName || "");
+                setEmail(data.email || "");
+                setPicture(data.picture || null);
+            } catch (error) {
+                console.error("Erreur lors du chargement des données", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, [user]);
+
+    const handleFileChange = (e) => {
+        setPicture(e.target.files[0]);
     };
 
-    const handleUpdateProfile = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Ici, on pourrait appeler une API pour mettre à jour le profil
-        console.log("Profil mis à jour :", formData);
-        setShowPopup(false);
-    };
+        setLoading(true);
 
-    const src = { jpg: doc1jpg, webp: doc1webp };
+        const formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+
+        if (picture) {
+            formData.append("picture", picture);
+        }
+
+        try {
+            await axios.put(`http://localhost:5000/users/editprofile/${user}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            });
+            alert("Profil mis à jour avec succès !");
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour :", error);
+            alert("Une erreur s'est produite lors de la mise à jour.");
+        }
+        setLoading(false);
+    };
 
     return (
         <>
-            <ClickAwayListener onClickAway={handleClickAway}>
+            <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <UserWrapper>
-                    <Avatar avatar={src} alt="avatar" />
+                    <img
+                        src={user1.picture || doc1jpg}
+                        alt="User Avatar"
+                        style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "2px solid #ccc",
+                        }}
+                    />
                     <div className="info">
-                        <span className="h3">{formData.firstName} {formData.lastName}</span>
-                        <span className="position">{formData.position}</span>
+                        <span className="h3">{user1.firstName} {user1.lastName}</span>
+                        <span className="position">{user1.role}</span>
                         <Menu className={open ? 'visible' : ''}>
                             <button onClick={() => setShowPopup(true)}>
-                                <i className="icon icon-circle-user" /> Change user
+                                <i className="icon icon-circle-user" /> Update profile
                             </button>
-                            <button onClick={handleLogout}>
+                            <button onClick={() => dispatch(logout())}>
                                 <i className="icon icon-logout" /> Logout
                             </button>
                         </Menu>
                     </div>
-                    <button className="trigger" onClick={handleClick} aria-label="Show menu">
+                    <button className="trigger" onClick={() => setOpen(!open)} aria-label="Show menu">
                         <i className="icon icon-chevron-down" />
                     </button>
                 </UserWrapper>
             </ClickAwayListener>
 
-            {/* Popup de mise à jour du profil */}
             {showPopup && (
                 <PopupOverlay>
-                <PopupContent style={{ width: "33%" }}>
-                <button  onClick={() => setShowPopup(false)}>X</button>
-                <h2>Update Profile</h2>  
-
-                      {  /*<form onSubmit={handleUpdateProfile}>
-                            <label>
-                                First Name:
-                                <input 
-                                    type="text" 
-                                    name="firstName" 
-                                    value={formData.firstName} 
-                                    onChange={handleInputChange} 
-                                />
-                            </label>
-                            <label>
-                                Last Name:
-                                <input 
-                                    type="text" 
-                                    name="lastName" 
-                                    value={formData.lastName} 
-                                    onChange={handleInputChange} 
-                                />
-                            </label>
-                            <label>
-                                Position:
-                                <input 
-                                    type="text" 
-                                    name="position" 
-                                    value={formData.position} 
-                                    onChange={handleInputChange} 
-                                />
-                            </label>
-                            <div className="buttons">
-                                <button type="submit">Save</button>
-                                <button type="button" onClick={() => setShowPopup(false)}>Cancel</button>
+                    <PopupContent style={{ width: "33%" }}>
+                        <button onClick={() => setShowPopup(false)}>X</button>
+                        <Form onSubmit={handleSubmit}>
+                            <FormTitle>Update Profile</FormTitle>
+                            <InputRow style={{ width: '100%' }}>
+                                <div className="w-full">
+                                    {picture && (
+                                        <div className="mt-1">
+                                            <img
+                                                src={typeof picture === 'string' ? picture : URL.createObjectURL(picture)}
+                                                alt="Aperçu"
+                                                className="w-10 h-10 object-cover rounded-md"
+                                            />
+                                        </div>
+                                    )}
+                                    <Input
+                                        type="file"
+                                        name="image"
+                                        onChange={handleFileChange}
+                                        className="border p-2 rounded w-full"
+                                    />
+                                </div>
+                            </InputRow>
+                            <InputRow style={{ width: '325px' }}>
+                                <div className="w-full">
+                                    <Input
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="First Name"
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    <Input
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Last Name"
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                            </InputRow>
+                            <InputRow>
+                                <div className="w-full" style={{ width: '325px' }}>
+                                    <Input
+                                        type="text"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Email"
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                            </InputRow>
+                            <div style={{ marginTop: "11px" }}>
+                                <SubmitButton type="submit">Submit</SubmitButton>
                             </div>
-                        </form>*/}
-                          <Form /* onSubmit={handleSubmit(onSubmit)}*/>
-                                 
-                                      <FormTitle>User Information</FormTitle>
-
-                                      <InputRow>
-                                        <div>
-                                          <Input type="text" {...register("firstName")} placeholder="First Name" />
-                                        </div>
-                                        <div>
-                                          <Input type="text" {...register("lastName")} placeholder="Last Name" />
-                                        </div>
-                                      </InputRow>
-                                      
-                                      
-                                      
-                                      <div style={{ marginTop: "11px" }}>
-                                      <SubmitButton type="submit">Submit</SubmitButton>
-                                      </div>
-                                   
-                                  
-                        
-                                
-                        
-                                 
-                                </Form>
+                        </Form>
                     </PopupContent>
                 </PopupOverlay>
             )}
