@@ -7,7 +7,12 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: String,
   isActive: { type: Boolean, default: true },
-  role: {type: String}
+  role: {type: String},
+  picture:String,
+  picture: {
+    type: String,
+  },
+
 }, { timestamps: true, versionKey: false });
 
 // Match user entered password to hashed password in database

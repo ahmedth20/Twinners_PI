@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./yosr.css";
-import Register from './register'
 import { GoogleLogin } from '@react-oauth/google';
 import { login, logout } from "../slices/authSlice";
 import FacebookLogin from '@greatsumini/react-facebook-login';
+import { Snackbar, Alert } from "@mui/material";
+
 function Yosr() {
   const [isSignUp, setIsSignUp] = useState(false);
   const dispatch = useDispatch();
@@ -15,7 +16,8 @@ function Yosr() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
   const [emailError1, setEmailError1] = useState(false);
   const [passwordError1, setPasswordError1] = useState(false);
@@ -39,7 +41,7 @@ function Yosr() {
       const decoded = decodeJWT(credential);
       const userGoogleData = {
         email: decoded.email,
-        name: decoded.name,
+        firstName: decoded.name,
         googleId: decoded.sub,
         avatar: decoded.picture,
       };
@@ -67,7 +69,7 @@ function Yosr() {
 
       const userFacebookData = {
         email: response.email,
-        name: response.name,
+        firstName: response.name,
         facebookId: response.id,
         //   accessToken: response.accessToken,
       };
@@ -100,6 +102,7 @@ function Yosr() {
     e.preventDefault();
 
     try {
+      
       const response = await fetch("http://localhost:5000/users", {
         method: "POST",
         headers: {
@@ -108,18 +111,25 @@ function Yosr() {
         },
         credentials: "include", // ✅ Active l'envoi des cookies/sessions
         body: JSON.stringify({
-          name: name, phoneNumber: phoneNumber,
-          email: email,
-          password: password,
+          firstName: name, phoneNumber: phoneNumber,
+          email: email1,
+          password: password1,
           role: "patient"
         })
       });
       const data = await response.json(); // ✅ Vérifier la réponse JSON
       console.log(data);
-      navigate("/loginPage");
+if(data.message=="firstName, email, and password are required"){  setErr("firstName, email, and password are required");}
+else if(data.message=="Phone number is required"){setErr("Phone number is required");}
+else if(data.message=="User already exist"){setErr("User already exist");}
+
+
+else if (data.message=="your account has been created"){  setSuccess("your account has been created");    
+    navigate("/loginPage");
+}
 
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Erreur:", error);setErr(error);
     }
   };
 
@@ -128,7 +138,7 @@ function Yosr() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('aa')
-    const response = await fetch("http://localhost:5000/users/auth", {
+    const response = await fetch("http://localhost:5000/users/authfront", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // ✅ Correction ici
@@ -138,19 +148,31 @@ function Yosr() {
       body: JSON.stringify({
         email: email,
         password: password,
-        role: "patient"
       })
     }); const data = await response.json();
     console.log(data)
+    if(data.message=="Connexion réussie"){
+      setSuccess("your logged successfully"); 
+   
+    console.log("1111")
+    setTimeout(() => {  dispatch(login({ user: data })); }, 1000)
 
-    dispatch(login({ user: data }));
-    if (data.user1.role == "patient") {
-      setTimeout(() => { navigate("/home"); }, 200)
+      //setTimeout(() => { navigate("/home"); }, 1500)
     }
-    if (data.user1.role != "medecin") {
-      setTimeout(() => { navigate("/patient"); }, 500)
-    } console.log(data)
-    setTimeout(() => {
+      else if(data.message=="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
+      }
+      else if(data.message=="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
+      }
+
+     else  if(data.message=="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+     }
+
+     else  if(data.message=="mot de passe invalide"){      setErr("mot de passe invalide"); 
+     }
+
+ 
+    
+      setTimeout(() => {
       fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {
           dispatch(logout());
@@ -160,6 +182,9 @@ function Yosr() {
         })
         .catch(err => console.error("Erreur lors de la déconnexion :", err));
     }, 24 * 60 * 60 * 1000);
+    
+   
+  
 
 
 
@@ -192,8 +217,9 @@ function Yosr() {
       });
 
 
-
       const data = await serverResponse.json();
+
+
       dispatch(login({ user: data }));
 
       setTimeout(() => {
@@ -234,8 +260,18 @@ function Yosr() {
       const data = await response.json();
       console.log("aaa", data);
 
-      dispatch(login({ user: data })); 
-        setTimeout(() => { navigate("/home"); }, 500)
+      if(data.message=="Connexion réussie"){
+
+        dispatch(login({ user: data })); 
+     
+        setTimeout(() => {  setShows(true) }, 500)
+  
+          setTimeout(() => { navigate("/home"); }, 1500)
+      }
+      else {alert("prob")}
+      console.log("aaa", data);
+
+      
       
 
       setTimeout(() => {
@@ -253,7 +289,7 @@ function Yosr() {
 
 
   const isFormValid = () => email && !emailError && password.length >= 8 && !passwordError;
-  //  const isFormValid1 = () => email1 && !emailError1 && password1.length >= 8 && !passwordError1;
+    const isFormValid1 = () => email1 && !emailError1 && password1.length >= 8 && !passwordError1;
 
   const handleEmailChange = (event) => {
     const { value } = event.target;
@@ -272,13 +308,13 @@ function Yosr() {
 
   const handlePasswordChange1 = (event) => {
     const { value } = event.target;
-    setPassword(value);
-    setPasswordError(value.length < 8);
+    setPassword1(value);
+    setPasswordError1(value.length < 8);
   };
   const handleEmailChange1 = (event) => {
     const { value } = event.target;
-    setEmail(value);
-    setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
+    setEmail1(value);
+    setEmailError1(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
 
   const handlePasswordChange = (event) => {
@@ -450,12 +486,9 @@ function Yosr() {
                   />
                   <button
                     type="submit"  className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
-        isFormValid() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+        isFormValid1() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
       }`}
-                    onClick={(e) => {
-                      handleSubmit1(e);
-                      alert("Inscription réussie !");
-                    }}
+      onClick={handleSubmit1}
                   >
                     Sign Up
                   </button>
@@ -531,6 +564,40 @@ function Yosr() {
           </div>
         </div>
       </div>
+         <Snackbar
+             autoHideDuration={2500}
+             open={err === "" ? false : true}
+             onClose={() => {
+               setErr("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="error"
+               onClose={() => {
+                 setErr("");
+               }}
+             >
+               {err}
+             </Alert>
+           </Snackbar>
+           <Snackbar
+             autoHideDuration={2500}
+             open={success === "" ? false : true}
+             onClose={() => {
+               setSuccess("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="success"
+               onClose={() => {
+                 setSuccess("");
+               }}
+             >
+               {success}
+             </Alert>
+           </Snackbar>
     </main>
   );
 }

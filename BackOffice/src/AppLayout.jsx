@@ -14,9 +14,10 @@ import useWindowSize from '@hooks/useWindowSize';
 import usePageIsOverflow from '@hooks/usePageIsOverflow';
 import {useRef, useEffect} from 'react';
 import { useSelector } from "react-redux";
+import Forgotpassword from '@pages/screens/forgotpassword'
+import Resetpassword1 from '@pages/screens/restpasswordslouma'
 
 // pages
-const Login = lazy(() => import('@pages/screens/HomeScreen'));
 const DashboardA = lazy(() => import('@pages/DashboardA'));
 const DashboardB = lazy(() => import('@pages/DashboardB'));
 const DashboardC = lazy(() => import('@pages/DashboardC'));
@@ -80,6 +81,10 @@ const AppLayout = () => {
       <Route path="/finances" element={ <Finances /> } />
       <Route path="/settings" element={ <Settings /> } />
       <Route path="/medical_form" element={ <MedicalForm/> } />
+      <Route path="/forgotpassword" element={ <Forgotpassword/> } />
+      <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
+
+    
 
                     </Routes>
                

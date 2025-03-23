@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./yosr.css";
-import Register from './register'
 import { GoogleLogin } from '@react-oauth/google';
 import { login,logout } from "../../slices/authSlice";
 import FacebookLogin from '@greatsumini/react-facebook-login';
-function Yosr() {
+import { Snackbar, Alert } from "@mui/material";
+
+
+
+function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +22,8 @@ function Yosr() {
   const [phoneNumber, setphoneNumber] = useState("");
 
   
-
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
 
   const [emailError1, setEmailError1] = useState(false);
   const [passwordError1, setPasswordError1] = useState(false);
@@ -134,7 +138,7 @@ function Yosr() {
    const handleSubmit = async (e) => {
            e.preventDefault();
          console.log('aa')
-         const response = await fetch("http://localhost:5000/users/auth", {
+         const response = await fetch("http://localhost:5000/users/authback", {
           method: "POST",
           headers: {
               "Content-Type": "application/json", // ✅ Correction ici
@@ -144,16 +148,32 @@ function Yosr() {
           body: JSON.stringify({
               email: email,
               password: password,
-              role: "medecin"
+             
           })
       });              const data = await response.json();
       console.log(data)
 
-      dispatch(login({ user: data }));
-      if(data.user1.role=="patient"){    setTimeout(()=>{navigate("/home");},200)
+      if(data.message=="Connexion réussie"){
+        setSuccess("your logged successfully"); 
+     
+      console.log("1111")
+      setTimeout(() => {  dispatch(login({ user: data })); }, 1000)
+  
+        //setTimeout(() => { navigate("/home"); }, 1500)
       }
-      if(data.user1.role!="medecin"){    setTimeout(()=>{navigate("/patient");},500)
-      }  console.log(data)
+        else if(data.message=="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
+        }
+        else if(data.message=="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
+        }
+  
+       else  if(data.message=="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+       }
+  
+       else  if(data.message=="mot de passe invalide"){      setErr("mot de passe invalide"); 
+       }
+  
+     
+       
   setTimeout(() => {
     fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {
@@ -332,44 +352,7 @@ function Yosr() {
   </button>
  
 
-      <GoogleLogin text="signin_with" 
-        onSuccess={handleGoogleLogin}
-        onError={() => alert("Échec de connexion avec Google.")}
-        />
-       
-        <FacebookLogin style={{
-backgroundColor: '#fff',
-color: '#4267b2',
-fontSize: '14px',
-border: '1 px solid blue', // Bordure noire
-borderRadius: '4px',
-}}
-          text="aa"
-          appId="2033452340414185"
-          render={(renderProps) => (
-            <button
-              onClick={renderProps.onClick}
-              style={{
-                backgroundColor: "#fff",padding: '10px',
-                color: "#4267b2",
-                fontSize: "14px",
-               // padding: "12px 24px",
-               border: '1px solid blue',
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >     <i className="fab fa-facebook-f"  style={{
-backgroundColor: '#fff',
-color: '#4267b2',
-fontSize: '14px',marginRight:'14px',
-borderRadius: '4px',
-}}/>
-
-               Sign in with Facebook
-            </button>
-          )}
-          onProfileSuccess={handleFacebookLoginA}
-        />
+     
     </form>
   </div>
 
@@ -487,8 +470,42 @@ borderRadius: '4px',
           </div>
         </div>
       </div>
+      <Snackbar
+             autoHideDuration={2500}
+             open={err === "" ? false : true}
+             onClose={() => {
+               setErr("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="error"
+               onClose={() => {
+                 setErr("");
+               }}
+             >
+               {err}
+             </Alert>
+           </Snackbar>
+           <Snackbar
+             autoHideDuration={2500}
+             open={success === "" ? false : true}
+             onClose={() => {
+               setSuccess("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="success"
+               onClose={() => {
+                 setSuccess("");
+               }}
+             >
+               {success}
+             </Alert>
+           </Snackbar>
     </main>
   );
 }
 
-export default Yosr;
+export default Login;

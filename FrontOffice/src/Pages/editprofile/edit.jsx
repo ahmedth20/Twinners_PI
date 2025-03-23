@@ -1,79 +1,97 @@
 import { FaUser } from 'react-icons/fa6';
-import { GoArrowRight } from 'react-icons/go';
+import { GoArrowRight, GoMail } from 'react-icons/go';
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Heart from '/images/banner-heart.png';
+import Toast from 'react-bootstrap/Toast';
+import { Snackbar, Alert } from "@mui/material";
 
 const Appoinment = () => {
     const user = useSelector(state => state.auth.user.user1.id);
-
+    const [user1, setUser1] = useState({});
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [picture, setPicture] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
+    const [err, setErr] = useState("");
+    const [success, setSuccess] = useState("");
+    useEffect(() => {
+        const fetchUser = async () => {
+         
+            setLoading(true);
+            try {
+                const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
+                if (!response.ok) {
+                    throw new Error("Erreur lors du chargement des données");
+                }
+                const data = await response.json();
+                setUser1(data);
+                setFirstName(data.firstName || "");
+                setLastName(data.lastName || "");
+                setEmail(data.email || "");
+            } catch (error) {
+                console.error("Erreur lors du chargement des données", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, [user]);
+  const [shows, setShows] = useState(false);
 
-
-     const handleeditp = async (e) => {
-        e.preventDefault();
-        
-        console.log('aa')
-         await fetch(`http://localhost:5000/users/editprofile/${user}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json", // ✅ Correction ici
-            "X-Requested-With": "XMLHttpRequest"
-          },
-          credentials: "include", // ✅ Active l'envoi des cookies/sessions
-          body: JSON.stringify({
-            lastName:lastName, firstName:firstName
-
-          })
-        }); 
-    
-    
-    alert("modifier avec succes")
-    
-      }
-
-      const [picture, setPicture] = useState(null);
-
-     
-      const handleFileChange = (e) => {
-        setPicture(e.target.files[0]); // Stocke le fichier sélectionné
-      };
-    
-      const handleSubmit = async (e) => {
+    const handleFileChange = (e) => {
+        setPicture(e.target.files[0]);
+    };
+    console.log("aa",user1)
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-    
+console.log("zz")
         const formData = new FormData();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
         formData.append("email", email);
+
         if (picture) {
-          formData.append("picture", picture);
+            formData.append("picture", picture);
         }
-    
+        console.log(picture)
+        console.log("picture",picture)
+
         try {
-         await axios.put(`http://localhost:5000/users/editprofile/${user}`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" , "X-Requested-With": "XMLHttpRequest"
-            } }
-          );
-        } catch (err) {   
-alert("aaa")
-        };
-         setLoading(false);
-      };
+            await axios.put(
+                `http://localhost:5000/users/editprofile/${user}`,
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+         //   window.location.reload().
+         console.log(formData)
 
-  return (
-    <section className='px-5 2xl:px-20 bg-BodyBg-0 pt-[40px] relative z-10 overflow-hidden'>
-      <div className='absolute -z-10 -top-1/2 left-1/2 -translate-x-1/2'>
+         setTimeout(() => {         setSuccess("profile updated");
+         }, 500)
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour :", error);
+        }
+    };
 
-</div>   
-     
-      <div
+    return (
+        <section className='px-5 2xl:px-20 bg-BodyBg-0 pt-[40px] relative z-10 overflow-hidden'>
+        <Toast
+  onClose={() => setShows(false)}
+  show={shows}
+  delay={500}
+  autohide
+  className="position-absolute top-0 start-50 translate-middle-x bg-success text-white"
+>
+  <Toast.Header>
+    <strong className="me-auto">Bootstrap</strong>
+  </Toast.Header>
+  <Toast.Body>Woohoo,re reading this text in a Toast!</Toast.Body>
+</Toast>
+           <div
         className='text-center mb-12'
         data-aos='fade-up'
         data-aos-duration='1000'
@@ -82,83 +100,80 @@ alert("aaa")
          Update Profile
         </h1>
         
-<div>
 
-<span className="icon
-top-50 translate-middle-y"> </span>
-<input
-type="file"
-name="image"
-onChange={handleFileChange}
-className="form-
-control h-56-px bg-neutral-50
-radius-12" />
-</div>
-      
       </div>
-      <div className=' bg-cover bg-no-repeat bg-center grid grid-cols-1 lg:grid-cols-2 pt-[110px] pb-[118px] lg:border-x-2 2xl:border-x-0 border-white rounded-[30px] relative z-10'>
-        <div></div>
-        <div
-          className='relative z-10 pr-5 2xl:pr-[130px] pl-5 lg:pl-0'
-          data-aos='fade-up'
-          data-aos-duration='1000'
-        >
-          <div className='absolute -top-2 -left-[190px] xl:-left-40 2xl:-left-40'>
+            <div className='bg-cover bg-no-repeat bg-center grid grid-cols-1 lg:grid-cols-2 pt-[110px] pb-[118px]'>
+                <div className='flex flex-col justify-center items-center'>
+                    {picture ? (
+                        <img src={URL.createObjectURL(picture)} alt="Aperçu" className="w-60 h-60 object-cover rounded-md" />
+                    ) : (
+                        user1.picture && <img src={user1.picture} alt="Profil" className="w-60 h-60 object-cover rounded-md" />
+                    )}
+                    <input type="file" onChange={handleFileChange} className="border p-2 rounded" />
+                </div>   
+                <div className='pr-5 pl-5'> <div className='absolute -top-2 -left-[190px] xl:-left-40 2xl:-left-40'>
             <img
               src={Heart}
               draggable='false'
               className='animate-rotateX'
             />
           </div>
-         
-         <form onSubmit={handleeditp} className="flex flex-col gap-y-4 mt-2"><div className="relative w-full">
-                <input
-                  type="text"
-                  name="firstName"
-                  id="firstName"
-                  placeholder="Enter First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-2 px-6 h-[60px] w-full focus:outline-PrimaryColor-0"
-                />
-                <FaUser size="14" className="absolute text-PrimaryColor-0 top-1/2 -translate-y-1/2 right-5" />
-              </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {/* Champ First Name */}
-              
-
-              {/* Champ Last Name */}
-             
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 mt-2">
+                        <div className="relative w-full">
+                            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="border rounded-xl py-2 px-6 w-full" />
+                            <FaUser className="absolute top-1/2 right-5" />
+                        </div>
+                        <div className="relative w-full">
+                            <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="border rounded-xl py-2 px-6 w-full" />
+                            <FaUser className="absolute top-1/2 right-5" />
+                        </div>
+                        <div className="relative w-full">
+                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border rounded-xl py-2 px-6 w-full" />
+                            <GoMail className="absolute top-1/2 right-5" />
+                        </div>
+                        <div className="flex justify-center mt-4">
+  <button type="submit" className="primary-btn flex items-center gap-2">
+    Update <GoArrowRight size="22" className="-rotate-45" />
+  </button>
+</div>                    </form>
+                </div>
             </div>
-<div> <div className="relative w-full">
-                <input
-                  type="text"
-                  name="lastName"
-                  id="lastName"
-                  placeholder="Enter Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-2 px-6 h-[60px] w-full focus:outline-PrimaryColor-0"
-                />
-                <FaUser size="14" className="absolute text-PrimaryColor-0 top-1/2 -translate-y-1/2 right-5" />
-              </div></div>
-            {/* Champ Email */}
-          
-
-            {/* Bouton Submit */}
-            <div className="inline-block mt-4">
-              <button type="submit" className="primary-btn flex items-center gap-2">
-                Update
-                <GoArrowRight size="22" className="-rotate-45" />
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  );
+            <Snackbar
+        autoHideDuration={2500}
+        open={err === "" ? false : true}
+        onClose={() => {
+          setErr("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="error"
+          onClose={() => {
+            setErr("");
+          }}
+        >
+          {err}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        autoHideDuration={2500}
+        open={success === "" ? false : true}
+        onClose={() => {
+          setSuccess("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="success"
+          onClose={() => {
+            setSuccess("");
+          }}
+        >
+          {success}
+        </Alert>
+      </Snackbar>
+        </section>
+    );
 };
 
 export default Appoinment;

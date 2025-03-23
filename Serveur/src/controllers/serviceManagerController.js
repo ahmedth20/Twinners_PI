@@ -86,7 +86,9 @@ const serviceManagerController = {
           <h1>Email de confirmation de creation du compte </h1>
             <h2>Bonjour </h2>
           <a >voisci votre email:${email}</a>  
-           <a >voisci votre mot de passe: ${generatedPassword}  </a>                              
+           <a >voisci votre mot de passe: ${generatedPassword}  </a>  
+            <a href="http://localhost:5173/loginPage">Se connecter</a>
+                            
            </div>`,
       };
       transport.sendMail(mailOptions, function (error, info) {
