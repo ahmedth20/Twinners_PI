@@ -15,6 +15,7 @@ import {
 } from "../../../styles/PopUpAddPatient";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Snackbar, Alert } from "@mui/material";
 
 const CurrentUser = () => {
     const [loading, setLoading] = useState(false);
@@ -54,7 +55,8 @@ const CurrentUser = () => {
     const handleFileChange = (e) => {
         setPicture(e.target.files[0]);
     };
-
+    const [err, setErr] = useState("");
+    const [success, setSuccess] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -75,7 +77,9 @@ const CurrentUser = () => {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             });
-            alert("Profil mis à jour avec succès !");
+            setSuccess("profile updated");
+            setTimeout(() => {    window.location.reload() 
+            }, 500)
         } catch (error) {
             console.error("Erreur lors de la mise à jour :", error);
             alert("Une erreur s'est produite lors de la mise à jour.");
@@ -179,6 +183,40 @@ const CurrentUser = () => {
                     </PopupContent>
                 </PopupOverlay>
             )}
+            <Snackbar
+        autoHideDuration={2500}
+        open={err === "" ? false : true}
+        onClose={() => {
+          setErr("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="error"
+          onClose={() => {
+            setErr("");
+          }}
+        >
+          {err}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        autoHideDuration={2500}
+        open={success === "" ? false : true}
+        onClose={() => {
+          setSuccess("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          severity="success"
+          onClose={() => {
+            setSuccess("");
+          }}
+        >
+          {success}
+        </Alert>
+      </Snackbar>
         </>
     );
 };

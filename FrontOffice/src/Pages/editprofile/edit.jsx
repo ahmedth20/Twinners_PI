@@ -8,7 +8,7 @@ import Toast from 'react-bootstrap/Toast';
 import { Snackbar, Alert } from "@mui/material";
 
 const Appoinment = () => {
-    const user = useSelector(state => state.auth.user.user1.id);
+    const user = useSelector(state => state.auth.user.user.id);
     const [user1, setUser1] = useState({});
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -67,11 +67,13 @@ console.log("zz")
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-         //   window.location.reload().
+            setSuccess("profile updated");
+            setTimeout(() => {    window.location.reload() 
+            }, 500)
+           
          console.log(formData)
 
-         setTimeout(() => {         setSuccess("profile updated");
-         }, 500)
+       
         } catch (error) {
             console.error("Erreur lors de la mise à jour :", error);
         }

@@ -77,25 +77,10 @@ const authUserbackoff = asyncHandler(async (req, res) => {
       return res.status(401).json({ message: "mot de passe invalide" });
     }
    
-    if ( user.role!="staff"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="admin"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="service manager"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="paramedic"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="medecin"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
+    const allowedRoles = ["staff", "admin", "service manager", "paramedic", "medecin"];
+
+    if (!allowedRoles.includes(user.role)) {
+      return res.status(401).json({ message: "Utilisateur non autorisé" });
     }
 
     if (!user.isActive) {
@@ -111,7 +96,7 @@ const authUserbackoff = asyncHandler(async (req, res) => {
 
     req.session.user = {
       id: user._id,
-      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       role: user.role,
     };
@@ -166,7 +151,7 @@ const authUserfrontoff = asyncHandler(async (req, res) => {
 
     req.session.user = {
       id: user._id,
-      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       role: user.role,
     };
@@ -239,7 +224,7 @@ const authUsergoogle = asyncHandler(async (req, res) => {
     console.log(token)
     req.session.user = {
       id: user._id,
-      firstName: user.firstName,
+     
       lastName: user.lastName,
       email: user.email,
     };
@@ -278,7 +263,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     console.log(token)
     req.session.user = {
       id: user._id,
-      firstName: user.firstName,
+      //firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
     };
@@ -307,10 +292,10 @@ const authUserfacebook = asyncHandler(async (req, res) => {
 
  const registerUser = async (req, res) => {
   try {
-    const { firstName, email, phoneNumber, password } = req.body;
+    const { lastName, email, phoneNumber, password } = req.body;
 
     // Vérifier si tous les champs requis sont fournis
-    if (!firstName || !email || !password) {
+    if (!lastName || !email || !password) {
       return res.status(400).json({ success: false, message: 'firstName, email, and password are required' });
     }
 
@@ -327,7 +312,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
 
     // Créer l'utilisateur (assumer que tu as un modèle User pour l'enregistrement)
     const newUser = new User({
-      firstName,
+      lastName,
       email,
       phoneNumber,role:"patient",
       password, // Assure-toi de hasher le mot de passe avant de l'enregistrer
@@ -338,7 +323,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     await newUser.save();
 
     // Envoyer un SMS de bienvenue ou de confirmation
-  //  const messageBody = `Bienvenue, ${firstName}! Votre inscription a été réussie`;
+  //  const messageBody = `Bienvenue, ${lastName}! Votre inscription a été réussie`;
    // const result = await sendSMS(messageBody, phoneNumber);
 
     var transport = nodemailer.createTransport({

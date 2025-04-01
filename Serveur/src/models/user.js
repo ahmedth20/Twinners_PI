@@ -6,10 +6,6 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   email: { type: String, unique: true, required: true },
   password: String,
-<<<<<<< HEAD
-  picture:String,
-}, { timestamps: false, versionKey: false });
-=======
   isActive: { type: Boolean, default: true },
   role: {type: String},
   picture:String,
@@ -34,7 +30,6 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
->>>>>>> bf6a374a71db9014ce1d0a5bdfec7e6b6d88039d
 
 // ✅ Évite la recréation du modèle s'il est déjà défini
 const User = mongoose.models.User || mongoose.model("User", userSchema);
