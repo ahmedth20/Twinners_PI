@@ -86,6 +86,7 @@ const App = () => {
         {location.pathname.startsWith("/ResetPassword/") && <Resetpassword1 />}
 
         {location.pathname === "/loginPage" && user ==null && <Login/> }
+        {location.pathname === "/" && user ==null && <Login/> }
         {user !=null && 
         <CacheProvider value ={cacheRtl}>
             <MuiThemeProvider theme={theme}>
