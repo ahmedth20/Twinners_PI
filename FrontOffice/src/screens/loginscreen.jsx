@@ -264,7 +264,7 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
 
         dispatch(login({ user: data })); 
      
-        setTimeout(() => {  setShows(true) }, 500)
+       
   
           setTimeout(() => { navigate("/home"); }, 1500)
       }

@@ -77,27 +77,11 @@ const authUserbackoff = asyncHandler(async (req, res) => {
       return res.status(401).json({ message: "mot de passe invalide" });
     }
    
-    if ( user.role!="staff"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="admin"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="service manager"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="paramedic"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
-    if ( user.role!="medecin"   ) {
-      
-      return res.status(401).json({ message: "Utilisateur non authorizé" });
-    }
+    const allowedRoles = ["staff", "admin", "service manager", "paramedic", "medecin"];
 
+    if (!allowedRoles.includes(user.role)) {
+      return res.status(401).json({ message: "Utilisateur non autorisé" });
+    }
     if (!user.isActive) {
       res.clearCookie('jwt'); // Supprimer tout cookie existant
       return res.status(403).json({ message: "Votre compte est désactivé. Veuillez contacter l'administrateur." });
@@ -393,7 +377,7 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     lastName:name,
-    email,
+    email,role:"patient",
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
 
@@ -410,7 +394,7 @@ const registerUserfacebook = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     lastName:name,
-    email,
+    email,role:"patient",
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
 

@@ -49,7 +49,7 @@ const Navbar = () => {
   const bodyOverlay2Ref = useRef(null);
   const closeBtn2Ref = useRef(null);
   const [user1, setUser1] = useState({});
-  const user = useSelector(state => state.auth.user.user.id);
+  const user = useSelector(state => state.auth.user.user1.id);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -329,7 +329,8 @@ const Navbar = () => {
                     src={Logo}
                     draggable='false'
                   />
-                </Link>
+                </Link> 
+                
               </div>
             </div>
             <div className='col-span-6 hidden lg:block'>
