@@ -329,7 +329,8 @@ const Navbar = () => {
                     src={Logo}
                     draggable='false'
                   />
-                </Link>
+                </Link> 
+                
               </div>
             </div>
             <div className='col-span-6 hidden lg:block'>
