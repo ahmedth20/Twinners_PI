@@ -10,6 +10,8 @@ const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
+const ambulanceRoutes = require('./src/routes/ambulance.js');
+
 
 const staffRoutes = require("./src/routes/staff.js");
 
@@ -52,7 +54,7 @@ app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build"
 app.use("/emergency", emergencyRoutes);
 // Servir le Back-Office (mediic)
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
-
+app.use('/ambulance', ambulanceRoutes);
 // 🔹 3. Middlewares essentiels
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
