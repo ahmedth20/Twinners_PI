@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import Forgotpassword from '../screens/forgotpassword'
 import Resetpassword1 from '../screens/restpasswordslouma';
 import Home2 from '../Pages/HomeLogin/Home2';
+import Map from '../Pages/InnerPage/ContactInner/Map';
 
 const PrivateRoute = ({ children }) => {
   const user = useSelector(state => state.auth.user);
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
       { path: 'blog_right_sidebar', element: <PrivateRoute><BlogRightSidebar /></PrivateRoute> },
       { path: 'blog_details', element: <PrivateRoute><BlogDetails /></PrivateRoute> },
       { path: 'appointment', element: <PrivateRoute><AppointmentInner /></PrivateRoute> },
+      { path: 'map', element: <PrivateRoute><Map /></PrivateRoute> },
       { path: 'faqs', element: <PrivateRoute><FaqInner /></PrivateRoute> },
       { path: 'contact', element: <PrivateRoute><ContactInner /></PrivateRoute> },
     ],

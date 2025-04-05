@@ -5,13 +5,15 @@ import bannerCheck from '/images/tick.png';
 import bannerPlus from '/images/plus.png';
 import bannerShape from '/images/banner-arrow.png';
 import { Link } from 'react-router-dom';
-import { GoArrowRight } from 'react-icons/go';
+import { PiSirenLight } from "react-icons/pi";
 import {
   FaInstagram,
   FaLinkedinIn,
+  FaPhoneFlip,
   FaPinterestP,
   FaSquareFacebook,
 } from 'react-icons/fa6';
+import { CgPhone } from 'react-icons/cg';
 
 const Banner = () => {
   return (
@@ -87,10 +89,9 @@ const Banner = () => {
               <div>
                 <Link to={'/appointment'}>
                   <button className='primary-btn'>
-                    Free Consultation
-                    <GoArrowRight
-                      size={'22'}
-                      className='-rotate-45'
+                    Emergency
+                    <PiSirenLight
+                      size={'28'}
                     />
                   </button>
                 </Link>

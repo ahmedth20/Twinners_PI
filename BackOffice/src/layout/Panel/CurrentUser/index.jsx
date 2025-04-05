@@ -27,7 +27,7 @@ const CurrentUser = () => {
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
 
-    const user = useSelector(state => state.auth.user.user.id);
+    const user = useSelector(state => state.auth.user.user1.id);
 
     useEffect(() => {
         const fetchUser = async () => {
