@@ -1,17 +1,16 @@
 const express = require("express");
-const Patient = require("../models/patient");
-const User = require("../models/user");
+const patientController = require("../controllers/patientController");
 
 const router = express.Router();
 
-// ✅ Route pour récupérer tous les patients avec leurs informations utilisateur
-router.get("/", async (req, res) => {
-  try {
-    const patients = await Patient.find().populate("user", "firstName lastName age email");
-    res.json(patients);
-  } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération des patients", error });
-  }
-});
-
+router.get("/", patientController.getAllPatients);
+router.get("/listDoctors", patientController.getAllDoctors);
+router.get("/:id", patientController.getPatientById);
+router.get("/details/:id", patientController.getPatientInfoById);
+router.post("/", patientController.createPatient);
+router.post("/createSimplePatient", patientController.createSimplePatient);
+router.put("/:id", patientController.updatePatient);
+router.put("/updateSimplePatient/:id", patientController.updateSimplePatient);
+router.delete("/:id", patientController.deletePatient);
+router.put("/toggle-status/:id", patientController.toggleUserStatus);
 module.exports = router;

@@ -1,6 +1,8 @@
 // components
 import GroupSeparator from '@ui/GroupSeparator';
-import PersonList from '@components/PersonList';
+
+import PatientList from '@components/PatientList';
+
 
 // utils
 import PropTypes from "prop-types";
@@ -14,7 +16,7 @@ const Group = ({char, arr, type, gender}) => {
                 data.length !== 0 ?
                     <div id={char}>
                         <GroupSeparator text={char} />
-                        <PersonList arr={data} type={type} gender={gender} />
+                        <PatientList arr={data} type={type} gender={gender} />
                     </div> : null
             }
         </>

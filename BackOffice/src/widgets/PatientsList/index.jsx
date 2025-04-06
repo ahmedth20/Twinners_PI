@@ -46,6 +46,7 @@ const PatientsList = () => {
             try {
                 const data = await PatientService.getAllPatients();
                 setPatients(data);
+                console.log("widgets");
                 console.log(data);
             } catch (error) {
                 console.error("Failed to fetch patients", error);
@@ -59,7 +60,7 @@ const PatientsList = () => {
     const dateFilteredArr = patients;
     // current filter by gender
     const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
-    console.log(genderArr(gender));
+  
     const filteredPatients = genderArr(gender);
 
     const displayedPatients = selectedLetter

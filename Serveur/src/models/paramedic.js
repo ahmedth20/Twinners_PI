@@ -5,7 +5,6 @@ const paramedicSchema = new mongoose.Schema({
   ambulance: { type: mongoose.Schema.Types.ObjectId, ref: "Ambulance" },
   patientsFile: [{ type: mongoose.Schema.Types.ObjectId, ref: "PatientFile" }],
    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-   isActive: { type: Boolean, default: true }, 
 }, { timestamps: false, versionKey: false });
 
 const Paramedic = mongoose.model("Paramedic", paramedicSchema);

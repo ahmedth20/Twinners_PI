@@ -21,28 +21,28 @@ export  const  Title = styled.h1`
 
 export  const  SectionTitle = styled.h3`
   font-weight: bold;
-  color: #2c61e2;
+  color: #cc0000;
   margin-top: 20px;
   margin-bottom: 20px;
-  border-bottom: 2px solid #2c61e2;
+  border-bottom: 2px solid #cc0000;
   padding-bottom: 5px;
 `;
 export  const  SectionSecondTitle = styled.h4`
   font-weight: bold;
-  color:rgb(74, 107, 191);
+  color:rgba(204, 0, 0, 0.8);
   margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
-  border-bottom: 2px solid rgb(74, 107, 191);
+  border-bottom: 2px solid rgba(204, 0, 0, 0.8);
   padding-bottom: 5px;
 `;
 export  const  SectionThirdTitle = styled.h4`
   font-weight: bold;
-  color:rgb(58, 86, 159);
+  color:rgba(204, 0, 0, 0.69);
   margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 30px;
-  border-bottom: 2px solid rgb(58, 86, 159);
+  border-bottom: 2px solid rgba(204, 0, 0, 0.69);
   padding-bottom: 5px;
 `;
 export  const  Select = styled.select`
@@ -57,11 +57,11 @@ export  const  Select = styled.select`
   appearance: none;
   color:rgba(65, 77, 85, 0.79);
   &:hover {
-    border-color: #2c61e2;
+    border-color: #cc0000;
   }
 
   &:focus {
-    border-color: #1a4db0;
+    border-color:rgb(114, 21, 21);
     box-shadow: 0 0 5px rgba(44, 97, 226, 0.5);
   }
 `;
@@ -96,7 +96,7 @@ export  const  ButtonContainer = styled.div`
 export  const  Button = styled.button`
   padding: 10px 15px;
   border: none;
-  background: #2c61e2;
+  background:#cc0000;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -104,7 +104,7 @@ export  const  Button = styled.button`
   font-weight: bold;
 
   &:hover {
-    background: #1a4db0;
+    background:rgb(120, 11, 11);
   }
 `;
 
@@ -132,3 +132,5 @@ export  const  RemoveButton = styled.button`
     background: #cc0000;
   }
 `;
+
+export const Form=styled.form``;

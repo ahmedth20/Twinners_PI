@@ -9,10 +9,17 @@ const connectDB = require("./src/configs/db.config.js");
 const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
-const paramedicRoutes = require('./src/routes/paramedicRoutes');
+const sermanagerRoutes = require("./src/routes/serviceManager.js");
+
+const staffRoutes = require("./src/routes/staff.js");
+
+const doctorRoutes = require("./src/routes/doctor.js")
+const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
+
+
 
 dotenv.config();
-connectDB(); // Connexion à la base de données MongoDB
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,14 +27,12 @@ const port = process.env.PORT || 5000;
 // 🔹 1. Configurer CORS correctement
 app.use(
   cors({
-    origin: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : ["http://localhost:5173", "http://localhost:3000"], // Origines dynamiques via .env
+    origin: ["http://localhost:5173", "http://localhost:3000"], 
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   })
 );
-
-// 🔹 2. Configurer la session avec MongoDB
 app.use(
   session({
     secret: process.env.JWT_SECRET,
@@ -41,31 +46,27 @@ app.use(
   })
 );
 
+// 🔹 2. Activer le support des requêtes `OPTIONS` (Preflight)
 app.options("*", cors());
-
-app.use(express.json());  // Middleware pour traiter les requêtes JSON
-app.use(express.urlencoded({ extended: false }));  // Middleware pour traiter les formulaires URL-encodés
-app.use(cookieParser()); // Middleware pour gérer les cookies
-
-// 🔹 5. Servir les fichiers statiques pour le frontend
-app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build"))); // Dossier du frontend React
-app.use("/admin", express.static(path.join(__dirname, "mediic/dist"))); // Dossier du back-office
-
-// 🔹 6. Routes de l'API
+app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/emergency", emergencyRoutes);
+// Servir le Back-Office (mediic)
+app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
+
+// 🔹 3. Middlewares essentiels
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// 🔹 4. Routes
 app.use("/users", userRoutes);
 app.use("/patient", patientRoutes);
+
+app.use("/staff", staffRoutes);
+app.use("/doctors", doctorRoutes);
 app.use('/paramedics', paramedicRoutes);
 
-// 🔹 7. Gestion des erreurs (Middleware global)
-app.use((err, req, res, next) => {
-  console.error("Erreur serveur : ", err);
-  res.status(500).json({
-    message: "Erreur interne du serveur. Veuillez réessayer plus tard.",
-  });
-});
+app.use("/servicemanager", sermanagerRoutes);
 
-// 🔹 8. Démarrer le serveur
-app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
+// 🔹 5. Démarrer le serveur
+app.listen(port, () => console.log(`🚀 Server running on port ${port}`));

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const resourceSchema = new mongoose.Schema({
-  reference: { type: Number, required: true, unique: true },
+const ressourceSchema = new mongoose.Schema({
+  reference: { type: Number, unique: true },
   name: { type: String, required: true },
   type: { type: String, required: true },
   quantity: { type: Number, required: true },
@@ -13,6 +13,14 @@ const resourceSchema = new mongoose.Schema({
   serviceManager: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceManager", required: true }
 }, { timestamps: false, versionKey: false });
 
-const Resource = mongoose.model("Resource", resourceSchema);
+// Auto-incrémentation de `reference` avant l'enregistrement
+ressourceSchema.pre("save", async function (next) {
+  if (!this.reference) {
+    const lastRessource = await mongoose.model("Ressource").findOne().sort({ reference: -1 });
+    this.reference = lastRessource ? lastRessource.reference + 1 : 1;
+  }
+  next();
+});
 
-module.exports = Resource;
+const Ressource = mongoose.model("Ressource", ressourceSchema);
+module.exports = Ressource;

@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom';
 import Logo from '/images/favicon-96x96.png';
 import Logo2 from '/images/logo2.png';
-import homeOne from '/images/home1.png';
-import homeTwo from '/images/home2.png';
-import homeThree from '/images/home3.png';
-import homeFour from '/images/home4.png';
-import btnArrow from '/images/arrow.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './navbar.css';
+
 import { useEffect, useRef, useState } from 'react';
 import {
   FaArrowUp,
@@ -24,6 +22,7 @@ import { CgMenuGridO } from 'react-icons/cg';
 import { LiaTimesSolid } from 'react-icons/lia';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../slices/authSlice';
+import {useSelector} from 'react-redux';
 
 const Navbar = () => {
   //sticky
@@ -44,13 +43,33 @@ const Navbar = () => {
       : header.classList.remove('is-sticky');
   };
 
-  //Menu Sidebar
-
+ 
   const menuSideBarRef = useRef(null);
   const sidebarContentRef = useRef(null);
   const bodyOverlay2Ref = useRef(null);
   const closeBtn2Ref = useRef(null);
+  const [user1, setUser1] = useState({});
+  const user = useSelector(state => state.auth.user.user1.id);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/users/getprofile/${user}`);
+            if (!response.ok) {
+                throw new Error("Erreur lors du chargement des données");
+            }
+            const data = await response.json();
+            setUser1(data);
+          
+        } catch (error) {
+            console.error("Erreur lors du chargement des données", error);
+        } finally {
+          console.log("oks");
+
+        }
+    };
+    fetchUser();
+}, [user]);
   useEffect(() => {
     const menuSideBar = menuSideBarRef.current;
     const sidebarContent = sidebarContentRef.current;
@@ -189,6 +208,8 @@ const Navbar = () => {
   const handleSubmit1 = () => {
     dispatch(logout());
   };
+ 
+
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -308,7 +329,8 @@ const Navbar = () => {
                     src={Logo}
                     draggable='false'
                   />
-                </Link>
+                </Link> 
+                
               </div>
             </div>
             <div className='col-span-6 hidden lg:block'>
@@ -425,12 +447,31 @@ const Navbar = () => {
                   </button>
                 </div>
                 <div className='header-btn hidden lg:block' onClick={handleSubmit1}>
-                  <Link >
+                  <Link>
                     logout<span></span>
                    
                    
                   </Link>
                 </div>
+                <div className='header-btn hidden lg:block'  >
+                <Link to='/editprofile'>
+    <FontAwesomeIcon icon={faUser} className="mr-2"   /> {/* Icône d'utilisateur */}
+    {user1.firstName}<span></span>
+    </Link>
+   
+</div><div className='hidden 2xl:block ml-2'>
+                  <div
+                   style={{
+      backgroundImage: `url(${user1?.picture})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}
+                    className='menu-sidebar size-[50px] rounded-full bg-PrimaryColor-0 flex items-center justify-center text-white relative z-10 before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-Secondarycolor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100'
+                  > 
+                    
+                  </div>
+                </div>
+ 
                 <div className='hidden 2xl:block ml-2'>
                   <button
                     ref={menuSideBarRef}

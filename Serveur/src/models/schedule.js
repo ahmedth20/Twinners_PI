@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const scheduleSchema = new mongoose.Schema({
-  reference: { type: Number, required: true, unique: true },
+  reference: { type: Number, unique: true },
   hourly: [
     {
       dayOfWeek: { type: String, required: true },
@@ -15,6 +15,14 @@ const scheduleSchema = new mongoose.Schema({
   serviceManager: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceManager", required: false }
 }, { timestamps: false, versionKey: false });
 
-const Schedule = mongoose.model("Schedule", scheduleSchema);
+// Auto-incrémentation de `reference` avant l'enregistrement
+scheduleSchema.pre("save", async function (next) {
+  if (!this.reference) {
+    const lastSchedule = await mongoose.model("Schedule").findOne().sort({ reference: -1 });
+    this.reference = lastSchedule ? lastSchedule.reference + 1 : 1;
+  }
+  next();
+});
 
+const Schedule = mongoose.model("Schedule", scheduleSchema);
 module.exports = Schedule;

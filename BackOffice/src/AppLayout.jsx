@@ -14,9 +14,10 @@ import useWindowSize from '@hooks/useWindowSize';
 import usePageIsOverflow from '@hooks/usePageIsOverflow';
 import {useRef, useEffect} from 'react';
 import { useSelector } from "react-redux";
+import Forgotpassword from '@pages/screens/forgotpassword'
+import Resetpassword1 from '@pages/screens/restpasswordslouma'
 
 // pages
-const Login = lazy(() => import('@pages/screens/HomeScreen'));
 const DashboardA = lazy(() => import('@pages/DashboardA'));
 const DashboardB = lazy(() => import('@pages/DashboardB'));
 const DashboardC = lazy(() => import('@pages/DashboardC'));
@@ -44,6 +45,7 @@ const Settings = lazy(() => import('@pages/Settings'));
 const MedicalForm = lazy(() => import('@pages/MedicalForm'));
 const PageNotFound = lazy(() => import('@pages/PageNotFound'));
 
+const Servicemanager = lazy(() => import('@pages/srevicemanager'));
 
 
 const AppLayout = () => {
@@ -70,6 +72,7 @@ const AppLayout = () => {
       <Route path="/Paramedic" element={ <Paramedics /> } />
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
+      <Route path="/servicemanager" element={ <Servicemanager /> } />
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
@@ -78,6 +81,10 @@ const AppLayout = () => {
       <Route path="/finances" element={ <Finances /> } />
       <Route path="/settings" element={ <Settings /> } />
       <Route path="/medical_form" element={ <MedicalForm/> } />
+      <Route path="/forgotpassword" element={ <Forgotpassword/> } />
+      <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
+
+    
 
                     </Routes>
                

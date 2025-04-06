@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const operationSchema = new mongoose.Schema({
-  reference: { type: Number, required: true, unique: true },
+  reference: { type: Number, unique: true },
   type: { type: String, required: true },
   estimatedTime: { type: Number, required: true },
   date: { type: Date, required: true },
@@ -10,6 +10,14 @@ const operationSchema = new mongoose.Schema({
   medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true }
 }, { timestamps: false, versionKey: false });
 
-const Operation = mongoose.model("Operation", operationSchema);
+// Auto-incrémentation de `reference` avant l'enregistrement
+operationSchema.pre("save", async function (next) {
+  if (!this.reference) {
+    const lastOperation = await mongoose.model("Operation").findOne().sort({ reference: -1 });
+    this.reference = lastOperation ? lastOperation.reference + 1 : 1;
+  }
+  next();
+});
 
+const Operation = mongoose.model("Operation", operationSchema);
 module.exports = Operation;

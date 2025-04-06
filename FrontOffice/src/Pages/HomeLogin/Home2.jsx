@@ -10,6 +10,7 @@ import Service from '../../Component1/Service/Service';
 import Subscribe from '../../Component1/Subscribe/Subscribe';
 import TeamMember from '../../Component1/TeamMember/TeamMember';
 import Testimonial from '../../Component1/Testimonial/Testimonial';
+import Navbar2 from '../../Shared/Navbar/Navbar2';
 
 const Home2 = () => {
   return (
