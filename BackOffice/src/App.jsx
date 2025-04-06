@@ -40,6 +40,9 @@ import {useRef} from 'react';
 // actions
 import {saveToLocalStorage} from '@store/features/layout';
 import {lazy, Suspense} from 'react';
+import ForgotPassword from '@pages/screens/forgotpassword';
+import Resetpassword1 from '@pages/screens/restpasswordslouma';
+
 const App = () => {
     const location = useLocation();
   //  const isLoginPage = location.pathname === '/authentification';
@@ -79,7 +82,11 @@ const App = () => {
 
     return (
 <>
-        {user ==null && <Login/> }
+        {location.pathname === "/forgotpassword" && <ForgotPassword />}
+        {location.pathname.startsWith("/ResetPassword/") && <Resetpassword1 />}
+
+        {location.pathname === "/loginPage" && user ==null && <Login/> }
+        {location.pathname === "/" && user ==null && <Login/> }
         {user !=null && 
         <CacheProvider value ={cacheRtl}>
             <MuiThemeProvider theme={theme}>

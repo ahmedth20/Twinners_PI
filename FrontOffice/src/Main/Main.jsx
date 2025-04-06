@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import Navbar from '../Shared/Navbar/Navbar';
 import Navbar1 from '../Shared/Navbar/Navbar1';
 
 import Footer from '../Shared/Footer/Footer';
@@ -14,7 +13,6 @@ import 'lenis/dist/lenis.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSelector } from 'react-redux';
-import Home1 from '../Pages/Home1/Home1';
 import Navbar2 from '../Shared/Navbar/Navbar2';
 
 const Main = () => {

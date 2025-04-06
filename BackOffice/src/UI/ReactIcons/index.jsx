@@ -1,5 +1,5 @@
 import { Badge } from '@ui/Badge/style';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import theme from 'styled-theming';
 import { dark, light, flex, colors } from '@styles/vars';
 import PropTypes from 'prop-types';

@@ -83,7 +83,7 @@ const patientController = {
 
 
         // Création et enregistrement de l'utilisateur avec rôle "patient"
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword, role: "patient" });
+        const newUser = new User({ firstName, lastName, email, password: generatedPassword, role: "patient" });
         const savedUser = await newUser.save({ session });
 
         console.log("✅ Utilisateur enregistré :", savedUser._id);
@@ -188,7 +188,7 @@ const patientController = {
         const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
         // 1️⃣ Création et enregistrement de l'utilisateur
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+        const newUser = new User({ firstName, lastName, email, password: generatedPassword,role:"patient" });
         const savedUser = await newUser.save({ session });
         console.log("✅ Utilisateur enregistré :", savedUser._id);
 
@@ -427,6 +427,7 @@ async updatePatient(req, res) {
     }
 }
 ,
+
 
   // 📌 Supprimer un patient
   async deletePatient(req, res) {

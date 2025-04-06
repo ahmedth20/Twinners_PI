@@ -22,15 +22,11 @@ import BlogLeftSidebar from '../Pages/InnerPage/BlogLeftSidebar/BlogLeftSidebar'
 import BlogRightSidebar from '../Pages/InnerPage/BlogRightSidebar/BlogRightSidebar';
 import { createBrowserRouter , Navigate } from 'react-router-dom';
 import Home from '../screens/loginscreen';
+import Edit from '../Pages/editprofile/edit';
 
 import { useSelector } from "react-redux";
-import Footer from '../Shared/Footer/Footer';
-import Cursor from '../Shared/Cursor/Cursor';
-import HelmetChanger from '../Shared/Helmet/Helmet';
-import BackToTop from '../Shared/BackToTop/BackToTop';
-import { Outlet } from 'react-router-dom';
+
 import Forgotpassword from '../screens/forgotpassword'
-import Resetpassword from '../screens/resetpassword'
 import Resetpassword1 from '../screens/restpasswordslouma';
 import Home2 from '../Pages/HomeLogin/Home2';
 
@@ -57,6 +53,8 @@ const router = createBrowserRouter([
       { path: '', element: <PublicRoute><Home2 /></PublicRoute> },
       { path: 'home', element: <PrivateRoute><Home1 /></PrivateRoute> },
       { path: 'about', element: <PrivateRoute><AboutInner /></PrivateRoute> },
+      { path: 'editprofile', element: <PrivateRoute><Edit /></PrivateRoute> },
+
       { path: 'project_details', element: <PrivateRoute><ProjectDetails /></PrivateRoute> },
       { path: 'service', element: <PrivateRoute><ServiceInner /></PrivateRoute> },
       { path: 'service_details', element: <PrivateRoute><ServiceDetails /></PrivateRoute> },

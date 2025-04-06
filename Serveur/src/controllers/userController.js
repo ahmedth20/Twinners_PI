@@ -61,12 +61,123 @@ const authUser = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 });
+const authUserbackoff = asyncHandler(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    console.log("🛠 Comparaison du mot de passe :", user.role);
 
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur non trouvé" });
+    }
+    const isMatch = await user.matchPassword(password);
+    console.log("🛠 Comparaison du mot de passe :", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "mot de passe invalide" });
+    }
+   
+    const allowedRoles = ["staff", "admin", "service manager", "paramedic", "medecin"];
+
+    if (!allowedRoles.includes(user.role)) {
+      return res.status(401).json({ message: "Utilisateur non autorisé" });
+    }
+    if (!user.isActive) {
+      res.clearCookie('jwt'); // Supprimer tout cookie existant
+      return res.status(403).json({ message: "Votre compte est désactivé. Veuillez contacter l'administrateur." });
+    }
+
+   
+
+    const userId = user._id;
+    const role = user.role;
+    const token = jwt.sign({ userId, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    req.session.user = {
+      id: user._id,
+      firstName: user.firstName,
+      email: user.email,
+      role: user.role,
+    };
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      token,
+      message: "Connexion réussie",
+      user: req.session.user,
+    });
+
+  } catch (error) {
+    console.error("❌ Erreur lors de l'authentification :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+});
+const authUserfrontoff = asyncHandler(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    console.log("aa")
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur non trouvé" });
+    }
+    const isMatch = await user.matchPassword(password);
+    console.log("🛠 Comparaison du mot de passe :", isMatch);
+
+    if (!isMatch) {console.log("aa")
+      return res.status(401).json({ message: "mot de passe invalide" });
+      
+    }
+    if (user.role!="patient") {
+      return res.status(401).json({ message: "Utilisateur non authorizé" });
+    }
+    // Vérifier si l'utilisateur est actif
+    if (!user.isActive) {
+      res.clearCookie('jwt'); // Supprimer tout cookie existant
+      return res.status(403).json({ message: "Votre compte est désactivé. Veuillez contacter l'administrateur." });
+    }
+
+    
+
+    const userId = user._id;
+    const role = user.role;
+    const token = jwt.sign({ userId, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    req.session.user = {
+      id: user._id,
+      firstName: user.firstName,
+      email: user.email,
+      role: user.role,
+    };
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      token,
+      message: "Connexion réussie",
+      user: req.session.user,
+    });
+
+  } catch (error) {
+    console.error("❌ Erreur lors de l'authentification :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+});
 /*const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-
+console.log(user)
 
   if (user && (await user.matchPassword(password))) {
     const userId = user._id;
@@ -105,13 +216,15 @@ const authUsergoogle = asyncHandler(async (req, res) => {
   
   if (user) {
     const userId = user._id;
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const role = user.role;
+    const token = jwt.sign({role, userId }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
     console.log(token)
     req.session.user = {
       id: user._id,
       firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
     };
     // Vérifier si l'utilisateur est actif
@@ -141,14 +254,16 @@ const authUserfacebook = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    const userId = user._id;
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const userId = user._id;    const role = user.role;
+
+    const token = jwt.sign({ role,userId }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
     console.log(token)
     req.session.user = {
       id: user._id,
       firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
     };
 
@@ -187,12 +302,18 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     if (!phoneNumber) {
       return res.status(400).json({ success: false, message: 'Phone number is required' });
     }
+    const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return res.status(400).json({  message: 'User already exist' });
+
+  }
 
     // Créer l'utilisateur (assumer que tu as un modèle User pour l'enregistrement)
     const newUser = new User({
       firstName,
       email,
-      phoneNumber,
+      phoneNumber,role:"patient",
       password, // Assure-toi de hasher le mot de passe avant de l'enregistrer
       isActive: true, // ✅ Nouvel utilisateur activé par défaut
     });
@@ -201,8 +322,8 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     await newUser.save();
 
     // Envoyer un SMS de bienvenue ou de confirmation
-    const messageBody = `Bienvenue, ${firstName}! Votre inscription a été réussie`;
-    const result = await sendSMS(messageBody, phoneNumber);
+  //  const messageBody = `Bienvenue, ${firstName}! Votre inscription a été réussie`;
+   // const result = await sendSMS(messageBody, phoneNumber);
 
     var transport = nodemailer.createTransport({
       /*host: 'smtp.gmail.com',
@@ -233,6 +354,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
         console.log("Mail sent successfully:-", info.response);
       }
     });
+    return res.json({ message: 'your account has been created' });
 
   } catch (error) {
     console.error(error);
@@ -245,7 +367,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
 };
 
 const registerUsergoogle = asyncHandler(async (req, res) => {
-  const { firstName, email } = req.body;
+  const { name, email } = req.body;
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -254,8 +376,8 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    firstName,
-    email,
+    lastName:name,
+    email,role:"patient",
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
 
@@ -263,17 +385,16 @@ const registerUsergoogle = asyncHandler(async (req, res) => {
 });
 
 const registerUserfacebook = asyncHandler(async (req, res) => {
-  const { firstName, email } = req.body;
+  const { name, email } = req.body;
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     res.status(400);
     throw new Error('User already existxxs');
   }
 
   const user = await User.create({
-    firstName,
-    email,
+    lastName:name,
+    email,role:"patient",
     isActive: true, // ✅ Nouvel utilisateur activé par défaut
   });
 
@@ -296,26 +417,41 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-
+const getUserProfile1 = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    res.json({user:user?.picture,
+      _id: user._id,
+      lastName: user.lastName,      firstName: user.firstName,
+      picture:user.picture,role:user.role,
+      email: user.email,
+    });
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+});
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
-    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
-
-    if (req.body.password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(req.body.password, salt);
+    user.firstName = req.body.firstName || user.firstName;
+    
+    if (req.file) {
+      user.picture = req.file.path; // Stocke le chemin du fichier
     }
 
     const updatedUser = await user.save();
 
     res.json({
       _id: updatedUser._id,
-      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
       email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      picture: updatedUser.picture, // Retourner l'image mise à jour
+
     });
   } else {
     res.status(404);
@@ -389,6 +525,49 @@ const resetpass = asyncHandler(async (req, res) => {
 });
 
 
+const resetpass1 = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(404).json({ message: "Utilisateur non trouvé" });
+  }
+
+  // Générer un token temporaire (expire en 1h)
+  const token = jwt.sign({ id: user._id }, "SECRET_KEY", { expiresIn: "1h" });
+
+  var transport = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "gytgutu@gmail.com",
+      pass: "strp rifw uhso ciin",
+    },
+  });
+
+  var mailOptions = {
+    from: "smart 190",
+    to: req.body.email,
+    subject: "Réinitialisation du mot de passe",
+    html: `
+      <div>
+        <h1>Email de réinitialisation</h1>
+        <h2>Bonjour,</h2>
+        <p>Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+        <a href="http://localhost:3000/ResetPassword/${user._id}">Réinitialiser mon mot de passe</a>
+      </div>
+    `,
+  };
+
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+    } else {
+      console.log("Mail envoyé:", info.response);
+      return res.json({ message: "Email envoyé avec succès" });
+    }
+  });
+});
+
 const forgetpass = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;  // Récupérer l'ID depuis l'URL
@@ -452,7 +631,7 @@ const uploadProfileImage = async (req, res) => {
 
 
 module.exports= {
-    authUser, updateUserProfile, getUserProfile, forgetpass,registerUser,
-    authUserfacebook, registerUserfacebook,
+    authUser, updateUserProfile, getUserProfile, forgetpass,registerUser,authUserbackoff,
+    authUserfacebook, registerUserfacebook,getUserProfile1,authUserfrontoff,resetpass1,
     logoutUser, authUsergoogle, registerUsergoogle, resetpass, getAllUsers, uploadProfileImage
   };
