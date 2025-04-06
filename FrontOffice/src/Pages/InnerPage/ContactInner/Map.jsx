@@ -3,15 +3,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import AmbulanceService from '../../../services/ambulanceService';
-import aboutThumb from '/images/about.png';
-import heart from '/images/heart.png';
-import aboutShape from '/images/star.png';
-import aboutContentShape from '/images/dctr.png';
 import { Link } from 'react-router-dom';
-import CountUp from 'react-countup';
 import { FaCircleCheck } from 'react-icons/fa6';
 import { GoArrowRight } from 'react-icons/go';
 import {  FaClock, FaRoad } from 'react-icons/fa';
+import io from 'socket.io-client';
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -19,30 +15,39 @@ const Map = () => {
   const [duration, setDuration] = useState(null);
 const [distance, setDistance] = useState(null);
   const [activeAmbulance, setActiveAmbulance] = useState(null);
-  const [routeDetails, setRouteDetails] = useState({ distance: null, duration: null });
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [pendingAmbulance, setPendingAmbulance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [ambulanceRouteDetails, setAmbulanceRouteDetails] = useState({});
-
+  const [message, setMessage] = useState('');
+  const [receivedMessage, setReceivedMessage] = useState('');
   const mapRef = useRef(null);
   const routingRef = useRef(null);
   const ambulanceMarkersRef = useRef({});
   const userMarkerRef = useRef(null);
 
   const hospitalLocation = [36.8683, 10.2917]; // Hôpital Monji Slim
+  const socket = io('http://localhost:5000');
 
-  // Localisation utilisateur
+  const sendMessage = () => {
+    socket.emit('send_message', { message });
+  };
+
+  useEffect(() => {
+    socket.on('receive_message', (data) => {
+      setReceivedMessage(data.message);
+    });
+  }, []);
+
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(
       (pos) => setUserLocation([pos.coords.latitude, pos.coords.longitude]),
       () => setUserLocation([36.8005, 10.18]),
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000000 }
     );
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  // Initialiser la carte
   useEffect(() => {
     if (!mapRef.current && userLocation) {
       const map = L.map('map').setView(userLocation, 13);
@@ -183,6 +188,15 @@ const [distance, setDistance] = useState(null);
   const confirmAmbulanceCall = () => {
     if (!pendingAmbulance) return;
     handleAmbulanceClick(pendingAmbulance);
+
+    socket.emit('ambulance-call', {
+      ambulanceId: pendingAmbulance._id,
+      actuelLocation:` ${userLocation}`, 
+      message: `Requesting ambulance ${pendingAmbulance.name} to intervene at your location.`,
+    });
+  
+    handleAmbulanceClick(pendingAmbulance);
+  
     setShowConfirmPopup(false);
     setPendingAmbulance(null);
   };
@@ -190,6 +204,7 @@ const [distance, setDistance] = useState(null);
   return (
     
     <div className='bg-BodyBg-0 px-2 lg:px-[30px]'>
+        
     <section className="bg-blue-900 bg-cover bg-center bg-no-repeat h-[600px] sm:h-[700px] md:h-[700px] lg:h-[700px] xl:h-[790px] 2xl:h-[790px] flex items-center relative z-10 overflow-hidden rounded-t-2xl md:rounded-t-[30px]">
       
       {/* Carte à droite, prend 70% de l'espace */}
@@ -243,33 +258,30 @@ const [distance, setDistance] = useState(null);
     });
 
     return (
-      <div
-        key={ambulance._id}
-        className='flex items-center gap-2 cursor-pointer bg-blue-800 ml-0 rounded-xl p-4 transition duration-300 opacity-90 hover:opacity-100'
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        onClick={() => handleAmbulanceCall(ambulance)}
-      >
-        <div className='text-PrimaryColor-0'>
-          <FaCircleCheck size={'20'} />
-        </div>
+<div
+  key={ambulance._id}
+  className='flex items-center gap-2 cursor-pointer bg-blue-800 text-white rounded-xl p-4 transition duration-300 opacity-90 hover:opacity-100 w-max mr-auto'
+  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+  onClick={() => handleAmbulanceCall(ambulance)}
+>
         <div className='flex-1'>
           <h5 className='font-DMSans text-white font-bold mb-2'>
             Ambulance - {index + 1}
           </h5>
-          <div className='flex items-center gap-2'>
-            <div className='flex items-center'>
+          <div className='items-center '>
+          <p className='flex '>
               <FaClock size={'18'} className='text-PrimaryColor-0' />
               <h5 className='font-DMSans text-white ml-2'>
                 Estimated Time: {duration !== null ? `${duration} min` : 'Calculating...'}
               </h5>
-            </div>
-            <div className='flex items-center'>
+          </p>
+          <p className='flex '> 
               <FaRoad size={'18'} className='text-PrimaryColor-0' />
               <h5 className='font-DMSans text-white ml-2'>
                 Distance: {distance !== null ? `${distance} km` : 'Calculating...'}
               </h5>
-            </div>
+          </p>
           </div>
         </div>
       </div>
@@ -329,7 +341,16 @@ const [distance, setDistance] = useState(null);
   </div>
 )}
 
-
+<div className="App">
+      <h2>Frontend App 1</h2>
+      <input
+        type="text"
+        placeholder="Message"
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button onClick={sendMessage}>Send</button>
+      <p>Received: {receivedMessage}</p>
+    </div>
       
 </div>
     

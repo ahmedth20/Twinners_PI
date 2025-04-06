@@ -11,12 +11,84 @@ const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
-
-
+const http = require('http');
+const { Server } = require('socket.io');
 const staffRoutes = require("./src/routes/staff.js");
 
 const doctorRoutes = require("./src/routes/doctor.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
+
+
+
+// Config
+dotenv.config();
+connectDB();
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Créer un serveur HTTP
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:5173', 'http://localhost:3000'], // port numbers of your frontend app
+    methods: ['GET', 'POST'],
+  },
+});
+app.use(cors());
+io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.id}`);
+  socket.on('send_message', (data) => {
+    console.log('Message received:', data);
+    socket.broadcast.emit('receive_message', data);
+  });
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
+
+
+// Sessions
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+      ttl: 60
+    })
+  })
+);
+
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// Routes
+app.use("/users", userRoutes);
+app.use("/emergency", emergencyRoutes);
+app.use("/patient", patientRoutes);
+app.use("/staff", staffRoutes);
+app.use("/doctors", doctorRoutes);
+app.use("/paramedics", paramedicRoutes);
+app.use("/servicemanager", sermanagerRoutes);
+app.use("/ambulance", ambulanceRoutes);
+
+// Frontends
+app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
+app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
+
+// Démarrer serveur AVEC WebSocket support
+server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
+
+
+
+
+/*
 
 
 
@@ -54,7 +126,7 @@ app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build"
 app.use("/emergency", emergencyRoutes);
 // Servir le Back-Office (mediic)
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
-app.use('/ambulance', ambulanceRoutes);
+
 // 🔹 3. Middlewares essentiels
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -72,3 +144,4 @@ app.use("/servicemanager", sermanagerRoutes);
 
 // 🔹 5. Démarrer le serveur
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
+*/

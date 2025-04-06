@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Client 1</title></head>
+  <body>
+    <h2>Client 1 - Envoyer une intervention</h2>
+    <button onclick="sendRequest()">Envoyer Intervention</button>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:5000');
+
+      function sendRequest() {
+        const data = {
+          patient: 'Yosr',
+          location: 'Centre Ville',
+          urgence: 'Haute'
+        };
+        socket.emit('send-intervention-request', data);
+      }
+    </script>
+  </body>
+</html>

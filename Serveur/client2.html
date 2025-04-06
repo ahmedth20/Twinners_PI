@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Client 2</title></head>
+  <body>
+    <h2>Client 2 - Réception des demandes</h2>
+    <ul id="requests"></ul>
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:5000');
+
+      socket.on('new-intervention-request', (data) => {
+        const li = document.createElement('li');
+        li.textContent = `Intervention pour ${data.patient} à ${data.location} (Urgence: ${data.urgence})`;
+        document.getElementById('requests').appendChild(li);
+      });
+    </script>
+  </body>
+</html>
