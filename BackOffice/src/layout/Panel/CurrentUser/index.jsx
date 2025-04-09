@@ -20,6 +20,7 @@ const CurrentUser = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
+    const [ setLoading] = useState(false);
 
     const user = useSelector(state => state.auth.user.user1.id);
 

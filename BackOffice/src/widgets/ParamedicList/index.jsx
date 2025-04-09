@@ -83,8 +83,8 @@ const ParamedicList = () => {
   const [filteredParamedics, setFilteredParamedics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-//  const [search, setSearch] = useState('');
- // const [filterFunction, setFilterFunction] = useState('');
+ const [search] = useState('');
+ const [filterFunction] = useState('');
   const [newParamedic, setNewParamedic] = useState({
     function: '',
     ambulance: '',

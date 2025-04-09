@@ -8,7 +8,7 @@ import { Snackbar, Alert } from "@mui/material";
 
 
 function Login() {
- // const [isSignUp, setIsSignUp] = useState(false);
+ const [isSignUp] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
