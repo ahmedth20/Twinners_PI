@@ -12,7 +12,7 @@ const Doctors = () => {
   const [isTypePopupOpen, setIsTypePopupOpen] = useState(false);
   const [isSimplePopupOpen, setIsSimplePopupOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null); // Store the doctor to edit
-  const navigate = useNavigate();
+
 
   const handleSimpleDoctor = () => {
     setIsTypePopupOpen(false);

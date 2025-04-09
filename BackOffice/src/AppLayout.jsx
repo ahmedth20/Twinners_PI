@@ -1,19 +1,8 @@
 // utils
 import {lazy, Suspense} from 'react';
 
-// components
-import ScrollProgress from 'UI/ScrollProgress';
-import Panel from 'layout/Panel';
-import Sidebar from 'layout/Sidebar';
-import {Navigate, Route, Routes} from 'react-router-dom';
-import BottomMenu from 'layout/BottomMenu';
-import WidgetsLoader from 'components/WidgetsLoader';
+import { Route, Routes} from 'react-router-dom';
 
-// hooks
-import useWindowSize from 'hooks/useWindowSize';
-import usePageIsOverflow from 'hooks/usePageIsOverflow';
-import {useRef, useEffect} from 'react';
-import { useSelector } from "react-redux";
 import Forgotpassword from 'pages/screens/forgotpassword'
 import Resetpassword1 from 'pages/screens/restpasswordslouma'
 
@@ -44,7 +33,7 @@ const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
 const Settings = lazy(() => import('pages/Settings'));
 const MedicalForm = lazy(() => import('pages/MedicalForm'));
-const PageNotFound = lazy(() => import('pages/PageNotFound'));
+//const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
 const Servicemanager = lazy(() => import('pages/srevicemanager'));
 

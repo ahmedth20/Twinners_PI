@@ -1,6 +1,5 @@
 // components
 import GroupSeparator from 'UI/GroupSeparator';
-import PersonList from 'components/PersonList';
 import StaffList from 'components/StaffList';
 
 // utils

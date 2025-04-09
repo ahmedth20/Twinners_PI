@@ -16,7 +16,6 @@ const List = styled.ul`
 `
 
 const PatientList = ({ arr, type, gender, deps }) => {
-  const { search, category } = deps ? deps : { search: '', category: '' };
   return (
       <List>
           {arr.map((item, i) => (

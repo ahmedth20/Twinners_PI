@@ -41,9 +41,7 @@ const Item = ({ type, data, onEdit, onDelete }) => {
 
   const { user, online, avatar, phone, role } = data;
   const [isActive, setIsActive] = useState(false);
-  const toggleActivation = () => {
-    setIsActive(!isActive);
-  };
+ 
 
   const Common = () => (
     <Block>

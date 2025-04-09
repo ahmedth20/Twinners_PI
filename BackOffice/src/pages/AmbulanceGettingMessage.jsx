@@ -41,7 +41,7 @@ function AmbulanceGettingMessage() {
             socket.off('ambulance-response');
             socket.disconnect(); // Déconnecter le socket lorsque le composant est démonté
         };
-    }, []);
+    }, [socket]);
 
     const handleModalClose = () => {
         setOpenModal(false);

@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import Page from "layout/Page";
 import StaffService from "../services/StaffService";
 import { 
-  GlobalStyles, Input, DisabledBackground, Form, ButtonContainer, 
+  GlobalStyles, Input,  Form, ButtonContainer, 
   Line, ProgressBar, NavButton, NextButton, SubmitButton, Container, 
   AddButton, ModalContent, ModalOverlay, CloseButton, Title, StepContainer, Step, 
-  InputRow, ButtonRow, Select, FormTitle
+  InputRow, FormTitle
 } from "../styles/PopUpAddStaff";
 
 const steps = [

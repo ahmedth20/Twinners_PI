@@ -24,13 +24,13 @@ const PatientsList = () => {
     const contentRef = useRef(null);
     const [patients, setPatients] = useState([]);
     const [selectedLetter, setSelectedLetter] = useState(null);
-    const [lastGender, setLastGender] = useState(null);
+  //  const [lastGender, setLastGender] = useState(null);
 
     const handleLetterClick = (char) => {
         setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
     };
     
-    const handleGenderClick = (newGender) => {
+  /*  const handleGenderClick = (newGender) => {
         if (lastGender === newGender.value) {
             // Double-clic : Réinitialiser la sélection de lettre
             setSelectedLetter(null);
@@ -38,7 +38,7 @@ const PatientsList = () => {
         setLastGender(newGender.value);
         setGender(newGender);
     };
-    
+    */
     
     
     useEffect(() => {

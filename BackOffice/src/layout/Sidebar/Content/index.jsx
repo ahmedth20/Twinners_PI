@@ -5,18 +5,18 @@ import {colors} from 'styles/vars';
 // components
 import Accordion from 'react-bootstrap/Accordion';
 import {NavLink} from 'react-router-dom';
-import {useDispatch,useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 // hooks
 import {useSidebarContext} from 'contexts/sidebarContext';
 
 // menu links
 import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from 'constants/menu';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Content = () => {
    const token = useSelector(state => state.auth.user.token);
-    const secretKey = "abc123";
+   
 
     const {toggleSidebar} = useSidebarContext();
     const activeStyle = {color: colors.blue};
@@ -71,7 +71,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index === menudoctors.length - 1 ? 'pin-down' : ''}
+                                      className={index == menudoctors.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -120,7 +120,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index === menuchefservice.length - 1 ? 'pin-down' : ''}
+                                      className={index == menuchefservice.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -170,7 +170,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index === menustaff.length - 1 ? 'pin-down' : ''}
+                                      className={index == menustaff.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -220,7 +220,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index === menuparamedic.length - 1 ? 'pin-down' : ''}
+                                      className={index == menuparamedic.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -270,7 +270,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index === menuadmin.length - 1 ? 'pin-down' : ''}
+                                      className={index == menuadmin.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>

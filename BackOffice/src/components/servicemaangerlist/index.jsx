@@ -6,8 +6,7 @@ import {flex} from 'styles/vars';
 import Item from 'components/PersonList/Item';
 
 // utils
-import PropTypes from 'prop-types';
-import { useState, useRef, useEffect } from 'react';
+import { useState,  useEffect } from 'react';
 import PatientService from 'services/ServiceMangerService';
 
 const List = styled.ul`

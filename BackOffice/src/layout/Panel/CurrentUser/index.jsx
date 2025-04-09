@@ -1,24 +1,17 @@
 import { Menu, UserWrapper, PopupOverlay, PopupContent } from '../style';
-import Avatar from 'UI/Avatar';
 import { useDispatch } from 'react-redux';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { useState, useEffect } from 'react';
 import { logout } from '../../../slices/authSlice';
 import doc1jpg from 'assets/avatars/doc1.jpg';
-import doc1webp from 'assets/avatars/doc1.jpg?as=webp';
-import * as z from "zod";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import {
-  GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
-  ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle
+  Input, Form, SubmitButton, Error, InputRow, FormTitle
 } from "../../../styles/PopUpAddPatient";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Snackbar, Alert } from "@mui/material";
 
 const CurrentUser = () => {
-    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -45,9 +38,7 @@ const CurrentUser = () => {
                 setPicture(data.picture || null);
             } catch (error) {
                 console.error("Erreur lors du chargement des données", error);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
         fetchUser();
     }, [user]);
