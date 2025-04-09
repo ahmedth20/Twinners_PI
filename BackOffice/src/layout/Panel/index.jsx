@@ -50,6 +50,7 @@ const Panel = () => {
                     <MenuButton/>
                     :
                     <Actions>
+
                         <ShapeButton shape="square" label="Notification" icon="bell" hasNotification={true}/>
                         {
                             isDesktop ?

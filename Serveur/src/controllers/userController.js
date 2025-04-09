@@ -290,7 +290,7 @@ const authUserfacebook = asyncHandler(async (req, res) => {
 });
 
 
- const registerUser = async (req, res) => {
+ /*const registerUser = async (req, res) => {
   try {
     const { lastName, email, phoneNumber, password } = req.body;
 
@@ -327,9 +327,9 @@ const authUserfacebook = asyncHandler(async (req, res) => {
    // const result = await sendSMS(messageBody, phoneNumber);
 
     var transport = nodemailer.createTransport({
-      /*host: 'smtp.gmail.com',
-     port: 465,
-    secure: true,*/
+      //host: 'smtp.gmail.com',
+     //port: 465,
+   // secure: true,
       service: "Gmail",
       auth: {
         user: "gytgutu@gmail.com",
@@ -362,6 +362,86 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to register user',
+      error: error.message,
+    });
+  }
+};*/
+const registerUser = async (req, res) => {
+  try {
+    const { lastName, email, phoneNumber, password } = req.body;
+
+    // Vérifier si tous les champs requis sont fournis
+    if (!lastName || !email || !password) {
+      return res.status(400).json({ success: false, message: 'firstName, email, and password are required' });
+    }
+
+    // Vérifier si le numéro de téléphone est fourni (optionnel)
+    if (!phoneNumber) {
+      return res.status(400).json({ success: false, message: 'Phone number is required' });
+    }
+    const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return res.status(400).json({  message: 'User already exist' });
+
+  }
+
+
+    // ✅ Gestion de l’image (si elle existe)
+    let pictureUrl = '';
+    if (req.file && req.file.path) {
+      pictureUrl = req.file.path; // Lien direct vers Cloudinary
+    }
+
+    const newUser = new User({
+      lastName,
+      email,
+      phoneNumber,
+      password,
+      picture: pictureUrl, // Enregistre le lien Cloudinary
+      role: "patient",
+      isActive: true,
+      firstName:lastName
+    });
+
+    await newUser.save();
+    return res.status(201).json({ message: 'Votre compte a été créé avec succès' });
+
+    // ✅ Envoi de mail (déjà fait dans ton code)
+    const transport = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "gytgutu@gmail.com",
+        pass: "strp rifw uhso ciin",
+      },
+    });
+
+    const mailOptions = {
+      from: "smart 190",
+      to: req.body.email,
+      subject: "Activer votre compte",
+      html: `
+        <div>
+          <h1>Email d'activation du compte</h1>
+          <h2>Bonjour</h2>
+          <p>Veuillez confirmer votre email en cliquant sur le lien suivant
+          <a href="#">Cliquez ici</a>
+        </div>`,
+    };
+
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Mail envoyé :", info.response);
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erreur lors de l’inscription',
       error: error.message,
     });
   }

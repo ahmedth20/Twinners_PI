@@ -16,14 +16,39 @@ const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
 
+const http = require('http');
 
 
 dotenv.config();
 connectDB();
+const { Server } = require('socket.io');
 
 const app = express();
 const port = process.env.PORT || 5000;
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: ["http://localhost:5173", "http://localhost:3000"], // FrontOffice et BackOffice
+        methods: ["GET", "POST"]
+    }
+});
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
 
+  socket.on('disconnect', () => {
+      console.log('Client disconnected:', socket.id);
+  });
+
+  // Listen for patient registration from FrontOffice
+  socket.on('patient-registered', (patientData) => {
+      console.log('New patient registered:', patientData);
+      // Emit notification to BackOffice
+      io.emit('new-registration',  { name: patientData.name });
+  });
+});
+app.get('/', (req, res) => {
+  res.send('Socket server is running');
+});
 // 🔹 1. Configurer CORS correctement
 app.use(
   cors({
@@ -48,7 +73,7 @@ app.use(
 
 // 🔹 2. Activer le support des requêtes `OPTIONS` (Preflight)
 app.options("*", cors());
-app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
+app.use("/hh", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/emergency", emergencyRoutes);
 // Servir le Back-Office (mediic)
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));

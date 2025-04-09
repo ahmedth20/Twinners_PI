@@ -13,8 +13,8 @@ const upload = require("../middleware/uploadMiddleware.js");
 
 const router = express.Router();
 //router.post('/',upload.single('picture'), registerUser);
-
-router.post('/',registerUser);
+router.post("/", upload.single("picture"), registerUser);
+//router.post('/',registerUser);
 router.post('/google', registerUsergoogle);
 router.post('/facebook', registerUserfacebook);
 

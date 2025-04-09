@@ -18,6 +18,8 @@ import Forgotpassword from '@pages/screens/forgotpassword'
 import Resetpassword1 from '@pages/screens/restpasswordslouma'
 
 // pages
+const Equipements = lazy(() => import('@pages/equipement'));
+
 const DashboardA = lazy(() => import('@pages/DashboardA'));
 const DashboardB = lazy(() => import('@pages/DashboardB'));
 const DashboardC = lazy(() => import('@pages/DashboardC'));
@@ -83,8 +85,9 @@ const AppLayout = () => {
       <Route path="/medical_form" element={ <MedicalForm/> } />
       <Route path="/forgotpassword" element={ <Forgotpassword/> } />
       <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
+      <Route path="/equipements" element={ <Equipements/> } />
 
-    
+      
 
                     </Routes>
                

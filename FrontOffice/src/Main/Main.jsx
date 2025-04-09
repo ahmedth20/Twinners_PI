@@ -20,6 +20,7 @@ const Main = () => {
     AOS.init();
     AOS.refresh();
   }, []);
+ 
   const user = useSelector(state => state.auth.user);
     const lenis = new Lenis();
 

@@ -6,7 +6,9 @@ import { GoogleLogin } from '@react-oauth/google';
 import { login, logout } from "../slices/authSlice";
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import { Snackbar, Alert } from "@mui/material";
+//import { io } from 'socket.io-client';
 
+//const socket = io("http://localhost:5000");
 function Yosr() {
   const [isSignUp, setIsSignUp] = useState(false);
   const dispatch = useDispatch();
@@ -34,6 +36,7 @@ function Yosr() {
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     return JSON.parse(atob(base64)); // Décode en JSON
   };
+  const [picture, setPicture] = useState(null);
 
   const handleGoogleRegister = async (credentialResponse) => {
     try {
@@ -98,7 +101,7 @@ function Yosr() {
     }
   };
 
-  const handleSubmit1 = async (e) => {
+  /*const handleSubmit1 = async (e) => {
     e.preventDefault();
 
     try {
@@ -111,7 +114,7 @@ function Yosr() {
         },
         credentials: "include", // ✅ Active l'envoi des cookies/sessions
         body: JSON.stringify({
-          firstName: name, phoneNumber: phoneNumber,
+          firstName: name, phoneNumber: phoneNumber,lastName: name,
           email: email1,
           password: password1,
           role: "patient"
@@ -124,7 +127,8 @@ else if(data.message=="Phone number is required"){setErr("Phone number is requir
 else if(data.message=="User already exist"){setErr("User already exist");}
 
 
-else if (data.message=="your account has been created"){  setSuccess("your account has been created");    
+else if (data.message=="your account has been created"){  setSuccess("your account has been created");   
+  socket.emit('patient-registered', { name: data.name });
     navigate("/loginPage");
 }
 
@@ -132,7 +136,50 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
       console.error("Erreur:", error);setErr(error);
     }
   };
+*/
+const handleSubmit1 = async (e) => {
+  e.preventDefault();
+ 
 
+  const formData = new FormData();
+  formData.append("firstName", name);
+  formData.append("lastName", name); // ou un autre champ si nécessaire
+  formData.append("phoneNumber", phoneNumber);
+  formData.append("email", email1);
+  formData.append("password", password1);
+  formData.append("role", "patient");
+
+  if (picture) {
+    formData.append("picture", picture); // ← fichier image
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/users", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (data.message === "firstName, email, and password are required") {
+      setErr("firstName, email, and password are required");
+    } else if (data.message === "Phone number is required") {
+      setErr("Phone number is required");
+    } else if (data.message === "User already exist") {
+      setErr("User already exist");
+    } else if (data.message === "Votre compte a été créé avec succès") {
+      setSuccess("your account has been created");
+      // socket.emit('patient-registered', { name: data.name });
+      window.location.reload()
+    }
+
+  } catch (error) {
+    console.error("Erreur:", error);
+    setErr(error.message || "Une erreur est survenue.");
+  }
+};
 
 
   const handleSubmit = async (e) => {
@@ -484,6 +531,12 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     className={`p-2 w-full border rounded focus:outline-none }`}                 
 
                   />
+                  <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => setPicture(e.target.files[0])}
+  className="border p-2 rounded mb-4"
+/>
                   <button
                     type="submit"  className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
         isFormValid1() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"

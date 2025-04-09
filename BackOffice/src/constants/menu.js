@@ -30,7 +30,7 @@ export const menuchefservice = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/equipements' }
             
         ]
     },
@@ -272,7 +272,7 @@ export const menuadmin = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/equipements' }
             
         ]
     },
@@ -290,7 +290,8 @@ export const menuadmin = [
         links: [
             { name: "Doctors", link: '/doctors' },
             { name: "Staff", link: '/staff' },
-            { name: "Paramedic", link: '/Paramedic' }
+            { name: "Paramedic", link: '/Paramedic' },
+            { name: "Service", link: '/servicemanager' }
         ]
     },
     {
