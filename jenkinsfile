@@ -23,15 +23,21 @@ pipeline {
             }
         }
 
-        stage('Build application') {
-            steps {
+       stage('Build application') {
+           steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
                     projects.each { dir ->
-                        sh "cd ${dir} && npm run build-dev"
-                    }
-                }
-            }
+                        if (dir == 'FrontOffice') {
+                            sh "cd ${dir} && npm run build"
+                        } else {
+                            sh "cd ${dir} && npm run build-dev"
+                        }
+                     }
+                  }
+              }
+       
         }
+
     }
 }
