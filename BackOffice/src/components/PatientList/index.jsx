@@ -1,10 +1,10 @@
 // styling
 import styled from 'styled-components';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 import { nanoid } from 'nanoid';
 
 // components
-import Item from '@components/PatientList/Item';
+import Item from 'components/PatientList/Item';
 
 // utils
 import PropTypes from 'prop-types';

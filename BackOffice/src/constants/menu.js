@@ -56,7 +56,8 @@ export const menuchefservice = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+            { name: "Ambulance Emergency", link: '/AmbulanceGettingMessage' }
         ]
     },
     {

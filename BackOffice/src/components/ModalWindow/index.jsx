@@ -1,7 +1,7 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, flex, light} from '@styles/vars';
+import {dark, flex, light} from 'styles/vars';
 
 // components
 import Modal from '@mui/material/Modal';

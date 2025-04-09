@@ -1,24 +1,24 @@
 // styling
 import {rgba} from 'polished';
-import {colors, dark, light} from '@styles/vars';
+import {colors, dark, light} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import PeriodNav from '@components/PeriodNav';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import CartesianChart from '@components/CartesianChart';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import PeriodNav from 'components/PeriodNav';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import CartesianChart from 'components/CartesianChart';
 
 // hooks
 import {useState, useRef} from 'react';
-import usePeriodNav from '@hooks/usePeriodNav';
-import useContentHeight from '@hooks/useContentHeight';
+import usePeriodNav from 'hooks/usePeriodNav';
+import useContentHeight from 'hooks/useContentHeight';
 import {useTheme} from 'styled-components';
 
 // data placeholder
-import {year, month, week} from '@db/epi_period';
+import {year, month, week} from 'db/epi_period';
 
 const EpiContextPeriodChart = () => {
     const {theme} = useTheme();

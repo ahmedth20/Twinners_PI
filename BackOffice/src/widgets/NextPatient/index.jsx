@@ -1,15 +1,15 @@
 // styled components
 import { Main } from './style';
-import { Main as SlideContent, Footer } from '@components/AppointmentItem/style';
+import { Main as SlideContent, Footer } from 'components/AppointmentItem/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
-import WidgetNav from '@components/Widget/WidgetNav';
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
-import Truncated from '@components/Truncated';
-import MenuDots from '@ui/MenuDots';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
+import WidgetNav from 'components/Widget/WidgetNav';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
+import Truncated from 'components/Truncated';
+import MenuDots from 'UI/MenuDots';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, Thumbs } from 'swiper';
 
@@ -19,10 +19,10 @@ import moment from 'moment';
 
 // hooks
 import { useState, useEffect } from 'react';
-import { useInterfaceContext } from '@contexts/interfaceContext';
+import { useInterfaceContext } from 'contexts/interfaceContext';
 
 // data placeholder
-import { appointments } from '@db/appointments';
+import { appointments } from 'db/appointments';
 
 
 

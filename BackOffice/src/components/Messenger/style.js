@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {light, textSizes, flex, colors} from '@styles/vars';
+import {light, textSizes, flex, colors} from 'styles/vars';
 
 const borderColor = theme('theme', {
     light: light.bodyBg,

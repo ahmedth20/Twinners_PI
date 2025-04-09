@@ -1,30 +1,30 @@
 // styling
 import styled from 'styled-components';
-import {flex, breakpoints} from '@styles/vars';
+import {flex, breakpoints} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import PaymentItem from '@components/PaymentItem';
-import Navigator from '@ui/Navigator';
-import ScrollContainer from '@components/ScrollContainer';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import PaymentItem from 'components/PaymentItem';
+import Navigator from 'UI/Navigator';
+import ScrollContainer from 'components/ScrollContainer';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
 import {nanoid} from 'nanoid';
-import {getYearDaysArray} from '@utils/dates';
+import {getYearDaysArray} from 'utils/dates';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useEffect, useRef} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
-import useWindowSize from '@hooks/useWindowSize';
+import useContentHeight from 'hooks/useContentHeight';
+import useWindowSize from 'hooks/useWindowSize';
 
 // data placeholder
-import {paymentsHistory} from '@db/payments_history';
+import {paymentsHistory} from 'db/payments_history';
 
 const Container = styled.div`
   .list {

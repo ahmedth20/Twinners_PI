@@ -1,28 +1,28 @@
 // styling
 import styled from 'styled-components';
-import {flex, light, dark} from '@styles/vars';
+import {flex, light, dark} from 'styles/vars';
 import {useTheme} from 'styled-components';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 import {PieChart, Pie, Tooltip, Cell} from 'recharts';
-import ChartLabel from '@widgets/DiagnosesDonut/ChartLabel';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartLabel from 'widgets/DiagnosesDonut/ChartLabel';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
-import useWindowSize from '@hooks/useWindowSize';
+import useArrayNav from 'hooks/useArrayNav';
+import useWindowSize from 'hooks/useWindowSize';
 
 // utils
 import PropTypes from 'prop-types';
 
 // assets
-import rays from '@assets/rays.svg';
-import rays_xl from '@assets/rays_xl.svg';
+import rays from 'assets/rays.svg';
+import rays_xl from 'assets/rays_xl.svg';
 
 const Content = styled.div`
   min-height: 265px;

@@ -1,9 +1,9 @@
 // components
-import Page from '@layout/Page';
-import PatientAppointmentsHistory from '@widgets/PatientAppointmentsHistory';
-import PatientOverallAppointments from '@widgets/PatientOverallAppointments';
-import RadarAreaChart from '@widgets/RadarAreaChart';
-import DiagnosesDonut from '@widgets/DiagnosesDonut';
+import Page from 'layout/Page';
+import PatientAppointmentsHistory from 'widgets/PatientAppointmentsHistory';
+import PatientOverallAppointments from 'widgets/PatientOverallAppointments';
+import RadarAreaChart from 'widgets/RadarAreaChart';
+import DiagnosesDonut from 'widgets/DiagnosesDonut';
 
 const DashboardB = () => {
     return (

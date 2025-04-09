@@ -1,7 +1,7 @@
 // styled components
 import {Content, ContentTitle, Controls, Wrapper, Widgets} from './style';
-import {QtyBadge} from '@ui/Badge/style';
-import {ControlWrapper} from '@components/GlobalSettingsControls/style';
+import {QtyBadge} from 'UI/Badge/style';
+import {ControlWrapper} from 'components/GlobalSettingsControls/style';
 
 // components
 import {Helmet} from 'react-helmet';
@@ -12,15 +12,15 @@ import {
     ScaleControl,
     ThemeControl,
     DirectionControl
-} from '@components/GlobalSettingsControls';
-import Grid from '@layout/Grid';
+} from 'components/GlobalSettingsControls';
+import Grid from 'layout/Grid';
 import {motion} from 'framer-motion';
 
 // utils
 import PropTypes from 'prop-types';
 
 // hooks
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 import useMobileDetect from 'use-mobile-detect-hook';
 import {useLocation} from 'react-router-dom';
 import {useSelector} from 'react-redux';

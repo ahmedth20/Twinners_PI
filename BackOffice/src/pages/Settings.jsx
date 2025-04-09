@@ -1,6 +1,6 @@
 // components
-import Page from '@layout/Page';
-import UserSettings from '@widgets/UserSettings';
+import Page from 'layout/Page';
+import UserSettings from 'widgets/UserSettings';
 
 const Settings = () => {
     return (

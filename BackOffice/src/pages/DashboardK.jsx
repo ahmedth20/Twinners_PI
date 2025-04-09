@@ -1,8 +1,8 @@
 // components
-import Page from '@layout/Page';
-import Statistics from '@widgets/Statistics';
-import PaymentsHistory from '@widgets/PaymentsHistory';
-import RecentTests from '@widgets/RecentTests';
+import Page from 'layout/Page';
+import Statistics from 'widgets/Statistics';
+import PaymentsHistory from 'widgets/PaymentsHistory';
+import RecentTests from 'widgets/RecentTests';
 
 const DashboardK = () => {
     return (

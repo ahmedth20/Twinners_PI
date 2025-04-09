@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, effects, flex, fonts, textSizes} from '@styles/vars';
+import {colors, effects, flex, fonts, textSizes} from 'styles/vars';
 
 export const ListItem = styled.div`
   border-bottom: ${theme('theme', {

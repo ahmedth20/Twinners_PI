@@ -1,12 +1,12 @@
 // components
-import Page from '@layout/Page';
-import NextPatient from '@widgets/NextPatient';
-import LaboratoryTests from '@widgets/LaboratoryTests';
-import UpcomingAppointments from '@widgets/UpcomingAppointments';
-import DoctorOverallAppointment from '@widgets/DoctorOverallAppointment';
-import PatientsPace from '@widgets/PatientsPace';
-import RecentQuestions from '@widgets/RecentQuestions';
-import ConfirmedDiagnoses from '@widgets/ConfirmedDiagnoses';
+import Page from 'layout/Page';
+import NextPatient from 'widgets/NextPatient';
+import LaboratoryTests from 'widgets/LaboratoryTests';
+import UpcomingAppointments from 'widgets/UpcomingAppointments';
+import DoctorOverallAppointment from 'widgets/DoctorOverallAppointment';
+import PatientsPace from 'widgets/PatientsPace';
+import RecentQuestions from 'widgets/RecentQuestions';
+import ConfirmedDiagnoses from 'widgets/ConfirmedDiagnoses';
 import { useState, useEffect } from 'react';
 import Modal from 'custom/Modal';
 

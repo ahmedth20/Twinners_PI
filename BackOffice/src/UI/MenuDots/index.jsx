@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {textSizes, light, colors} from '@styles/vars';
+import {textSizes, light, colors} from 'styles/vars';
 
 // utils
 import PropTypes from 'prop-types';

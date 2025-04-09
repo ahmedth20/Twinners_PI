@@ -1,9 +1,9 @@
 // styling
 import styled from 'styled-components';
-import {flex, textSizes} from '@styles/vars';
-import {numFormatter} from '@utils/numbers';
+import {flex, textSizes} from 'styles/vars';
+import {numFormatter} from 'utils/numbers';
 import PropTypes from 'prop-types';
-import CustomTooltip from '@ui/CustomTooltip';
+import CustomTooltip from 'UI/CustomTooltip';
 
 const Label = styled.div`
   ${flex.col};

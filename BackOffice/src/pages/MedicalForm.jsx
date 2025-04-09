@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Page from "@layout/Page";
+import Page from "layout/Page";
 import { Container, Title, SectionTitle,Form, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
 import PatientService from "../services/PatientService";
 import { useForm } from "react-hook-form";

@@ -1,16 +1,16 @@
 // styling
 import styled from 'styled-components';
-import {light, colors} from '@styles/vars';
+import {light, colors} from 'styles/vars';
 
 // styled components
 import {Button} from './style';
 
 // components
-import RangeSlider from '@ui/RangeSlider';
+import RangeSlider from 'UI/RangeSlider';
 
 // hooks
 import {useState, useEffect} from 'react';
-import {useInterfaceContext} from '@contexts/interfaceContext';
+import {useInterfaceContext} from 'contexts/interfaceContext';
 import {useTheme} from 'styled-components'
 import {useTheme as MuiUseTheme} from '@mui/material/styles';
 

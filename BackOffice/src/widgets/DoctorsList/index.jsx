@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Header } from '@components/Widget/style';
+import { Header } from 'components/Widget/style';
 import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
-import GenderNav from '@components/GenderNav';
-import MonthNavigator from '@ui/Navigator/MonthNavigator';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
+import GenderNav from 'components/GenderNav';
+import MonthNavigator from 'UI/Navigator/MonthNavigator';
 import Group from './Group';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import UpdateDoctorPopup from 'pages/UpdateDoctorPopUp';
 
 // utils
-import { generateAlphabet } from '@utils/helpers';
+import { generateAlphabet } from 'utils/helpers';
 
 // hooks
-import useGenderFilter from '@hooks/useGenderFilter';
+import useGenderFilter from 'hooks/useGenderFilter';
 import DoctorService from 'services/DoctorService';
 
 const DoctorsList = ({ variant = "doctor" }) => {

@@ -1,8 +1,8 @@
 // components
-import Page from '@layout/Page';
-import ReviewsRatingList from '@components/Reviews/List';
-import Content from '@components/Reviews/Content';
-import ModalWindow from '@components/ModalWindow';
+import Page from 'layout/Page';
+import ReviewsRatingList from 'components/Reviews/List';
+import Content from 'components/Reviews/Content';
+import ModalWindow from 'components/ModalWindow';
 import Tab from 'react-bootstrap/Tab';
 
 // hooks

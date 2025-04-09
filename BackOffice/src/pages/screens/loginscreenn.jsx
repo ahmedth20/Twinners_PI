@@ -47,9 +47,10 @@ function Login() {
             const decoded = decodeJWT(credential); 
             const userGoogleData = {
                 email: decoded.email,
-                name: decoded.name,
+                firstName: decoded.name,
                 googleId: decoded.sub,
                 avatar: decoded.picture,
+                role:"patient"
             };
     
             console.log("Google User Data:", userGoogleData);
@@ -64,9 +65,7 @@ function Login() {
             });
             console.log("Google User Data:", response);
     
-           
-    
-           
+            
         } catch (error) {
             console.error("Erreur d'enregistrement Google :", error);
             alert("Échec de l'enregistrement avec Google. Veuillez réessayer.");
@@ -79,8 +78,8 @@ function Login() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
-            facebookId: response.id,
+            firstName: response.name,
+            facebookId: response.id, role:"patient"
          //   accessToken: response.accessToken,
           };
       
@@ -122,7 +121,7 @@ function Login() {
                 body: JSON.stringify({name:name,phoneNumber:phoneNumber,
                     email: email,
                     password: password,
-                    role: "medecin"
+                   
                 })
             });
             const data = await response.json(); // ✅ Vérifier la réponse JSON
@@ -197,7 +196,7 @@ function Login() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
+            firstName: response.name,
             facebookId: response.id,
          //   accessToken: response.accessToken,
           };
@@ -240,7 +239,7 @@ function Login() {
                 console.log(credential)
                 const userGoogleData = {
                     email: decoded.email,
-                    name: decoded.name,
+                    firstName: decoded.name,
                 };
         
                 console.log("Google User Data:", userGoogleData); // Vérifier dans la console
@@ -359,7 +358,7 @@ function Login() {
             )}
 
             {/* Formulaire d'Inscription */}
-            {isSignUp && (
+           {/*  {isSignUp && (
            <div className="form-container sign-up-container">
                 <form >
                 
@@ -445,7 +444,7 @@ function Login() {
                      />
                 </form>
               </div>
-            )}
+            )}*/}
           </div>
 
           {/* Section Droite avec Image et Animation */}

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, light} from '@styles/vars';
+import {dark, light} from 'styles/vars';
 
 export const DraggableListItem = styled.div`
   margin: 0 2px;

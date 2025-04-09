@@ -1,10 +1,10 @@
 // styling
 import styled from 'styled-components';
-import {colors, flex, textSizes} from '@styles/vars';
+import {colors, flex, textSizes} from 'styles/vars';
 
 // utils
 import PropTypes from 'prop-types';
-import {colorTypes} from '@constants/colors';
+import {colorTypes} from 'constants/colors';
 
 const Wrapper = styled.button`
   display: flex;

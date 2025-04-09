@@ -1,9 +1,9 @@
 // styled components
-import {UserItem} from '@components/Messenger/UsersList/User/style';
+import {UserItem} from 'components/Messenger/UsersList/User/style';
 
 // components
-import Avatar from '@ui/Avatar';
-import {QtyBadge} from '@ui/Badge/style';
+import Avatar from 'UI/Avatar';
+import {QtyBadge} from 'UI/Badge/style';
 
 // utils
 import PropTypes from 'prop-types';

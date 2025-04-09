@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Page from "@layout/Page";
-import DoctorsList from "@widgets/DoctorsList";
+import Page from "layout/Page";
+import DoctorsList from "widgets/DoctorsList";
 import AddSimpleDoctorPopup from "./AddSimpleDoctorPopup";
 
 import { GlobalStyles, Container, AddButton, DisabledBackground } from "../styles/PopUpAddDoctor";

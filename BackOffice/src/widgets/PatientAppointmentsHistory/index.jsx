@@ -1,22 +1,22 @@
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
 import {Tab} from 'react-bootstrap'
-import TabNav from "@ui/TabNav";
-import TabNavItem from '@ui/TabNav/TabNavItem';
-import AppointmentItem from '@components/AppointmentItem';
-import ScrollContainer from '@components/ScrollContainer';
+import TabNav from "UI/TabNav";
+import TabNavItem from 'UI/TabNav/TabNavItem';
+import AppointmentItem from 'components/AppointmentItem';
+import ScrollContainer from 'components/ScrollContainer';
 
 // utils
 import {nanoid} from 'nanoid';
 
 // hooks
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 import {useRef} from 'react';
 
 // data placeholder
-import {appointments} from '@db/appointments';
+import {appointments} from 'db/appointments';
 
 const PatientAppointmentsHistory = () => {
     const periods = ['year', 'month', 'week'];
