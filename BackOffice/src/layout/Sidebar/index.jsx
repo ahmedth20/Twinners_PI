@@ -34,9 +34,9 @@ const Sidebar = () => {
                                  height: 'calc(100% + 1px)',
                                  flexDirection: 'column',
                                  padding: isMobile ? '20px' : '40px',
-                                 borderRightColor: theme === 'dark' ? colors.dark : colors.light_gray,
-                                 right: direction === 'rtl' ? 0 : 'auto',
-                                 left: direction === 'rtl' ? 'auto' : 0,
+                                 borderRightColor: theme == 'dark' ? colors.dark : colors.light_gray,
+                                 right: direction == 'rtl' ? 0 : 'auto',
+                                 left: direction == 'rtl' ? 'auto' : 0,
                              },
                              className: 'sidebar',
                          }}

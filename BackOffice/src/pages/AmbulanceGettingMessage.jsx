@@ -26,7 +26,7 @@ function AmbulanceGettingMessage() {
         socket.on('receive_message', (data) => {
           setReceivedMessage(data.message);
         });
-      }, []);
+      }, [socket]);
     useEffect(() => {
 
         // Ecouter les messages de réponse du serveur

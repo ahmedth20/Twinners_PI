@@ -20,13 +20,10 @@ const patientSchema = z.object({
 
 });
 
-const steps = [
-  { number: 1, label: "User Information" },
-  { number: 2, label: "Personal Information" },
-];
+
 
 const AddSimplePatientPopup = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState(1);
+  const [step] = useState(1);
   
   const {
     register,

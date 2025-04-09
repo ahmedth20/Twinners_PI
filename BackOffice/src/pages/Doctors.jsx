@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Page from "layout/Page";
 import DoctorsList from "widgets/DoctorsList";
 import AddSimpleDoctorPopup from "./AddSimpleDoctorPopup";

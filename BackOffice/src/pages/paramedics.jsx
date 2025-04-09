@@ -6,10 +6,6 @@ import {
 } from "../styles/PopUpAddParamedic";
 import ParamedicService from "../services/ParamedicService";
 
-const steps = [
-  { number: 1, label: "Job Information" },
-  { number: 2, label: "Final Submission" }
-];
 
 const Paramedics = () => { 
   const [formData, setFormData] = useState({
@@ -22,7 +18,7 @@ const Paramedics = () => {
   useEffect(() => {
   }, []);
 
-  const handleChange = (e) => {
+ /* const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -50,7 +46,7 @@ const Paramedics = () => {
     }
   };
 
-
+*/
   return (
     <Page title="Paramedic List">
       <GlobalStyles />

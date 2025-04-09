@@ -68,8 +68,7 @@ const App = () => {
     const appRef = useRef(null);
     const isOverflow = usePageIsOverflow();
     const {width} = useWindowSize();
-    const isMobile = width < 768;
-
+   
     useEffect(() => {
         if (appRef.current) {
             appRef.current.scrollTo(0, 0);

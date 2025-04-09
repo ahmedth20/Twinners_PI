@@ -21,7 +21,7 @@ const Content = () => {
     const {toggleSidebar} = useSidebarContext();
     const activeStyle = {color: colors.blue};
    /* const decoded = jwt.decode(token,secretKey, { complete: true });*/
-    const [user, setUser] = useState(null);
+   
     const decoded = jwtDecode(token);
     console.log(decoded);
     console.log(decoded.userId);
