@@ -1,5 +1,5 @@
 // components
-import Navigator from '@ui/Navigator';
+import Navigator from 'UI/Navigator';
 
 // utils
 import PropTypes from 'prop-types';

@@ -18,17 +18,14 @@ const [distance, setDistance] = useState(null);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [pendingAmbulance, setPendingAmbulance] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [ambulanceRouteDetails, setAmbulanceRouteDetails] = useState({});
   const [message, setMessage] = useState('');
   const [receivedMessage, setReceivedMessage] = useState('');
   const mapRef = useRef(null);
   const routingRef = useRef(null);
   const ambulanceMarkersRef = useRef({});
   const userMarkerRef = useRef(null);
-
   const hospitalLocation = [36.8683, 10.2917]; // Hôpital Monji Slim
   const socket = io('http://localhost:5000');
-
   const sendMessage = () => {
     socket.emit('send_message', { message });
   };
@@ -158,13 +155,6 @@ const [distance, setDistance] = useState(null);
         const duration = Math.round(route.summary.totalTime / 60); // Temps estimé en minutes
         const distance = (route.summary.totalDistance / 1000).toFixed(2); // Distance en kilomètres
   
-        // Mettre à jour les détails de l'ambulance dans l'état `ambulanceRouteDetails`
-        setAmbulanceRouteDetails(prevDetails => ({
-          ...prevDetails,
-          [ambulance._id]: { duration, distance }
-        }));
-  
-        // Ouvrir une popup avec les informations de l'ambulance et de l'itinéraire
         L.popup()
           .setLatLng([ambulance.location.latitude, ambulance.location.longitude])
           .setContent(

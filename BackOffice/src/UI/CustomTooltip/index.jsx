@@ -1,5 +1,5 @@
 // styling
-import {light, textSizes} from '@styles/vars';
+import {light, textSizes} from 'styles/vars';
 
 // components
 import Tooltip from '@mui/material/Tooltip';

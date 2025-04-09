@@ -1,29 +1,29 @@
 // styling
-import {colors, light, dark} from '@styles/vars';
+import {colors, light, dark} from 'styles/vars';
 
 // styled components
-import Labels from '@components/Chart/Labels';
+import Labels from 'components/Chart/Labels';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Navigator from '@ui/Navigator';
-import CartesianChart from '@components/CartesianChart';
-import LegendList from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Navigator from 'UI/Navigator';
+import CartesianChart from 'components/CartesianChart';
+import LegendList from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useTheme} from 'styled-components'
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 // utils
 import moment from 'moment';
-import {getMonthArray} from '@utils/dates';
+import {getMonthArray} from 'utils/dates';
 
 // data placeholder
-import {y2019, y2020, y2021, y2022} from '@db/gender';
+import {y2019, y2020, y2021, y2022} from 'db/gender';
 import {rgba} from 'polished';
 
 const PatientsGenderLineChart = () => {

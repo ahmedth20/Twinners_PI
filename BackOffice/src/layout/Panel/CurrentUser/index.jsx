@@ -1,11 +1,11 @@
 import { Menu, UserWrapper, PopupOverlay, PopupContent } from '../style';
-import Avatar from '@ui/Avatar';
+import Avatar from 'UI/Avatar';
 import { useDispatch } from 'react-redux';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { useState, useEffect } from 'react';
 import { logout } from '../../../slices/authSlice';
-import doc1jpg from '@assets/avatars/doc1.jpg';
-import doc1webp from '@assets/avatars/doc1.jpg?as=webp';
+import doc1jpg from 'assets/avatars/doc1.jpg';
+import doc1webp from 'assets/avatars/doc1.jpg?as=webp';
 import * as z from "zod";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -28,7 +28,7 @@ const CurrentUser = () => {
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
 
-    const user = useSelector(state => state.auth.user.user.id);
+    const user = useSelector(state => state.auth.user.user1.id);
 
     useEffect(() => {
         const fetchUser = async () => {

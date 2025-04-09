@@ -1,6 +1,6 @@
 // styled components
 import {ListItem} from '../style';
-import {LegendBadge} from '@ui/Badge/style';
+import {LegendBadge} from 'UI/Badge/style';
 
 // utils
 import PropTypes from 'prop-types';

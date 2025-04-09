@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {dark, breakpoints, flex, fonts, light, textSizes} from '@styles/vars';
+import {dark, breakpoints, flex, fonts, light, textSizes} from 'styles/vars';
 import theme from 'styled-theming';
 
 export const MessageContainer = styled.div`

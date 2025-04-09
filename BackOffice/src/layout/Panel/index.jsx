@@ -2,16 +2,16 @@
 import {Actions, Header, Input, Label, Search} from './style';
 
 // components
-import Logo from '@ui/Logo';
-import MenuButton from '@ui/MenuButton';
-import ShapeButton from '@ui/ShapeButton';
+import Logo from 'UI/Logo';
+import MenuButton from 'UI/MenuButton';
+import ShapeButton from 'UI/ShapeButton';
 import {motion} from 'framer-motion';
-import CurrentUser from '@layout/Panel/CurrentUser';
+import CurrentUser from 'layout/Panel/CurrentUser';
 
 // hooks
-import useWindowSize from '@hooks/useWindowSize';
-import usePanelScroll from '@hooks/usePanelScroll';
-import {useSidebarContext} from '@contexts/sidebarContext';
+import useWindowSize from 'hooks/useWindowSize';
+import usePanelScroll from 'hooks/usePanelScroll';
+import {useSidebarContext} from 'contexts/sidebarContext';
 import {useRef, useEffect} from 'react';
 
 const Panel = () => {

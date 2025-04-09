@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {flex, textSizes, fonts} from '@styles/vars';
+import {flex, textSizes, fonts} from 'styles/vars';
 
 export const List = styled.ul`
   gap: 22px;

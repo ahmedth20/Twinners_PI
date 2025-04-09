@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro';
 import theme from 'styled-theming';
-import {dark, light, flex, colors, breakpoints} from '@styles/vars';
-import {HeaderWrapper} from '@components/Widget/style';
+import {dark, light, flex, colors, breakpoints} from 'styles/vars';
+import {HeaderWrapper} from 'components/Widget/style';
 
 export const NavWrapper = styled(HeaderWrapper)`
   ${breakpoints.tablet} {

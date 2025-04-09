@@ -1,6 +1,6 @@
 // components
-import Page from '@layout/Page';
-import DoctorCalendar from '@widgets/DoctorCalendar';
+import Page from 'layout/Page';
+import DoctorCalendar from 'widgets/DoctorCalendar';
 
 // utils
 import {useState} from 'react';

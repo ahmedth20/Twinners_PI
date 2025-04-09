@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import {colors, flex} from '@styles/vars';
+import {colors, flex} from 'styles/vars';
 
-import dotted from '@assets/dotted.svg';
+import dotted from 'assets/dotted.svg';
 
 export const MapChartWrapper = styled.div`
   position: relative;

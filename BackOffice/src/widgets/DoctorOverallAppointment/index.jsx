@@ -1,16 +1,16 @@
 // styling
 import styled from 'styled-components';
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import LabeledProgress from '@ui/LabeledProgress';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import LabeledProgress from 'UI/LabeledProgress';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useRef, useEffect} from 'react';
 import {useTheme} from 'styled-components';
 

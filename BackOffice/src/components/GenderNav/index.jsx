@@ -1,5 +1,5 @@
 // styled components
-import {Container, Item, Button} from '@ui/TabNav/style';
+import {Container, Item, Button} from 'UI/TabNav/style';
 
 // utils
 import {nanoid} from "nanoid";

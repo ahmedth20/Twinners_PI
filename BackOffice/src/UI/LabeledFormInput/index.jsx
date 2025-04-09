@@ -1,9 +1,9 @@
 // styling
 import styled from 'styled-components';
-import {flex, textSizes} from '@styles/vars';
+import {flex, textSizes} from 'styles/vars';
 
 // components
-import Field from '@ui/Field';
+import Field from 'UI/Field';
 
 // utils
 import PropTypes from 'prop-types';

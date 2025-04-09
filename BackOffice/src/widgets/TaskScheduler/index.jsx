@@ -1,20 +1,20 @@
 // styled components
-import {MonthSelector, CalendarWrapper, StyledCalendar} from '@widgets/TaskScheduler/style';
+import {MonthSelector, CalendarWrapper, StyledCalendar} from 'widgets/TaskScheduler/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import CustomSelect from '@ui/Select';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import CustomSelect from 'UI/Select';
 import Calendar from 'react-calendar';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Badge} from '@ui/Badge/style';
+import {Badge} from 'UI/Badge/style';
 import Backdrop from '@mui/material/Backdrop';
 
 // utils
-import {getMonthArray} from '@utils/dates';
+import {getMonthArray} from 'utils/dates';
 import moment from 'moment';
 import {nanoid} from 'nanoid';
 
@@ -22,11 +22,11 @@ import {nanoid} from 'nanoid';
 import {useState, useEffect, useRef} from 'react';
 
 // data placeholder
-import {scheduler} from '@db/scheduler';
+import {scheduler} from 'db/scheduler';
 
 // constants
-import {tasksColors} from '@constants/colors';
-import {doctorsOptions} from '@constants/options';
+import {tasksColors} from 'constants/colors';
+import {doctorsOptions} from 'constants/options';
 
 const TaskScheduler = () => {
     const options = doctorsOptions();

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {flex, fonts, textSizes} from '@styles/vars';
+import {flex, fonts, textSizes} from 'styles/vars';
 
 const Labels = styled.div`
   text-transform: uppercase;

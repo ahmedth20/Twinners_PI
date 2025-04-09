@@ -1,8 +1,8 @@
 // components
-import Page from '@layout/Page';
-import Balance from '@widgets/Balance';
-import CreditCards from '@widgets/CreditCards';
-import PaymentsFeed from '@widgets/PaymentsFeed';
+import Page from 'layout/Page';
+import Balance from 'widgets/Balance';
+import CreditCards from 'widgets/CreditCards';
+import PaymentsFeed from 'widgets/PaymentsFeed';
 
 const Finances = () => {
     return (

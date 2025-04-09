@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {colors, textSizes, flex, fonts, breakpoints} from '@styles/vars';
+import {colors, textSizes, flex, fonts, breakpoints} from 'styles/vars';
 
 export const Card = styled.div`
   background-color: ${props => colors[props.className]};

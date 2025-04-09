@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { motion } from "framer-motion";
-import Page from "@layout/Page";
-import ParamedicList from "@widgets/ParamedicList";
+import Page from "layout/Page";
+import ParamedicList from "widgets/ParamedicList";
 import { 
   GlobalStyles, Input, DisabledBackground, Form, ButtonContainer, 
   Line, ProgressBar, NavButton, NextButton, SubmitButton, Container, 

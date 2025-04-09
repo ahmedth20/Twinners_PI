@@ -1,5 +1,5 @@
 // components
-import { Badge } from '@ui/Badge/style';
+import { Badge } from 'UI/Badge/style';
 
 // utils
 import { io } from 'socket.io-client';
@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import { dark, light, flex, colors } from '@styles/vars';
+import { dark, light, flex, colors } from 'styles/vars';
 
 const bg = theme('theme', {
   light: light.bodyBg,

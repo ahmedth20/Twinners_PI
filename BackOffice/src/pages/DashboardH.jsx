@@ -1,10 +1,10 @@
 // components
-import Page from '@layout/Page';
-import EventsCompactCalendar from '@widgets/EventsCompactCalendar';
-import EpiContextAreaChart from '@widgets/EpiContextAreaChart';
-import RadarAreaChart from '@widgets/RadarAreaChart';
-import HealthIndexChart from '@widgets/HealthIndexChart';
-import DiagnosesDonut from '@widgets/DiagnosesDonut';
+import Page from 'layout/Page';
+import EventsCompactCalendar from 'widgets/EventsCompactCalendar';
+import EpiContextAreaChart from 'widgets/EpiContextAreaChart';
+import RadarAreaChart from 'widgets/RadarAreaChart';
+import HealthIndexChart from 'widgets/HealthIndexChart';
+import DiagnosesDonut from 'widgets/DiagnosesDonut';
 
 const DashboardH = () => {
     return (

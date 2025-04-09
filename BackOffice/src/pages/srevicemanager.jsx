@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GlobalStyles, Container, AddButton, DisabledBackground } from "../styles/PopUpAddPatient";
-import Page from "@layout/Page";
-import PatientsList from "@widgets/servicemanagerlist";
+import Page from "layout/Page";
+import PatientsList from "widgets/servicemanagerlist";
 import AddSimplePatientPopup from "./addserviecmanager";
 import { ModalOverlay, ModalContent, CloseButton, ButtonGroup, ModalButton } from "../styles/PopUpAddPatient";
 import { useNavigate } from "react-router-dom";

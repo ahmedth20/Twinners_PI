@@ -1,27 +1,27 @@
 // styling
-import {colors, light} from '@styles/vars';
+import {colors, light} from 'styles/vars';
 
 // styled components
 import {MapChartWrapper} from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
 import {VectorMap} from '@south-paw/react-vector-maps';
-import {StyledTooltip} from '@components/Chart/Tooltip';
+import {StyledTooltip} from 'components/Chart/Tooltip';
 import CountUp from 'react-countup';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useTheme} from 'styled-components';
 import {useState, useEffect} from 'react';
 
 // utils
-import {numFormatter} from '@utils/numbers';
+import {numFormatter} from 'utils/numbers';
 
 // assets
-import world from '@assets/world.json';
+import world from 'assets/world.json';
 
 const MapChart = () => {
     const {theme} = useTheme();

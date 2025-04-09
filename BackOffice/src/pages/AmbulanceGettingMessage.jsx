@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'; // Ajoutez useEffect ici
 
 // composants
-import Page from '@layout/Page';
-import UserList from '@components/Messenger/UsersList';
-import ModalWindow from '@components/ModalWindow';
+import Page from 'layout/Page';
+import UserList from 'components/Messenger/UsersList';
+import ModalWindow from 'components/ModalWindow';
 import Tab from 'react-bootstrap/Tab';
-import Messenger from '@components/Messenger';
+import Messenger from 'components/Messenger';
 import io from 'socket.io-client';
 
 

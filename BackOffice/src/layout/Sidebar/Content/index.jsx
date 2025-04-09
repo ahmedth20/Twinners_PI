@@ -1,6 +1,6 @@
 // styled components
 import {LinksList, List, MainItem} from '../style';
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // components
 import Accordion from 'react-bootstrap/Accordion';
@@ -8,10 +8,10 @@ import {NavLink} from 'react-router-dom';
 import {useDispatch,useSelector} from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 // hooks
-import {useSidebarContext} from '@contexts/sidebarContext';
+import {useSidebarContext} from 'contexts/sidebarContext';
 
 // menu links
-import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from '@constants/menu';
+import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from 'constants/menu';
 import { useState, useEffect } from "react";
 
 const Content = () => {
