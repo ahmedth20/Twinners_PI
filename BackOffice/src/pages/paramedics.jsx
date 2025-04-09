@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Page from "layout/Page";
 import ParamedicList from "widgets/ParamedicList";
 import { 

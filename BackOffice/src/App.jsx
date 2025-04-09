@@ -31,7 +31,6 @@ import Sidebar from 'layout/Sidebar';
 import WidgetsLoader from 'components/WidgetsLoader';
 import Login from 'pages/screens/loginscreenn'
 // hooks
-import useWindowSize from 'hooks/useWindowSize';
 import usePageIsOverflow from 'hooks/usePageIsOverflow';
 import {useRef} from 'react';
 // actions
