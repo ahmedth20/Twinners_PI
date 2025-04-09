@@ -67,7 +67,6 @@ const App = () => {
     }, []);
     const appRef = useRef(null);
     const isOverflow = usePageIsOverflow();
-    const {width} = useWindowSize();
    
     useEffect(() => {
         if (appRef.current) {

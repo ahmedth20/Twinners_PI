@@ -142,7 +142,7 @@ function Login() {
       });              const data = await response.json();
       console.log(data)
 
-      if(data.message=="Connexion réussie"){
+      if(data.message==="Connexion réussie"){
         setSuccess("your logged successfully"); 
      
       console.log("1111")
@@ -150,15 +150,15 @@ function Login() {
   
         //setTimeout(() => { navigate("/home"); }, 1500)
       }
-        else if(data.message=="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
+        else if(data.message==="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
         }
-        else if(data.message=="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
+        else if(data.message==="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
         }
   
-       else  if(data.message=="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+       else  if(data.message==="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
        }
   
-       else  if(data.message=="mot de passe invalide"){      setErr("mot de passe invalide"); 
+       else  if(data.message==="mot de passe invalide"){      setErr("mot de passe invalide"); 
        }
   
      
@@ -247,7 +247,7 @@ function Login() {
                 const data = await response.json();
                 console.log("aaa", data);
 
-                dispatch(login({ user: data }));if(data.role=="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
+                dispatch(login({ user: data }));if(data.role==="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
                 }
                
                 setTimeout(() => {
@@ -270,7 +270,7 @@ function Login() {
   const handleEmailChange = (event) => {
     const { value } = event.target;
     setEmail(value);
-    setEmailError(value == "" || !/\S+@\S+\.\S+/.test(value));
+    setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
 
  /* const handlenameChange = (event) => {
@@ -291,7 +291,7 @@ function Login() {
   const handleEmailChange1 = (event) => {
     const { value } = event.target;
     setEmail(value);
-    setEmailError(value == "" || !/\S+@\S+\.\S+/.test(value));
+    setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
 */
   const handlePasswordChange = (event) => {
@@ -462,7 +462,7 @@ function Login() {
       </div>
       <Snackbar
              autoHideDuration={2500}
-             open={err == "" ? false : true}
+             open={err === "" ? false : true}
              onClose={() => {
                setErr("");
              }}
@@ -479,7 +479,7 @@ function Login() {
            </Snackbar>
            <Snackbar
              autoHideDuration={2500}
-             open={success == "" ? false : true}
+             open={success === "" ? false : true}
              onClose={() => {
                setSuccess("");
              }}

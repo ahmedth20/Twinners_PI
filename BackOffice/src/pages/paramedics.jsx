@@ -4,20 +4,20 @@ import ParamedicList from "widgets/ParamedicList";
 import { 
   GlobalStyles,  Container
 } from "../styles/PopUpAddParamedic";
-import ParamedicService from "../services/ParamedicService";
+//import ParamedicService from "../services/ParamedicService";
 
 
 const Paramedics = () => { 
-  const [formData, setFormData] = useState({
+  /*const [formData, setFormData] = useState({
     serviceParamedic: "", 
     ambulance: "", 
     patientsFile: "", 
     user: "", 
   });
-
-  useEffect(() => {
+*/
+ /* useEffect(() => {
   }, []);
-
+*/
  /* const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

@@ -12,7 +12,7 @@ import {useSidebarContext} from 'contexts/sidebarContext';
 
 // menu links
 import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from 'constants/menu';
-import { useState } from "react";
+
 
 const Content = () => {
    const token = useSelector(state => state.auth.user.token);
@@ -31,7 +31,7 @@ const Content = () => {
    
 
     return (
-      <> { decoded.role == "medecin" &&<List as={Accordion}>
+      <> { decoded.role === "medecin" &&<List as={Accordion}>
             {
                 menudoctors.map((item, index) => {
                     if (item.cat) {
@@ -71,7 +71,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index == menudoctors.length - 1 ? 'pin-down' : ''}
+                                      className={index === menudoctors.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -80,7 +80,7 @@ const Content = () => {
                 })
             }
         </List>}
-      { decoded.role == "service manager" &&<List as={Accordion}>
+      { decoded.role === "service manager" &&<List as={Accordion}>
             {
                 menuchefservice.map((item, index) => {
                     if (item.cat) {
@@ -120,7 +120,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index == menuchefservice.length - 1 ? 'pin-down' : ''}
+                                      className={index === menuchefservice.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -130,7 +130,7 @@ const Content = () => {
             }
         </List>}
         
-        { decoded.role == "staff" &&<List as={Accordion}>
+        { decoded.role === "staff" &&<List as={Accordion}>
             {
                 menustaff.map((item, index) => {
                     if (item.cat) {
@@ -170,7 +170,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index == menustaff.length - 1 ? 'pin-down' : ''}
+                                      className={index === menustaff.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -180,7 +180,7 @@ const Content = () => {
             }
         </List>}
         
-        { decoded.role == "paramedic" &&<List as={Accordion}>
+        { decoded.role === "paramedic" &&<List as={Accordion}>
             {
                 menuparamedic.map((item, index) => {
                     if (item.cat) {
@@ -220,7 +220,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index == menuparamedic.length - 1 ? 'pin-down' : ''}
+                                      className={index === menuparamedic.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
@@ -230,7 +230,7 @@ const Content = () => {
             }
         </List>}
 
-        { decoded.role == "admin" &&<List as={Accordion}>
+        { decoded.role === "admin" &&<List as={Accordion}>
             {
                 menuadmin.map((item, index) => {
                     if (item.cat) {
@@ -270,7 +270,7 @@ const Content = () => {
                                           isActive ? activeStyle : undefined
                                       }
                                       key={item.link}
-                                      className={index == menuadmin.length - 1 ? 'pin-down' : ''}
+                                      className={index === menuadmin.length - 1 ? 'pin-down' : ''}
                             >
                                 <i className={`icon icon-${item.icon}`}></i> {item.name}
                             </MainItem>
