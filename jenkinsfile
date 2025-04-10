@@ -60,11 +60,9 @@ pipeline {
 
         stage('Building images (node and mongo)') {
             steps {
-                dir('Serveur') {
                     script {
-                        sh 'docker-compose build'
+                        sh 'cd Serveur docker-compose build'
                     }
-                }
             }
         }
     }
