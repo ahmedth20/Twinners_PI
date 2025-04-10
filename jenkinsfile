@@ -44,8 +44,8 @@ pipeline {
         steps {
             script {
                 def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                projects.each { dir ->
-                    dir(dir) {
+                projects.each { folderName ->
+                    dir(folderName) {
                         withSonarQubeEnv('SonarQube') {
                             sh 'sonar-scanner'
                         }
@@ -54,6 +54,7 @@ pipeline {
             }
         }
     }
+
 
    }
 }
