@@ -5,7 +5,6 @@ import './fonts/icomoon/style.css';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import {useLocation} from 'react-router-dom';
-import { BrowserRouter } from "react-router-dom";
 
 // components
 import AppLayout from './AppLayout';
@@ -29,17 +28,14 @@ import {useDispatch,useSelector} from 'react-redux';
 import ScrollProgress from 'UI/ScrollProgress';
 import Panel from 'layout/Panel';
 import Sidebar from 'layout/Sidebar';
-import {Navigate, Route, Routes} from 'react-router-dom';
-import BottomMenu from 'layout/BottomMenu';
 import WidgetsLoader from 'components/WidgetsLoader';
 import Login from 'pages/screens/loginscreenn'
 // hooks
-import useWindowSize from 'hooks/useWindowSize';
 import usePageIsOverflow from 'hooks/usePageIsOverflow';
 import {useRef} from 'react';
 // actions
 import {saveToLocalStorage} from 'store/features/layout';
-import {lazy, Suspense} from 'react';
+import { Suspense} from 'react';
 import ForgotPassword from 'pages/screens/forgotpassword';
 import Resetpassword1 from 'pages/screens/restpasswordslouma';
 
@@ -70,9 +66,7 @@ const App = () => {
     }, []);
     const appRef = useRef(null);
     const isOverflow = usePageIsOverflow();
-    const {width} = useWindowSize();
-    const isMobile = width < 768;
-
+   
     useEffect(() => {
         if (appRef.current) {
             appRef.current.scrollTo(0, 0);

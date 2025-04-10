@@ -9,7 +9,6 @@ import WidgetNav from 'components/Widget/WidgetNav';
 import Avatar from 'UI/Avatar';
 import ShapeButton from 'UI/ShapeButton';
 import Truncated from 'components/Truncated';
-import MenuDots from 'UI/MenuDots';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, Thumbs } from 'swiper';
 

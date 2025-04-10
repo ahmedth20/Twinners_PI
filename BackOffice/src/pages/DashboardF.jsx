@@ -2,8 +2,6 @@ import { useLocation } from "react-router-dom";
 import Page from "layout/Page";
 import PainLocation from "widgets/PainLocation";
 import DailyAppointmentChart from "widgets/DailyAppointmentChart";
-import HepatitisChart from "widgets/HepatitisChart";
-import PaymentsHistory from "widgets/PaymentsHistory";
 import HeartRate from "widgets/HeartRate";
 import ConfirmedDiagnoses from "widgets/ConfirmedDiagnoses";
 import RecentTests from "widgets/RecentTests";

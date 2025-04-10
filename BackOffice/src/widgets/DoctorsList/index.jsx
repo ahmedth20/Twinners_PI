@@ -22,7 +22,7 @@ const DoctorsList = ({ variant = "doctor" }) => {
   const contentRef = useRef(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState(null);
-  const [lastGender, setLastGender] = useState(null);
+ // const [lastGender, setLastGender] = useState(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
@@ -69,14 +69,14 @@ const DoctorsList = ({ variant = "doctor" }) => {
     setSelectedLetter((prevLetter) => (prevLetter === char ? null : char));
   };
 
-  const handleGenderClick = (newGender) => {
+  /*const handleGenderClick = (newGender) => {
     if (lastGender === newGender.value) {
       setSelectedLetter(null); // Reset letter selection on double click
     }
     setLastGender(newGender.value);
     setGender(newGender);
   };
-
+*/
   const handleEditDoctor = (doctor) => {
     setSelectedDoctor(doctor); // Store selected doctor
     setIsEditPopupOpen(true); // Open the popup

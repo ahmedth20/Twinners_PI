@@ -24,19 +24,19 @@ const StaffList = () => {
     const contentRef = useRef(null);
     const [staffMembers, setStaffMembers] = useState([]);
     const [selectedLetter, setSelectedLetter] = useState(null);
-    const [lastGender, setLastGender] = useState(null);
+ //   const [lastGender, setLastGender] = useState(null);
 
     const handleLetterClick = (char) => {
         setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
     };
 
-    const handleGenderClick = (newGender) => {
+  /*  const handleGenderClick = (newGender) => {
         if (lastGender === newGender.value) {
             setSelectedLetter(null);
         }
         setLastGender(newGender.value);
         setGender(newGender);
-    };
+    };*/
 
     useEffect(() => {
         const fetchStaff = async () => {

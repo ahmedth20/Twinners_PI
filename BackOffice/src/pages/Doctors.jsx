@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Page from "layout/Page";
 import DoctorsList from "widgets/DoctorsList";
 import AddSimpleDoctorPopup from "./AddSimpleDoctorPopup";
@@ -12,7 +11,7 @@ const Doctors = () => {
   const [isTypePopupOpen, setIsTypePopupOpen] = useState(false);
   const [isSimplePopupOpen, setIsSimplePopupOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null); // Store the doctor to edit
-  const navigate = useNavigate();
+
 
   const handleSimpleDoctor = () => {
     setIsTypePopupOpen(false);

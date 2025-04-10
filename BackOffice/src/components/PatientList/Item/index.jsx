@@ -9,8 +9,6 @@ import { CiMedicalClipboard } from "react-icons/ci";
 import Avatar from 'UI/Avatar';
 import ShapeButton from 'UI/ShapeButton';
 import Reminder from 'UI/Reminder';
-import Progress from 'UI/Progress';
-import CustomRating from 'UI/CustomRating';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 

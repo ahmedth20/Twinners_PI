@@ -4,8 +4,7 @@ import styled from 'styled-components';
 // components
 import {Badge} from 'UI/Badge/style';
 
-// assets
-import placeholder from 'assets/placeholder.jpg'
+
 
 // utils
 import PropTypes from 'prop-types';

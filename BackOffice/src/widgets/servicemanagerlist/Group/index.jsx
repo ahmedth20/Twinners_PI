@@ -1,21 +1,11 @@
 // components
 import GroupSeparator from 'UI/GroupSeparator';
-import PersonList from 'components/PersonList';
-import { Wrapper, Block,Button } from '../../../components/PersonList/Item/style';
+import { Block} from '../../../components/PersonList/Item/style';
 import PersonList1 from 'components/servicemaangerlist';
 
-// components
-import Avatar from 'UI/Avatar';
 import ShapeButton from 'UI/ShapeButton';
-import Reminder from 'UI/Reminder';
-import Progress from 'UI/Progress';
-import CustomRating from 'UI/CustomRating';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useState ,useEffect} from 'react';
-import { useNavigate } from "react-router-dom";
 
-// utils
-import { fadePresence } from 'constants/framer';
 import PropTypes from 'prop-types';
 import PatientService from 'services/ServiceMangerService';
 
@@ -23,7 +13,7 @@ import PatientService from 'services/ServiceMangerService';
 
 const Group = ({char, arr, type, gender}) => {
     const [visibleInfo, setVisibleInfo] = useState({}); 
-    const navigate = useNavigate();
+    
     const [data, setPatients] = useState([]);
 
     const togglePhoneVisibility = (id) => {

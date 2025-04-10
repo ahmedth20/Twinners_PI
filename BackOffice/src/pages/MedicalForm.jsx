@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Page from "layout/Page";
-import { Container, Title, SectionTitle,Form, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
+import { Container, Title, SectionTitle, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
 import PatientService from "../services/PatientService";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";  // <-- Ajout de l'import
@@ -64,7 +64,7 @@ const FormSection = ({ title, children }) => (
 );
 
 const MedicalForm = () => {
-  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       consultations: [],  // Commencer avec un tableau vide pour les consultations
@@ -87,7 +87,7 @@ const MedicalForm = () => {
 
   const [symptoms, setSymptoms] = useState([""]);
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-  const [lifestyleRecommendations, setLifestyleRecommendations] = useState([""]);
+
   const [allergies, setAllergies] = useState([""]);
   const [operations, setOperations] = useState([{ type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
   const [doctors, setDoctors] = useState([]);
