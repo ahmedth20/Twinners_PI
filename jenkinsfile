@@ -1,6 +1,6 @@
 pipeline {
     agent any
-      environment {
+    environment {
         SONARQUBE_URL = 'http://192.168.33.10:9000'  
         SONARQUBE_TOKEN = 'squ_0e357d456ea07c0cf0c99b0189c3d6251c8a6ec5'  
         NEXUS_VERSION = "nexus3"
@@ -8,9 +8,11 @@ pipeline {
         NEXUS_URL = '192.168.33.10:8081'
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
+        DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
+        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
     stages {
-       stage('Install dependencies') {
+        stage('Install dependencies') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -20,7 +22,7 @@ pipeline {
                 }
             }
         }
-      /* stage('Unit Test') {
+        /* stage('Unit Test') {
             steps {
                 script {
                     sh 'cd FrontOffice && npm  test '
@@ -32,45 +34,54 @@ pipeline {
             }
         }
 
-    stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps{
                 script {
-                def scannerHome = tool 'jenkinsSonar'
-                withSonarQubeEnv {
-                sh "${scannerHome}/bin/sonar-scanner"
-                        }
+                    def scannerHome = tool 'jenkinsSonar'
+                    withSonarQubeEnv {
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
+                }
             }
         }
 
-       stage('Build application') {
+        stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
                     projects.each { dir ->
                         if (dir == 'FrontOffice') {
                             sh "cd ${dir} && npm run build"
-                    } else if (dir == 'BackOffice') {
+                        } else if (dir == 'BackOffice') {
                             sh "cd ${dir} && npm run build-dev"
-                    } else if (dir == 'Serveur') {
+                        } else if (dir == 'Serveur') {
                             sh "cd ${dir} && npm run build"
                         }
                     }
                 }
             }
-      }
-*/
+        } */
 
         stage('Building images (node and mongo)') {
             steps {
-                    script {
-                        sh 'cd Serveur docker-compose build'
-                    }
+                script {
+                    sh 'cd Serveur && docker-compose build'
+                }
             }
         }
 
-       
-            stage('Deploy to Nexus') {
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Connexion à Docker avec un token d'accès personnel
+                    sh """
+                    echo "${DOCKER_PASSWORD}" | docker login -u ${DOCKER_USERNAME} --password-stdin
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
             steps {
                 script {
                     def nexusUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}"
@@ -81,7 +92,5 @@ pipeline {
                 }
             }
         }
-
-
     }
 }
