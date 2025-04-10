@@ -3,6 +3,11 @@ pipeline {
       environment {
         SONARQUBE_URL = 'http://192.168.33.10:9000'  
         SONARQUBE_TOKEN = 'squ_0e357d456ea07c0cf0c99b0189c3d6251c8a6ec5'  
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = '192.168.33.10:8081'
+        NEXUS_REPOSITORY = "pi"
+        NEXUS_CREDENTIAL_ID = "nexusCredential"
     }
     stages {
        stage('Install dependencies') {
@@ -56,8 +61,6 @@ pipeline {
       }
 */
 
-       
-
         stage('Building images (node and mongo)') {
             steps {
                     script {
@@ -65,5 +68,19 @@ pipeline {
                     }
             }
         }
+
+       
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    def imageTag = "$NEXUS_URL/nodemongoapp:5.0"
+                    docker.withRegistry("http://$NEXUS_URL", NEXUS_CREDENTIAL_ID) {
+                        sh "docker tag nodemongoapp:5.0 $imageTag"
+                        sh "docker push $imageTag"
+                    }
+                }
+            }
+        }
+
     }
 }
