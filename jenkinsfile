@@ -5,56 +5,24 @@ pipeline {
         SONARQUBE_TOKEN = 'squ_0e357d456ea07c0cf0c99b0189c3d6251c8a6ec5'  
     }
     stages {
-        stage('Install dependencies') {
+       stage('Install dependencies') {
             steps {
                 script {
-                    parallel(
-                        'Install BackOffice dependencies': {
-                            dir('BackOffice') {
-                                unstash 'back-node-modules' // Unstash du cache
-                                sh "npm install --legacy-peer-deps"
-                                stash includes: 'node_modules/**', name: 'back-node-modules' // Stash le cache
-                            }
-                        },
-                        'Install FrontOffice dependencies': {
-                            dir('FrontOffice') {
-                                unstash 'front-node-modules'
-                                sh "npm install --legacy-peer-deps"
-                                stash includes: 'node_modules/**', name: 'front-node-modules'
-                            }
-                        },
-                        'Install Serveur dependencies': {
-                            dir('Serveur') {
-                                unstash 'serveur-node-modules'
-                                sh "npm install --legacy-peer-deps"
-                                stash includes: 'node_modules/**', name: 'serveur-node-modules'
-                            }
-                        }
-                    )
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm install --legacy-peer-deps"
+                    }
                 }
             }
         }
-
-        stage('Unit Test') {
+       stage('Unit Test') {
             steps {
                 script {
-                    parallel(
-                        'Run BackOffice tests': {
-                            dir('BackOffice') {
-                                sh 'npm test -- --passWithNoTests'
-                            }
-                        },
-                        'Run FrontOffice tests': {
-                            dir('FrontOffice') {
-                                sh 'npm test -- --passWithNoTests'
-                            }
-                        },
-                        'Run Serveur tests': {
-                            dir('Serveur') {
-                                sh 'npm test -- --passWithNoTests'
-                            }
-                        }
-                    )
+                    sh 'cd FrontOffice && npm  test '
+                    def legacyProjects = ['BackOffice', 'Serveur']
+                    legacyProjects.each { dir ->
+                        sh "cd ${dir} && npm test -- --passWithNoTests"
+                    }
                 }
             }
         }
