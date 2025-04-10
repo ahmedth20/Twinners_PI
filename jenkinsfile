@@ -26,7 +26,18 @@ pipeline {
                 }
             }
         }
-
+*/
+    stage('SonarQube Analysis') {
+            steps{
+                script {
+                def scannerHome = tool 'scanner'
+                withSonarQubeEnv {
+                sh "${scannerHome}/bin/sonar-scanner"
+                        }
+                    }
+            }
+        }
+/*
        stage('Build application') {
             steps {
                 script {
@@ -45,35 +56,7 @@ pipeline {
       }
 */
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    parallel(
-                        'SonarQube BackOffice analysis': {
-                            dir('BackOffice') {
-                                withSonarQubeEnv('SonarQube') {
-                                    sh 'sonar-scanner'
-                                }
-                            }
-                        },
-                        'SonarQube FrontOffice analysis': {
-                            dir('FrontOffice') {
-                                withSonarQubeEnv('SonarQube') {
-                                    sh 'sonar-scanner'
-                                }
-                            }
-                        },
-                        'SonarQube Serveur analysis': {
-                            dir('Serveur') {
-                                withSonarQubeEnv('SonarQube') {
-                                    sh 'sonar-scanner'
-                                }
-                            }
-                        }
-                    )
-                }
-            }
-        }
+       
 
         stage('Building images (node and mongo)') {
             steps {
