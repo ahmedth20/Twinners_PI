@@ -1,15 +1,13 @@
 pipeline {
     agent any
     environment {
-        SONARQUBE_URL = 'http://192.168.33.10:9000'  
-        SONARQUBE_TOKEN = 'squ_0e357d456ea07c0cf0c99b0189c3d6251c8a6ec5'  
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = '192.168.33.10:8081'
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
-        DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
-        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+     //   DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
+      //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
     stages {
         stage('Install dependencies') {
@@ -22,7 +20,7 @@ pipeline {
                 }
             }
         }
-        /* stage('Unit Test') {
+         stage('Unit Test') {
             steps {
                 script {
                     sh 'cd FrontOffice && npm  test '
@@ -60,7 +58,7 @@ pipeline {
                     }
                 }
             }
-        } */
+        } 
 
           stage('Building images (node and mongo)') {
             steps {
@@ -71,27 +69,15 @@ pipeline {
         }
 
 
-        stage('Docker Login') {
+        stage('Run application') {
             steps {
                 script {
-                    // Connexion à Docker avec un token d'accès personnel
-                    sh """
-                    echo "${DOCKER_PASSWORD}" | docker login -u ${DOCKER_USERNAME} --password-stdin
-                    """
-                }
-            }
-        }
-
-        stage('Deploy to Nexus') {
-            steps {
-                script {
-                    def nexusUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}"
-                    def imageName = "nodemongoapp:5.0"
-                    docker.withRegistry(nexusUrl, NEXUS_CREDENTIAL_ID) {
-                        sh "docker push ${nexusUrl}/${imageName}"
+                    docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
+                        sh("docker pull ${NEXUS_URL}/${NEXUS_REPOSITORY}/nodemongoapp:6.0")
+                        sh("docker-compose up -d")
                     }
                 }
             }
         }
-    }
+     }
 }
