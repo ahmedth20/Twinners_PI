@@ -62,13 +62,14 @@ pipeline {
             }
         } */
 
-        stage('Building images (node and mongo)') {
+          stage('Building images (node and mongo)') {
             steps {
-                script {
-                    sh 'cd Serveur && docker-compose build'
-                }
+                    script {
+                        sh 'cd Serveur docker-compose build'
+                    }
             }
         }
+
 
         stage('Docker Login') {
             steps {
