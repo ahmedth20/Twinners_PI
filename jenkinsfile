@@ -1,60 +1,132 @@
 pipeline {
     agent any
+      environment {
+        SONARQUBE_URL = 'http://192.168.33.10:9000'  
+        SONARQUBE_TOKEN = 'squ_0e357d456ea07c0cf0c99b0189c3d6251c8a6ec5'  
+    }
     stages {
         stage('Install dependencies') {
             steps {
                 script {
-                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                    projects.each { dir ->
-                        sh "cd ${dir} && npm install --legacy-peer-deps"
-                    }
-                }
-            }
-        }
-        stage('Unit Test') {
-            steps {
-                script {
-                    sh "cd FrontOffice && npm  test "  
-                    def legacyProjects = ['BackOffice', 'Serveur']
-                    legacyProjects.each { dir ->
-                        sh "cd ${dir} && npm test -- --passWithNoTests"
-                    }
+                    parallel(
+                        'Install BackOffice dependencies': {
+                            dir('BackOffice') {
+                                unstash 'back-node-modules' // Unstash du cache
+                                sh "npm install --legacy-peer-deps"
+                                stash includes: 'node_modules/**', name: 'back-node-modules' // Stash le cache
+                            }
+                        },
+                        'Install FrontOffice dependencies': {
+                            dir('FrontOffice') {
+                                unstash 'front-node-modules'
+                                sh "npm install --legacy-peer-deps"
+                                stash includes: 'node_modules/**', name: 'front-node-modules'
+                            }
+                        },
+                        'Install Serveur dependencies': {
+                            dir('Serveur') {
+                                unstash 'serveur-node-modules'
+                                sh "npm install --legacy-peer-deps"
+                                stash includes: 'node_modules/**', name: 'serveur-node-modules'
+                            }
+                        }
+                    )
                 }
             }
         }
 
-     stage('Build application') {
-        steps {
-            script {
-                def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                projects.each { dir ->
-                    if (dir == 'FrontOffice') {
-                        sh "cd ${dir} && npm run build"
-                    } else if (dir == 'BackOffice') {
-                        sh "cd ${dir} && npm run build-dev"
-                    } else if (dir == 'Serveur') {
-                        sh "cd ${dir} && npm run build"
-                    }
+        stage('Unit Test') {
+            steps {
+                script {
+                    parallel(
+                        'Run BackOffice tests': {
+                            dir('BackOffice') {
+                                sh 'npm test -- --passWithNoTests'
+                            }
+                        },
+                        'Run FrontOffice tests': {
+                            dir('FrontOffice') {
+                                sh 'npm test -- --passWithNoTests'
+                            }
+                        },
+                        'Run Serveur tests': {
+                            dir('Serveur') {
+                                sh 'npm test -- --passWithNoTests'
+                            }
+                        }
+                    )
                 }
             }
         }
-      }
- 
-        stage('SonarQube Analysis') {
-        steps {
-            script {
-                def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                projects.each { folderName ->
-                    dir(folderName) {
-                        withSonarQubeEnv('SonarQube') {
-                            sh 'sonar-scanner'
+
+        stage('Build application') {
+            steps {
+                script {
+                    parallel(
+                        'Build BackOffice': {
+                            dir('BackOffice') {
+                                unstash 'back-node-modules'
+                                sh 'npm run build-dev'
+                                stash includes: 'node_modules/**', name: 'back-node-modules'
+                            }
+                        },
+                        'Build FrontOffice': {
+                            dir('FrontOffice') {
+                                unstash 'front-node-modules'
+                                sh 'npm run build'
+                                stash includes: 'node_modules/**', name: 'front-node-modules'
+                            }
+                        },
+                        'Build Serveur': {
+                            dir('Serveur') {
+                                unstash 'serveur-node-modules'
+                                sh 'npm run build'
+                                stash includes: 'node_modules/**', name: 'serveur-node-modules'
+                            }
                         }
+                    )
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    parallel(
+                        'SonarQube BackOffice analysis': {
+                            dir('BackOffice') {
+                                withSonarQubeEnv('SonarQube') {
+                                    sh 'sonar-scanner'
+                                }
+                            }
+                        },
+                        'SonarQube FrontOffice analysis': {
+                            dir('FrontOffice') {
+                                withSonarQubeEnv('SonarQube') {
+                                    sh 'sonar-scanner'
+                                }
+                            }
+                        },
+                        'SonarQube Serveur analysis': {
+                            dir('Serveur') {
+                                withSonarQubeEnv('SonarQube') {
+                                    sh 'sonar-scanner'
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+
+        stage('Building images (node and mongo)') {
+            steps {
+                dir('Serveur') {
+                    script {
+                        sh 'docker-compose build'
                     }
                 }
             }
         }
     }
-
-
-   }
 }
