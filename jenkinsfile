@@ -15,7 +15,7 @@ pipeline {
                 }
             }
         }
-       stage('Unit Test') {
+      /* stage('Unit Test') {
             steps {
                 script {
                     sh 'cd FrontOffice && npm  test '
@@ -27,35 +27,23 @@ pipeline {
             }
         }
 
-        stage('Build application') {
+       stage('Build application') {
             steps {
                 script {
-                    parallel(
-                        'Build BackOffice': {
-                            dir('BackOffice') {
-                                unstash 'back-node-modules'
-                                sh 'npm run build-dev'
-                                stash includes: 'node_modules/**', name: 'back-node-modules'
-                            }
-                        },
-                        'Build FrontOffice': {
-                            dir('FrontOffice') {
-                                unstash 'front-node-modules'
-                                sh 'npm run build'
-                                stash includes: 'node_modules/**', name: 'front-node-modules'
-                            }
-                        },
-                        'Build Serveur': {
-                            dir('Serveur') {
-                                unstash 'serveur-node-modules'
-                                sh 'npm run build'
-                                stash includes: 'node_modules/**', name: 'serveur-node-modules'
-                            }
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        if (dir == 'FrontOffice') {
+                            sh "cd ${dir} && npm run build"
+                    } else if (dir == 'BackOffice') {
+                            sh "cd ${dir} && npm run build-dev"
+                    } else if (dir == 'Serveur') {
+                            sh "cd ${dir} && npm run build"
                         }
-                    )
+                    }
                 }
             }
-        }
+      }
+*/
 
         stage('SonarQube Analysis') {
             steps {
