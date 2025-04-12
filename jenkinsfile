@@ -10,7 +10,7 @@ pipeline {
       //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
     stages {
-        stage('Install dependencies') {
+        /*stage('Install dependencies') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -73,6 +73,18 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
+                        sh("docker pull ${NEXUS_URL}/${NEXUS_REPOSITORY}/nodemongoapp:6.0")
+                        sh("docker-compose up -d")
+                    }
+                }
+            }
+        }*/
+
+        stage('Run application') {
+            steps {
+                script {
+                    def dockerRegistryUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}"  // Utilisation dynamique du protocole
+                    docker.withRegistry(dockerRegistryUrl, NEXUS_CREDENTIAL_ID) {
                         sh("docker pull ${NEXUS_URL}/${NEXUS_REPOSITORY}/nodemongoapp:6.0")
                         sh("docker-compose up -d")
                     }
