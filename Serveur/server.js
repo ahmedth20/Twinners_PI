@@ -32,19 +32,32 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000'], // port numbers of your frontend app
+    origin: ['http://localhost:5173', 'http://localhost:3000'], // Les ports de vos apps frontend
     methods: ['GET', 'POST'],
   },
 });
 app.use(cors());
+
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-  socket.on('send_message', (data) => {
-    console.log('Message received:', data);
-    socket.broadcast.emit('receive_message', data);
+  console.log(`Utilisateur connecté: ${socket.id}`);
+
+  // Quand un patient appelle une ambulance
+  socket.on('call_ambulance', (data) => {
+    console.log('Demande d\'ambulance reçue:', data);
+    
+    // Émet l'événement aux paramédics
+    socket.broadcast.emit('ambulance_request', data);
   });
+
+  // Quand un paramédic répond
+  socket.on('ambulance_response', (data) => {
+    console.log('Réponse du paramedic:', data);
+    // Envoie la réponse au patient spécifique
+    socket.to(data.to).emit('ambulance_response_result', { status: data.status });
+  });
+
   socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
+    console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
 });
 

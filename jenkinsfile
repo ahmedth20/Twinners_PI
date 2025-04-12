@@ -5,7 +5,7 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = '192.168.33.10:8081'
         NEXUS_REPOSITORY = "pi"
-        NEXUS_CREDENTIAL_ID = "nexusCredential"
+        NEXUS_CREDENTIAL_ID = "nexus"
      //   DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
       //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }

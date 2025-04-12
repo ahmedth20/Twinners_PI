@@ -57,7 +57,7 @@ export const menuchefservice = [
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
             { name: "Patient Messenger", link: '/patient_messenger' },
-            { name: "Ambulance Emergency", link: '/AmbulanceGettingMessage' }
+            { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
         ]
     },
     {
@@ -123,7 +123,9 @@ export const menudoctors = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+            { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
+
         ]
     },
     {
@@ -182,7 +184,9 @@ export const menustaff = [
         icon: 'star',
         links: [
             { name: "Doctor Reviews", link: '/doctor_reviews' },
-            { name: "Patient Reviews", link: '/patient_reviews' }
+            { name: "Patient Reviews", link: '/patient_reviews' },
+            { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
+
         ]
     },
    
@@ -299,7 +303,9 @@ export const menuadmin = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+            { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
+
         ]
     },
     {

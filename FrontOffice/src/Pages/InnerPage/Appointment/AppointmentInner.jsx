@@ -4,7 +4,7 @@ import BreadCrumb from '../../../Shared/BreadCrumb/BreadCrumb';
 import Subscribe from '../../../Component1/Subscribe/Subscribe';
 import { LiaSlashSolid } from 'react-icons/lia';
 import ContactBox from '../ContactInner/ContactBox/ContactBox';
-import Map from '../ContactInner/Map';
+import Map from '../Map/Map';
 //import { LuSlash } from "react-icons/lu";
 
 const AppointmentInner = () => {
