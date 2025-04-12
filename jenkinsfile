@@ -93,3 +93,87 @@ pipeline {
         }
      }
 }
+/*pipeline {
+    agent any
+    environment {
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = '192.168.33.10:8081'
+        NEXUS_REPOSITORY = "pi"
+        NEXUS_CREDENTIAL_ID = "nexus"
+     //   DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
+      //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+    }
+    stages {
+        stage('Install dependencies') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        sh "cd ${dir} && npm install --legacy-peer-deps"
+                    }
+                }
+            }
+        }
+         stage('Unit Test') {
+            steps {
+                script {
+                    sh 'cd FrontOffice && npm  test '
+                    def legacyProjects = ['BackOffice', 'Serveur']
+                    legacyProjects.each { dir ->
+                        sh "cd ${dir} && npm test -- --passWithNoTests"
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps{
+                script {
+                    def scannerHome = tool 'jenkinsSonar'
+                    withSonarQubeEnv {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+
+        stage('Build application') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        if (dir == 'FrontOffice') {
+                            sh "cd ${dir} && npm run build"
+                        } else if (dir == 'BackOffice') {
+                            sh "cd ${dir} && npm run build-dev"
+                        } else if (dir == 'Serveur') {
+                            sh "cd ${dir} && npm run build"
+                        }
+                    }
+                }
+            }
+        } 
+
+          stage('Building images (node and mongo)') {
+            steps {
+                    script {
+                        sh 'cd Serveur docker-compose build'
+                    }
+            }
+        }
+
+
+        stage('Run application') {
+            steps {
+                script {
+                    docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
+                        sh("docker pull ${NEXUS_URL}/${NEXUS_REPOSITORY}/nodemongoapp:6.0")
+                        sh("docker-compose up -d")
+                    }
+                }
+            }
+        }
+     }
+}
+*/
