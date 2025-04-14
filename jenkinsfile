@@ -11,7 +11,7 @@ pipeline {
         //DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
         //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
-   /* stages {
+    stages {
         stage('Install dependencies') {
             steps {
                 script {
@@ -33,7 +33,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('SonarQube Analysis') {
             steps{
                 script {
