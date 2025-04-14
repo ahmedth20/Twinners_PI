@@ -1,11 +1,12 @@
 pipeline {
     agent any
     environment {
-        NEXUS_VERSION = "nexus3"
+        registryCredentials = "nexus"
+        registry = "192.168.33.10:8083"
+        //NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = '192.168.33.10:8081'
         NEXUS_REPOSITORY = "pi"
-        NEXUS_CREDENTIAL_ID = "nexus"
+        //NEXUS_CREDENTIAL_ID = "nexus"
      //   DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
       //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
@@ -79,6 +80,16 @@ pipeline {
                 }
             }
         }*/
+
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    docker.withRegistry("http://"+registry, registryCredentials) {
+                        sh('docker push $registry/nodemongoapp:5.0')
+                    }
+                }
+            }
+        }
 
         stage('Run application') {
             steps {
