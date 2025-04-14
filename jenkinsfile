@@ -68,10 +68,10 @@ pipeline {
                         sh 'cd Serveur docker-compose build'
                     }
             }
-        }
+        }*/
 
 
-        stage('Run application') {
+        /*stage('Run application') {
             steps {
                 script {
                     docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
@@ -115,9 +115,12 @@ pipeline {
                   docker.withRegistry("http://"+registry, registryCredentials) {
                    sh('docker pull $registry/nodemongoapp:6.0 ')
                    sh('docker-compose up -d ')
-              }
-          }
-       }
+                   }    
+                }
+             }
+        }
+}
+}
 /*pipeline {
     agent any
     environment {
