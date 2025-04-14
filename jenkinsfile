@@ -3,10 +3,10 @@ pipeline {
     environment {
         registryCredentials = "nexus"
         registry = "192.168.33.10:8083"
-        //NEXUS_VERSION = "nexus3"
+        NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        //NEXUS_REPOSITORY = "pi"
-        //NEXUS_CREDENTIAL_ID = "nexus"
+        NEXUS_REPOSITORY = "pi"
+        NEXUS_CREDENTIAL_ID = "nexus"
         //DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
         //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
