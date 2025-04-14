@@ -12,7 +12,7 @@ pipeline {
         //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
     stages {
-        /*stage('Install dependencies') {
+        stage('Install dependencies') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -62,7 +62,7 @@ pipeline {
             }
         } 
 
-          stage('Building images (node and mongo)') {
+          /*stage('Building images (node and mongo)') {
             steps {
                     script {
                         sh 'cd Serveur docker-compose build'
