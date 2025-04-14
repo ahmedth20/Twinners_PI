@@ -113,14 +113,22 @@ pipeline {
             steps{
                 script {
                   docker.withRegistry("http://"+registry, registryCredentials) {
-                   sh('docker pull $registry/nodemongoapp:5.0 ')
-                   sh('docker-compose up -d ')
+                   sh("docker pull $registry/nodemongoapp:5.0")
+                   dir('Serveur') {
+                        sh('docker-compose up -d')
+                    }
                    }    
                 }
              }
         }
 }
 }
+
+
+
+
+
+
 /*pipeline {
     agent any
     environment {
