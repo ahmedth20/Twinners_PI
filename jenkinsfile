@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-       /* stage('Build application') {
+        stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -60,7 +60,7 @@ pipeline {
                     }
                 }
             }
-        } */
+        } 
 
           /*stage('Building images (node and mongo)') {
             steps {
@@ -82,7 +82,7 @@ pipeline {
             }
         }*/
 
-        /*stage('Build and Tag Docker Image') {
+        stage('Build and Tag Docker Image') {
             steps {
                 script {
                     // On se place dans le dossier où se trouve ton Dockerfile
@@ -95,7 +95,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
 
         stage('Deploy to Nexus') {
