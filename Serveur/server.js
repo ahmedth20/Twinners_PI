@@ -14,9 +14,9 @@ const ambulanceRoutes = require('./src/routes/ambulance.js');
 const http = require('http');
 const { Server } = require('socket.io');
 const staffRoutes = require("./src/routes/staff.js");
-
 const doctorRoutes = require("./src/routes/doctor.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
+const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 
 
 
@@ -32,19 +32,39 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000'], // Les ports de vos apps frontend
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
+    credentials: true,  // Ajoutez cela pour que Socket.io envoie les cookies
   },
 });
-app.use(cors());
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"], // Frontend
+    credentials: true,  // Permet d'envoyer des cookies avec les requêtes
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  })
+);
+
 
 io.on('connection', (socket) => {
   console.log(`Utilisateur connecté: ${socket.id}`);
 
   // Quand un patient appelle une ambulance
-  socket.on('call_ambulance', (data) => {
+  socket.on('call_ambulance', async (data) => {
     console.log('Demande d\'ambulance reçue:', data);
     
+    // Enregistre dans la base
+    try {
+      await AmbulanceRequest.create({
+        from: data.from,
+        ambulanceId: data.ambulanceId
+      });
+    } catch (err) {
+      console.error("Erreur enregistrement demande :", err);
+    }
+
     // Émet l'événement aux paramédics
     socket.broadcast.emit('ambulance_request', data);
   });
@@ -60,6 +80,7 @@ io.on('connection', (socket) => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
 });
+
 
 
 // Sessions

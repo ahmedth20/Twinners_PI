@@ -7,6 +7,7 @@ router.get("/", ambulanceController.getAmbulances);
 router.get("/availabes", ambulanceController.getAvailableAmbulances);
 router.get("/:id", ambulanceController.getAmbulanceById);
 router.put("/:id", ambulanceController.updateAmbulance);
+router.put("/updateStatus/:id", ambulanceController.updateAmbulanceStatus);
 router.delete("/:id", ambulanceController.deleteAmbulance);
 
 module.exports = router;

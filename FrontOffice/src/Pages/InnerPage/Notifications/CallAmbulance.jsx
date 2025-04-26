@@ -39,7 +39,7 @@ const CallAmbulance = ({ ambulance, onResponse }) => {
     setStatus('');
 
     const payload = {
-      ambulanceId: ambulance.reference,
+      ambulanceId: ambulance._id,
       from: socket.id,
     };
 

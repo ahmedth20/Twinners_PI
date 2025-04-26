@@ -322,8 +322,8 @@ const authUserfacebook = asyncHandler(async (req, res) => {
     await newUser.save();
 
     // Envoyer un SMS de bienvenue ou de confirmation
-  //  const messageBody = `Bienvenue, ${firstName}! Votre inscription a été réussie`;
-   // const result = await sendSMS(messageBody, phoneNumber);
+    const messageBody = `Bienvenue, ${firstName}! Votre inscription a été réussie`;
+    const result = await sendSMS(messageBody, phoneNumber);
 
     var transport = nodemailer.createTransport({
       /*host: 'smtp.gmail.com',

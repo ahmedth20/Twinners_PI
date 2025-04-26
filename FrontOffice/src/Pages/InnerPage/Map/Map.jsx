@@ -190,10 +190,6 @@ const Map = () => {
     const intervalTime = (durationSeconds * 1000) / coords.length;
     let i = 0;
 
-    let remainingDistance = totalDistanceKm;
-    let remainingTime = Math.ceil(durationSeconds / 60);
-
-    // Polyline dynamique
     let dynamicLine = L.polyline(coords, { color: 'blue', weight: 5 }).addTo(mapRef.current);
 
     const interval = setInterval(() => {
@@ -209,35 +205,34 @@ const Map = () => {
         marker.setLatLng([lat, lng]);
         localStorage.setItem(`ambulance_pos_${ambulance._id}`, JSON.stringify({ lat, lng }));
 
-        // Distance à la position patient
         const distanceToPatient = L.latLng(lat, lng).distanceTo(L.latLng(userLocation));
-        const ARRIVAL_RADIUS_METERS = 40;
 
-        if (distanceToPatient < ARRIVAL_RADIUS_METERS) {
-         // console.log("arriveee");
-         // alert('arrivee');
-          toast.success("🚑 L'ambulance est proche de vous (à l'entrée) !", {
-            position: "top-center",
-            autoClose: false,    
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-           clearInterval(interval);
-            routingRef.current?.remove();
-            mapRef.current.removeLayer(dynamicLine);
+        if (distanceToPatient < 40) {  // Quand l'ambulance arrive près de l'utilisateur
+            toast.success("🚑 The ambulance is near you!", { position: "top-center", autoClose: false });
+            clearInterval(interval);  // Arrêter l'animation pour un moment
+
+            // Ajouter un délai de 2 minutes avant de continuer
+            setTimeout(() => {
+                toast.info("🚑 The ambulance is now resuming its journey to the hospital.", { position: "top-center", autoClose: false });
+                // Reprendre le trajet vers l'hôpital après 2 minutes
+                animateAmbulanceToHospital(ambulance);
+                // Nouvelle fonction pour continuer vers l'hôpital
+            }, 2 * 60 * 1000);  // 2 minutes en millisecondes
+
             return;
         }
-        
 
-        // Mise à jour du tracé restant
-        const remainingCoords = coords.slice(i);
-        dynamicLine.setLatLngs(remainingCoords);
+        const remainingDistance = totalDistanceKm * (1 - (i / coords.length));
+        const remainingTime = Math.ceil((remainingDistance / totalDistanceKm) * (durationSeconds / 60));
 
-        // Met à jour le popup
-        remainingDistance = totalDistanceKm * (1 - (i / coords.length));
-        remainingTime = Math.ceil((remainingDistance / totalDistanceKm) * (durationSeconds / 60));
+        // Mettre à jour l'état React pour afficher la distance et le temps
+        setAmbulanceDistances(prev => {
+            const newDistances = [...prev];
+            const index = ambulances.findIndex(a => a._id === ambulance._id);
+            newDistances[index] = { distanceKm: remainingDistance.toFixed(2), durationMin: remainingTime };
+            return newDistances;
+        });
+
         marker.bindPopup(
             `<b>${ambulance.name}</b><br>Distance restante: ${remainingDistance.toFixed(2)} km<br>Temps restant: ${remainingTime} min`
         ).openPopup();
@@ -245,6 +240,68 @@ const Map = () => {
         i++;
     }, intervalTime);
 };
+
+// Fonction pour continuer le trajet de l'ambulance après l'arrêt
+const animateAmbulanceToHospital = (ambulance) => {
+  const marker = ambulanceMarkersRef.current[ambulance._id];
+  if (!marker || !userLocation) return;
+
+  // Calculer le nouvel itinéraire vers l'hôpital
+  const routingControl = L.Routing.control({
+      waypoints: [
+          L.latLng(userLocation[0], userLocation[1]),
+          L.latLng(hospitalLocation[0], hospitalLocation[1])
+      ],
+      routeWhileDragging: false,
+      createMarker: () => null,
+      addWaypoints: false,
+      show: false,
+      fitSelectedRoutes: true,
+      lineOptions: { styles: [{ color: 'red', weight: 5 }] }
+  })
+  .on('routesfound', (e) => {
+      const route = e.routes[0];
+      const coords = route.coordinates;
+      const durationSeconds = route.summary.totalTime;
+      const totalDistanceKm = route.summary.totalDistance / 1000;
+      const intervalTime = (durationSeconds * 1000) / coords.length;
+
+      let i = 0;
+      let dynamicLine = L.polyline(coords, { color: 'red', weight: 5 }).addTo(mapRef.current);
+
+      const interval = setInterval(() => {
+          if (i >= coords.length) {
+              clearInterval(interval);
+              marker.setLatLng(coords[coords.length - 1]);
+              mapRef.current.removeLayer(dynamicLine);
+              return;
+          }
+
+          const { lat, lng } = coords[i];
+          marker.setLatLng([lat, lng]);
+          localStorage.setItem(`ambulance_pos_${ambulance._id}`, JSON.stringify({ lat, lng }));
+
+          const remainingDistance = totalDistanceKm * (1 - (i / coords.length));
+          const remainingTime = Math.ceil((remainingDistance / totalDistanceKm) * (durationSeconds / 60));
+
+          setAmbulanceDistances(prev => {
+              const newDistances = [...prev];
+              const index = ambulances.findIndex(a => a._id === ambulance._id);
+              newDistances[index] = { distanceKm: remainingDistance.toFixed(2), durationMin: remainingTime };
+              return newDistances;
+          });
+
+          marker.bindPopup(
+              `<b>${ambulance.name}</b><br>Distance vers hôpital: ${remainingDistance.toFixed(2)} km<br>Temps restant: ${remainingTime} min`
+          ).openPopup();
+
+          i++;
+      }, intervalTime);
+  })
+  .addTo(mapRef.current);
+};
+
+
 
 
 const handleRealTimeTrack = (ambulance) => {
@@ -339,6 +396,46 @@ const handleAmbulanceClick = (ambulance) => {
   );
 };
 
+const handleAmbulanceCall = (ambulance) => {
+
+  setPendingAmbulance(ambulance);
+  console.log('Pending Ambulance:', ambulance); // Add this line to check the data
+  setShowConfirmPopup(true);
+};
+
+  const handleAmbulanceResponse = (data) => {
+    if (data.status === 'accepted') {
+      setSelectedAmbulanceId(pendingAmbulance?._id);
+      localStorage.setItem('selectedAmbulanceId', pendingAmbulance?._id);
+   //   alert('Le paramedic a accepté la demande.');
+      toast.success("🚑The paramedic has accepted the request.", {
+        position: "top-center",
+        autoClose: false,    
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      handleAmbulanceClick(pendingAmbulance);
+      handleRealTimeTrack(pendingAmbulance);
+      setShowConfirmPopup(false)
+
+    } else {
+    //  alert('Le paramedic a refusé la demande.');
+    toast.error("🚑 The paramedic has declined the request.", {
+      position: "top-center",
+      autoClose: false,           // 🔒 Ne se ferme pas automatiquement
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+    
+    setShowCallAmbulance(false); // Masque le composant
+  };
+
+}
+
 
 const handleAmbulancePopUp = (ambulance) => {
   setActiveAmbulance(ambulance);
@@ -374,59 +471,8 @@ const handleAmbulancePopUp = (ambulance) => {
       .addTo(mapRef.current);
   });
 };
-const handleAmbulanceCall = (ambulance) => {
-
-  setPendingAmbulance(ambulance);
-  console.log('Pending Ambulance:', ambulance); // Add this line to check the data
-  setShowConfirmPopup(true);
-};
-
-  /*const confirmAmbulanceCall = () => {
-    if (!pendingAmbulance) return;
-  
-    const ambulanceToCall = pendingAmbulance; // on le garde dans une variable temporaire
-  console.log(pendingAmbulance);
-    handleAmbulanceClick(ambulanceToCall);
-    setShowConfirmPopup(false);
-    setShowCallAmbulance(true);
-    setPendingAmbulance(null);
-    handleRealTimeTrack(ambulanceToCall);
-  };
-  */
-  const handleAmbulanceResponse = (data) => {
-    if (data.status === 'accepted') {
-      setSelectedAmbulanceId(pendingAmbulance?._id);
-      localStorage.setItem('selectedAmbulanceId', pendingAmbulance?._id);
-   //   alert('Le paramedic a accepté la demande.');
-      toast.success("🚑Le paramedic a accepté la demande.", {
-        position: "top-center",
-        autoClose: false,    
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      handleAmbulanceClick(pendingAmbulance);
-      handleRealTimeTrack(pendingAmbulance);
-      setShowConfirmPopup(false)
-
-    } else {
-    //  alert('Le paramedic a refusé la demande.');
-    toast.error("🚑 Le paramedic a refusé la demande.", {
-      position: "top-center",
-      autoClose: false,           // 🔒 Ne se ferme pas automatiquement
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-    
-    setShowCallAmbulance(false); // Masque le composant
-  };
-
-}
-
   return (
+    <div>
     <div className='bg-BodyBg-0 px-2 lg:px-[30px]'>
     <section className="bg-blue-900 bg-cover bg-center bg-no-repeat h-[600px] sm:h-[700px] md:h-[700px] lg:h-[700px] xl:h-[790px] 2xl:h-[790px] flex items-center relative z-10 overflow-hidden rounded-t-2xl md:rounded-t-[30px]">
       <div id="map" style={{
@@ -444,42 +490,43 @@ const handleAmbulanceCall = (ambulance) => {
               Available Ambulances
             </h5>
             <div className='grid items-center grid-cols-1 gap-7'>
-  {ambulances
-    .map((ambulance, index) => {
-      // Récupère les valeurs de distance et de durée en fonction de l'ambulance
-      const { distanceKm, durationMin } = ambulanceDistances[index] || { distanceKm: null, durationMin: null };
+                {ambulances
+                  .map((ambulance, index) => {
+                    // Récupère les valeurs de distance et de durée en fonction de l'ambulance
+                    const { distanceKm, durationMin } = ambulanceDistances[index] || { distanceKm: null, durationMin: null };
 
-      return (
-        <div
-          key={ambulance._id}
-          className={`flex items-center gap-2 cursor-pointer bg-blue-800 text-white rounded-xl p-4 transition duration-300 opacity-90 hover:opacity-100 w-max mr-auto ${selectedAmbulanceId === ambulance._id ? 'bg-green-600' : ''}`}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-          onClick={() => handleAmbulanceCall(ambulance)}
-        >
-          <div className='flex-1'>
-            <h5 className='font-DMSans text-white font-bold mb-2'>
-              Ambulance - {index + 1}
-            </h5>
-            <p className='flex'>
-              <FaClock size={'18'} className='text-PrimaryColor-0' />
-              <h5 className='font-DMSans text-white ml-2'>
-                Estimated Time: {durationMin !== null ? `${durationMin} min` : 'Calculating...'}
-              </h5>
-            </p>
-            <p className='flex'>
-              <FaRoad size={'18'} className='text-PrimaryColor-0' />
-              <h5 className='font-DMSans text-white ml-2'>
-                Distance: {distanceKm !== null ? `${distanceKm} km` : 'Calculating...'}
-              </h5>
-            </p>
-            {selectedAmbulanceId === ambulance._id && (
-              <p className="text-green-400 font-bold mt-2">Already accepted</p>
-            )}
-          </div>
-        </div>
-      );
-    })}
+                    return (
+                      <div
+                        key={ambulance._id}
+                        className={`flex items-center gap-2 cursor-pointer bg-blue-800 text-white rounded-xl p-4 transition duration-300 opacity-90 hover:opacity-100 w-max mr-auto ${selectedAmbulanceId === ambulance._id ? 'bg-green-600' : ''}`}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        onClick={() => handleAmbulanceCall(ambulance)}
+                      >
+                        <div className='flex-1'>
+                          <h5 className='font-DMSans text-white font-bold mb-2'>
+                            Ambulance - {index + 1}
+                          </h5>
+                          <p className='flex'>
+                            <FaClock size={'18'} className='text-PrimaryColor-0' />
+                            <h5 className='font-DMSans text-white ml-2'>
+                              Estimated Time: {durationMin !== null ? `${durationMin} min` : 'Calculating...'}
+                              
+                            </h5>
+                          </p>
+                          <p className='flex'>
+                            <FaRoad size={'18'} className='text-PrimaryColor-0' />
+                            <h5 className='font-DMSans text-white ml-2'>
+                              Distance: {distanceKm !== null ? `${distanceKm} km` : 'Calculating...'}
+                            </h5>
+                          </p>
+                          {selectedAmbulanceId === ambulance._id && (
+                            <p className="text-green-400 font-bold mt-2">Already accepted</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
             </div>
 
 
@@ -556,7 +603,8 @@ const handleAmbulanceCall = (ambulance) => {
 
 
 
-</div>
+  </div>
+  </div>
   );
 };
 export default Map;
