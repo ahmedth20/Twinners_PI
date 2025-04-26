@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    image: 192.168.33.10:8083/nodemongoapp:6.0
+    image: 192.168.33.10:8083/nodemongoapp:5.0
     restart: always
     container_name: back
     ports:
@@ -10,3 +10,5 @@ services:
       MONGO_URI: mongodb+srv://yosrcharek:yosrcharek@cluster0.0n8kr.mongodb.net/smart190
     volumes:
       - .:/app
+
+      

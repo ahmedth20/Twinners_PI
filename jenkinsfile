@@ -1,16 +1,18 @@
 pipeline {
     agent any
     environment {
+        registryCredentials = "nexus"
+        registry = "192.168.33.10:8083"
         NEXUS_VERSION = "nexus3"
+        NEXUS_URL = 'http://192.168.33.10:8081'
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = '192.168.33.10:8081'
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexus"
-     //   DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
-      //  DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+        //DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
+        //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
     }
     stages {
-        /*stage('Install dependencies') {
+        stage('Install dependencies') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -60,16 +62,16 @@ pipeline {
             }
         } 
 
-          stage('Building images (node and mongo)') {
+          /*stage('Building images (node and mongo)') {
             steps {
                     script {
                         sh 'cd Serveur docker-compose build'
                     }
             }
-        }
+        }*/
 
 
-        stage('Run application') {
+        /*stage('Run application') {
             steps {
                 script {
                     docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
@@ -80,19 +82,53 @@ pipeline {
             }
         }*/
 
-        stage('Run application') {
+        stage('Build and Tag Docker Image') {
             steps {
                 script {
-                    def dockerRegistryUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}"  // Utilisation dynamique du protocole
-                    docker.withRegistry(dockerRegistryUrl, NEXUS_CREDENTIAL_ID) {
-                        sh("docker pull ${NEXUS_URL}/${NEXUS_REPOSITORY}/nodemongoapp:6.0")
-                        sh("docker-compose up -d")
+                    // On se place dans le dossier où se trouve ton Dockerfile
+                    dir('Serveur') {
+                        // Build de l'image Docker
+                        sh 'docker build -t nodemongoapp:5.0 .'
+                        
+                        // Tag pour Nexus
+                        sh 'docker tag nodemongoapp:5.0 192.168.33.10:8083/nodemongoapp:5.0'
                     }
                 }
             }
         }
-     }
+
+
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    docker.withRegistry("http://${registry}", registryCredentials) {
+                        sh("docker push ${registry}/nodemongoapp:5.0")
+                    }
+                }
+            }
+        }
+
+
+       stage('Run application') {
+        steps {
+            script {
+                docker.withRegistry("http://${registry}", registryCredentials) {
+                    dir('Serveur') {
+                        sh("docker pull ${registry}/nodemongoapp:5.0")
+                        sh('docker-compose up -d')
+                    }
+                }
+            }
+        }
 }
+}
+}
+
+
+
+
+
+
 /*pipeline {
     agent any
     environment {
