@@ -34,15 +34,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps{
-                script {
-                    withSonarQubeEnv {
-                        sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'
-                    }
-                }
+    stage('SonarQube Analysis') {
+    steps {
+        script {
+            withSonarQubeEnv {
+                // Exécuter le scanner
+                sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'
             }
+            // Vérification explicite du succès
+            echo 'SonarQube analysis done.'
         }
+    }
+}
+
 
 
 stage('Quality Gate') {
