@@ -149,7 +149,7 @@ const ParamedicList = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/paramedics', newParamedicData);
+      const response = await axios.post('http://localhost:5000/paramedics/paramedics', newParamedicData);
       console.log('Paramedic créé:', response.data);
       setParamedics((prev) => [...prev, response.data]);
       setNewParamedic({

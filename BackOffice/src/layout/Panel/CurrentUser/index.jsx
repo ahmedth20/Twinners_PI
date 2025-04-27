@@ -10,19 +10,24 @@ import {
   Input, Form, SubmitButton, Error, InputRow, FormTitle
 } from "../../../styles/PopUpAddPatient";
 import { Snackbar, Alert } from "@mui/material";
-
+import { useNavigate } from "react-router-dom"; // 👈 import
 const CurrentUser = () => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [user1, setUser1] = useState({});
     const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState("");   
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
-    const [ setLoading] = useState(false);
-
-    const user = useSelector(state => state.auth.user.user1.id);
+   const [loading, setLoading] = useState(false);
+   const navigate = useNavigate();
+   
+   const handleLogout = () => {
+    dispatch(logout());
+    navigate("/"); // 👈 redirection vers la home
+};
+    const user = useSelector(state => state.auth.user.user.id);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -101,7 +106,7 @@ const CurrentUser = () => {
                             <button onClick={() => setShowPopup(true)}>
                                 <i className="icon icon-circle-user" /> Update profile
                             </button>
-                            <button onClick={() => dispatch(logout())}>
+                            <button onClick={handleLogout}>
                                 <i className="icon icon-logout" /> Logout
                             </button>
                         </Menu>

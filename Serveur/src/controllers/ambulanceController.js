@@ -55,6 +55,32 @@ exports.updateAmbulance = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+// Update an ambulance status by ID
+exports.updateAmbulanceStatus = async (req, res) => {
+  const { status } = req.body;
+
+  // Vérification si le status est valide
+  const validStatuses = ["on road to patient", "available", "busy"];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: "Invalid status value" });
+  }
+
+  try {
+    const ambulance = await Ambulance.findByIdAndUpdate(
+      req.params.id, 
+      { status: status },  // On met à jour uniquement le status
+      { new: true }
+    );
+
+    if (!ambulance) {
+      return res.status(404).json({ message: "Ambulance not found" });
+    }
+
+    res.status(200).json(ambulance);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 // Delete an ambulance by ID
 exports.deleteAmbulance = async (req, res) => {

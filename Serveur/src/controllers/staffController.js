@@ -2,7 +2,7 @@
 const Staff = require("../models/staff");
 const User = require("../models/user");
 const mongoose = require("mongoose");
-
+const nodemailer = require('nodemailer');
 const staffController = {
   // 📌 Récupérer tous les patients
   async getAllstaffs(req, res) {

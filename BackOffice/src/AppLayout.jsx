@@ -27,12 +27,14 @@ const Doctors = lazy(() => import('pages/Doctors'));
 const StaffList = lazy(() => import('pages/Staff'));
 const DoctorMessenger = lazy(() => import('pages/DoctorMessenger'));
 const PatientMessenger = lazy(() => import('pages/PatientMessenger'));
-const AmbulanceGettingMessage= lazy(() => import('pages/AmbulanceGettingMessage'));
+const AmbulanceGettingMessage= lazy(() => import('Notifications/ParamedicResponseAmbulance'));
 const DoctorsReviews = lazy(() => import('pages/DoctorsReviews'));
 const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
 const Settings = lazy(() => import('pages/Settings'));
 const MedicalForm = lazy(() => import('pages/MedicalForm'));
+const GeminiChatbot = lazy(() => import('pages/GeminiChatbot'));
+
 //const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
 const Servicemanager = lazy(() => import('pages/srevicemanager'));
@@ -66,7 +68,8 @@ const AppLayout = () => {
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
-      <Route path="/AmbulanceGettingMessage" element={ <AmbulanceGettingMessage /> } />
+      <Route path="/ParamedicResponseAmbulance" element={ <AmbulanceGettingMessage /> } />
+      <Route path="/chat" element={ <GeminiChatbot/> } />
       
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />
