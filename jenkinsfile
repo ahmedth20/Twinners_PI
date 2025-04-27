@@ -8,8 +8,8 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexus"
-        //DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
-        //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+        DOCKER_USERNAME = 'yosrcharek'  
+        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA' 
     }
     stages {
         stage('Install dependencies') {
@@ -62,14 +62,14 @@ pipeline {
             }
         } 
 
-          /*stage('Building images (node and mongo)') {
+        /*  stage('Building images (node and mongo)') {
             steps {
                     script {
                         sh 'cd Serveur docker-compose build'
                     }
             }
-        }*/
-
+           }
+*/
 
         /*stage('Run application') {
             steps {
@@ -82,7 +82,7 @@ pipeline {
             }
         }*/
 
-        stage('Build and Tag Docker Image') {
+     /*   stage('Build and Tag Docker Image') {
             steps {
                 script {
                     // On se place dans le dossier où se trouve ton Dockerfile
@@ -97,8 +97,8 @@ pipeline {
             }
         }
 
-
-        stage('Deploy to Nexus') {
+*/
+     /*   stage('Deploy to Nexus') {
             steps {
                 script {
                     docker.withRegistry("http://${registry}", registryCredentials) {
@@ -120,7 +120,7 @@ pipeline {
                 }
             }
         }
-}
+}*/
 }
 }
 
