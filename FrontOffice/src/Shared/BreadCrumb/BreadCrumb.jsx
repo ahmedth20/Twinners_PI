@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 const BreadCrumb = ({
   breadCrumbTitle,
   breadCrumbIcon,
+  breadCrumbIcon2,
   url,
   breadCrumbLink,
+  breadCrumbLink2
 }) => {
   return (
     <div className='px-2 lg:px-4 xl:px-[30px] bg-BodyBg-0'>
@@ -18,7 +20,7 @@ const BreadCrumb = ({
             <li>
               <Link to={'/'}>
                 <button className='font-AlbertSans text-white transition-all duration-500 hover:text-PrimaryColor-0 uppercase'>
-                  Mediic
+                 Smart190
                 </button>
               </Link>
             </li>
@@ -29,6 +31,16 @@ const BreadCrumb = ({
               <Link to={url}>
                 <button className='font-AlbertSans text-white uppercase'>
                   {breadCrumbLink}
+                </button>
+              </Link>
+            </li>
+            <li>
+              <div className='text-white hidden sm:block'>{breadCrumbIcon2}</div>
+            </li>
+            <li>
+              <Link to={url}>
+                <button className='font-AlbertSans text-white uppercase'>
+                  {breadCrumbLink2}
                 </button>
               </Link>
             </li>

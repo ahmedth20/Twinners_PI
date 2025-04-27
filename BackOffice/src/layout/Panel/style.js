@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from '@styles/vars';
+import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from 'styles/vars';
 
 export const Search = styled.form`
   position: relative;

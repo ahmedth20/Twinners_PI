@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro';
 import theme from 'styled-theming';
-import {colors, dark, breakpoints, flex, light, textSizes, fonts} from '@styles/vars';
+import {colors, dark, breakpoints, flex, light, textSizes, fonts} from 'styles/vars';
 
 export const Block = styled.div`
   display: flex;

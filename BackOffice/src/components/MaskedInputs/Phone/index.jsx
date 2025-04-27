@@ -1,5 +1,5 @@
 // components
-import Field from '@ui/Field';
+import Field from 'UI/Field';
 import {PatternFormat} from 'react-number-format';
 
 const Phone = ({id, placeholder}) => {

@@ -1,7 +1,7 @@
 import {nanoid} from 'nanoid';
 import moment from 'moment';
-import doc11jpg from '@assets/avatars/doc11.jpg';
-import doc11webp from '@assets/avatars/doc11.jpg?as=webp';
+import doc11jpg from 'assets/avatars/doc11.jpg';
+import doc11webp from 'assets/avatars/doc11.jpg?as=webp';
 
 const prevMonth = moment().month() - 1;
 

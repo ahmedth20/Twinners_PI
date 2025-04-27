@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import {flex, breakpoints, light, colors, textSizes, fonts} from '@styles/vars'
+import {flex, breakpoints, light, colors, textSizes, fonts} from 'styles/vars'
 import theme from 'styled-theming';
-import dashed from '@assets/dashed.svg'
-import dashed_dark from '@assets/dashed_dark.svg'
+import dashed from 'assets/dashed.svg'
+import dashed_dark from 'assets/dashed_dark.svg'
 
 const bg = theme('theme', {
     light: '#fff',

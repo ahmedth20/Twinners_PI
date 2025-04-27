@@ -2,8 +2,8 @@
 import {Wrapper, Content, Main, Rating} from './style';
 
 // components
-import Avatar from '@ui/Avatar';
-import CustomRating from '@ui/CustomRating';
+import Avatar from 'UI/Avatar';
+import CustomRating from 'UI/CustomRating';
 
 const DoctorRatingItem = ({data, period, selected, responsive}) => {
     const {name, online, speciality, rating, avatar} = data;

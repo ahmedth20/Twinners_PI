@@ -1,7 +1,7 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {effects, fonts, textSizes, dark, light} from '@styles/vars';
+import {effects, fonts, textSizes, dark, light} from 'styles/vars';
 
 // utils
 import PropTypes from 'prop-types';

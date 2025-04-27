@@ -1,6 +1,6 @@
 // hooks
 import {useDropzone} from 'react-dropzone';
-import useNotistack from '@hooks/useNotistack';
+import useNotistack from 'hooks/useNotistack';
 
 // utils
 import PropTypes from 'prop-types';

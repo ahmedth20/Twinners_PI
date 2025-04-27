@@ -1,21 +1,21 @@
-import { Header } from '@components/Widget/style';
+import { Header } from 'components/Widget/style';
 import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
-import GenderNav from '@components/GenderNav';
-import MonthNavigator from '@ui/Navigator/MonthNavigator';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
+import GenderNav from 'components/GenderNav';
+import MonthNavigator from 'UI/Navigator/MonthNavigator';
 import Group from './Group';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
-import { generateAlphabet } from '@utils/helpers';
+import { generateAlphabet } from 'utils/helpers';
 import { nanoid } from 'nanoid';
 
 // hooks
 import { useState, useRef, useEffect } from 'react';
-import useGenderFilter from '@hooks/useGenderFilter';
+import useGenderFilter from 'hooks/useGenderFilter';
 
 // Import du service StaffService
 import StaffService from 'services/StaffService';
@@ -24,19 +24,19 @@ const StaffList = () => {
     const contentRef = useRef(null);
     const [staffMembers, setStaffMembers] = useState([]);
     const [selectedLetter, setSelectedLetter] = useState(null);
-    const [lastGender, setLastGender] = useState(null);
+ //   const [lastGender, setLastGender] = useState(null);
 
     const handleLetterClick = (char) => {
         setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
     };
 
-    const handleGenderClick = (newGender) => {
+  /*  const handleGenderClick = (newGender) => {
         if (lastGender === newGender.value) {
             setSelectedLetter(null);
         }
         setLastGender(newGender.value);
         setGender(newGender);
-    };
+    };*/
 
     useEffect(() => {
         const fetchStaff = async () => {

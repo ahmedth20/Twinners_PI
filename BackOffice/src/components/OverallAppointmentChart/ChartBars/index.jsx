@@ -2,13 +2,13 @@
 import {Bar, Container} from './style';
 
 // styling
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // components
 import {motion} from 'framer-motion';
 
 // utils
-import {colorTypes} from '@constants/colors';
+import {colorTypes} from 'constants/colors';
 
 const ChartBars = ({data, masked = false, ...props}) => {
     return (

@@ -2,7 +2,7 @@
 import {StyledEvent, EventModal} from './style';
 
 // components
-import ModalWindow from '@components/ModalWindow';
+import ModalWindow from 'components/ModalWindow';
 
 // utils
 import moment from 'moment';
@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 // hooks
 import {useTheme} from 'styled-components';
 import {useState} from 'react';
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 const Event = ({event, variant}) => {
     const [open, setOpen] = useState(false);

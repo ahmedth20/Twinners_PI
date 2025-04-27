@@ -1,28 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Header } from '@components/Widget/style';
+import { Header } from 'components/Widget/style';
 import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
-import GenderNav from '@components/GenderNav';
-import MonthNavigator from '@ui/Navigator/MonthNavigator';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
+import GenderNav from 'components/GenderNav';
+import MonthNavigator from 'UI/Navigator/MonthNavigator';
 import Group from './Group';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import UpdateDoctorPopup from 'pages/UpdateDoctorPopUp';
 
 // utils
-import { generateAlphabet } from '@utils/helpers';
+import { generateAlphabet } from 'utils/helpers';
 
 // hooks
-import useGenderFilter from '@hooks/useGenderFilter';
+import useGenderFilter from 'hooks/useGenderFilter';
 import DoctorService from 'services/DoctorService';
 
 const DoctorsList = ({ variant = "doctor" }) => {
   const contentRef = useRef(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState(null);
-  const [lastGender, setLastGender] = useState(null);
+ // const [lastGender, setLastGender] = useState(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
@@ -69,14 +69,14 @@ const DoctorsList = ({ variant = "doctor" }) => {
     setSelectedLetter((prevLetter) => (prevLetter === char ? null : char));
   };
 
-  const handleGenderClick = (newGender) => {
+  /*const handleGenderClick = (newGender) => {
     if (lastGender === newGender.value) {
       setSelectedLetter(null); // Reset letter selection on double click
     }
     setLastGender(newGender.value);
     setGender(newGender);
   };
-
+*/
   const handleEditDoctor = (doctor) => {
     setSelectedDoctor(doctor); // Store selected doctor
     setIsEditPopupOpen(true); // Open the popup

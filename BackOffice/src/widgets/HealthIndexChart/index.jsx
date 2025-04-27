@@ -1,29 +1,29 @@
 // styling
-import {colors, light, dark} from '@styles/vars';
+import {colors, light, dark} from 'styles/vars';
 
 // styled components
-import {HealthIndexChartWrapper} from '@widgets/HealthIndexChart/style';
+import {HealthIndexChartWrapper} from 'widgets/HealthIndexChart/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
 import {ScatterChart, Scatter, ResponsiveContainer, Tooltip, Cell} from 'recharts';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import ChartTooltip from '@components/Chart/Tooltip';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import ChartTooltip from 'components/Chart/Tooltip';
 import CountUp from 'react-countup';
 
 // utils
 import PropTypes from 'prop-types';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
-import usePeriodNav from '@hooks/usePeriodNav';
+import useArrayNav from 'hooks/useArrayNav';
+import usePeriodNav from 'hooks/usePeriodNav';
 import {useTheme} from 'styled-components';
 
 // data placeholder
-import {y2020, y2021, y2022} from '@db/health';
+import {y2020, y2021, y2022} from 'db/health';
 
 const HealthIndexChart = ({variant}) => {
     const {theme} = useTheme();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTrash, FaEdit, FaPlus, FaTimes, FaRegPauseCircle, FaCheckCircle } from 'react-icons/fa';
+import {  FaTimes } from 'react-icons/fa';
 import styled from 'styled-components';
 
 const ActionModalWrapper = styled.div`

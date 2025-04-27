@@ -1,7 +1,7 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, colors, light, dark} from '@styles/vars';
+import {flex, colors, light, dark} from 'styles/vars';
 
 const Wrapper = styled.div`
   .icon {

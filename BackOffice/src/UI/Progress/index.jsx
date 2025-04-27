@@ -1,5 +1,5 @@
 // styling
-import {dark, colors} from '@styles/vars';
+import {dark, colors} from 'styles/vars';
 
 // components
 import LinearProgress from '@mui/material/LinearProgress';

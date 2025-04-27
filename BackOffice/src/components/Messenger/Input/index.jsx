@@ -1,10 +1,10 @@
 // styling
 import styled from 'styled-components';
-import {flex, textSizes, breakpoints} from '@styles/vars';
+import {flex, textSizes, breakpoints} from 'styles/vars';
 
 // styled components
-import {Footer} from '@components/Messenger/style';
-import ShapeButton from '@ui/ShapeButton';
+import {Footer} from 'components/Messenger/style';
+import ShapeButton from 'UI/ShapeButton';
 
 // hooks
 import {useRef} from 'react';
@@ -16,7 +16,7 @@ import moment from 'moment';
 import {nanoid} from 'nanoid';
 
 // actions
-import {addMessage} from '@store/features/messenger';
+import {addMessage} from 'store/features/messenger';
 
 const InputFooter = styled(Footer)`
   padding: 15px 24px 20px;

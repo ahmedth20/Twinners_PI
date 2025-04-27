@@ -8,7 +8,7 @@ import {motion} from 'framer-motion';
 import PropTypes from 'prop-types';
 
 // hooks
-import {useInterfaceContext} from '@contexts/interfaceContext';
+import {useInterfaceContext} from 'contexts/interfaceContext';
 
 const Widget = ({name, children, style, shadow = false, ...props}) => {
     const {direction} = useInterfaceContext();

@@ -2,54 +2,45 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./yosr.css";
-import { GoogleLogin } from '@react-oauth/google';
 import { login,logout } from "../../slices/authSlice";
-import FacebookLogin from '@greatsumini/react-facebook-login';
 import { Snackbar, Alert } from "@mui/material";
 
 
 
 function Login() {
-  const [isSignUp, setIsSignUp] = useState(false);
+ const [isSignUp] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // États du formulaire d'inscription
-  const [name, setName] = useState("");
+ // const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  const [phoneNumber, setphoneNumber] = useState("");
+ // const [phoneNumber, setphoneNumber] = useState("");
 
-  
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState("");
-
-  const [emailError1, setEmailError1] = useState(false);
-  const [passwordError1, setPasswordError1] = useState(false);
-  const [showPassword1] = React.useState(false);
-  const [email1, setEmail1] = useState("");
-        const [emailError, setEmailError] = useState(false);
-        const [password1, setPassword1] = useState("");
-        const [passwordError, setPasswordError] = useState(false);
-   
-      const [showPassword] = React.useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [showPassword] = React.useState(false);
     
-    const decodeJWT = (token) => {
+  /*  const decodeJWT = (token) => {
         const base64Url = token.split(".")[1]; // Récupère la partie payload du token
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         return JSON.parse(atob(base64)); // Décode en JSON
     };
-    
-      const handleGoogleRegister = async (credentialResponse) => {
+    */
+   /*   const handleGoogleRegister = async (credentialResponse) => {
         try {
             const { credential } = credentialResponse;
             const decoded = decodeJWT(credential); 
             const userGoogleData = {
                 email: decoded.email,
-                name: decoded.name,
+                firstName: decoded.name,
                 googleId: decoded.sub,
                 avatar: decoded.picture,
+                role:"patient"
             };
     
             console.log("Google User Data:", userGoogleData);
@@ -64,9 +55,7 @@ function Login() {
             });
             console.log("Google User Data:", response);
     
-           
-    
-           
+            
         } catch (error) {
             console.error("Erreur d'enregistrement Google :", error);
             alert("Échec de l'enregistrement avec Google. Veuillez réessayer.");
@@ -79,8 +68,8 @@ function Login() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
-            facebookId: response.id,
+            firstName: response.name,
+            facebookId: response.id, role:"patient"
          //   accessToken: response.accessToken,
           };
       
@@ -107,7 +96,7 @@ function Login() {
           alert("Échec de connexion avec Facebook. Veuillez réessayer.");
         }
       };
-    
+   
       const handleSubmit1 = async (e) => {
         e.preventDefault();
     
@@ -122,7 +111,7 @@ function Login() {
                 body: JSON.stringify({name:name,phoneNumber:phoneNumber,
                     email: email,
                     password: password,
-                    role: "medecin"
+                   
                 })
             });
             const data = await response.json(); // ✅ Vérifier la réponse JSON
@@ -132,7 +121,7 @@ function Login() {
             console.error("Erreur:", error);
         }
     };
-     
+     */ 
     
 
    const handleSubmit = async (e) => {
@@ -153,7 +142,7 @@ function Login() {
       });              const data = await response.json();
       console.log(data)
 
-      if(data.message=="Connexion réussie"){
+      if(data.message==="Connexion réussie"){
         setSuccess("your logged successfully"); 
      
       console.log("1111")
@@ -161,15 +150,15 @@ function Login() {
   
         //setTimeout(() => { navigate("/home"); }, 1500)
       }
-        else if(data.message=="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
+        else if(data.message==="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
         }
-        else if(data.message=="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
+        else if(data.message==="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
         }
   
-       else  if(data.message=="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+       else  if(data.message==="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
        }
   
-       else  if(data.message=="mot de passe invalide"){      setErr("mot de passe invalide"); 
+       else  if(data.message==="mot de passe invalide"){      setErr("mot de passe invalide"); 
        }
   
      
@@ -190,14 +179,14 @@ function Login() {
       
         }
 
-  const handleFacebookLoginA = async (response) => {
+ /* const handleFacebookLoginA = async (response) => {
         try {
           console.log("Facebook Login Response:", response);
           
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
+            firstName: response.name,
             facebookId: response.id,
          //   accessToken: response.accessToken,
           };
@@ -240,7 +229,7 @@ function Login() {
                 console.log(credential)
                 const userGoogleData = {
                     email: decoded.email,
-                    name: decoded.name,
+                    firstName: decoded.name,
                 };
         
                 console.log("Google User Data:", userGoogleData); // Vérifier dans la console
@@ -258,7 +247,7 @@ function Login() {
                 const data = await response.json();
                 console.log("aaa", data);
 
-                dispatch(login({ user: data }));if(data.role=="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
+                dispatch(login({ user: data }));if(data.role==="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
                 }
                
                 setTimeout(() => {
@@ -274,8 +263,8 @@ function Login() {
             }
         };
         
-  
-        const isFormValid = () => email && !emailError && password.length >= 8 && !passwordError;
+  */
+   const isFormValid = () => email && !emailError && password.length >= 8 && !passwordError;
       //  const isFormValid1 = () => email1 && !emailError1 && password1.length >= 8 && !passwordError1;
 
   const handleEmailChange = (event) => {
@@ -283,7 +272,8 @@ function Login() {
     setEmail(value);
     setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
-  const handlenameChange = (event) => {
+
+ /* const handlenameChange = (event) => {
     const { value } = event.target;
     setName(value);
   };
@@ -303,7 +293,7 @@ function Login() {
     setEmail(value);
     setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
-
+*/
   const handlePasswordChange = (event) => {
     const { value } = event.target;
     setPassword(value);
@@ -359,7 +349,7 @@ function Login() {
             )}
 
             {/* Formulaire d'Inscription */}
-            {isSignUp && (
+           {/*  {isSignUp && (
            <div className="form-container sign-up-container">
                 <form >
                 
@@ -445,7 +435,7 @@ function Login() {
                      />
                 </form>
               </div>
-            )}
+            )}*/}
           </div>
 
           {/* Section Droite avec Image et Animation */}

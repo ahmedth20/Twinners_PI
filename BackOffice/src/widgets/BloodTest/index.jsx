@@ -1,16 +1,16 @@
 // styling
-import {light, dark, textSizes, fonts, colors, flex} from '@styles/vars';
+import {light, dark, textSizes, fonts, colors, flex} from 'styles/vars';
 import styled from 'styled-components';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
 import ReactSpeedometer from 'react-d3-speedometer';
 
 // hooks
 import {useTheme} from 'styled-components';
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 const Wrapper = styled.div`
   display: flex;

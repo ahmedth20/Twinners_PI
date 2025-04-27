@@ -3,35 +3,35 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 // styled components
 import {Container, Header, StyledCalendar, Footer} from './style';
-import {Container as Tabs, Item, Button} from '@ui/TabNav/style';
+import {Container as Tabs, Item, Button} from 'UI/TabNav/style';
 
 // components
 import {Calendar, momentLocalizer} from 'react-big-calendar';
-import Event from '@components/AppointmentsCalendar/Event';
-import TimeSlot from '@components/AppointmentsCalendar/TimeSlot';
-import DailyToolbar from '@components/AppointmentsCalendar/DailyToolbar';
-import DailyNavigation from '@components/AppointmentsCalendar/DailyNavigation';
-import WeeklyNavigation from '@components/AppointmentsCalendar/WeeklyNavigation';
-import WeekSelector from '@components/AppointmentsCalendar/WeekSelector';
-import MonthlyNavigation from '@components/AppointmentsCalendar/MonthlyNavigation';
-import MonthSelector from '@components/AppointmentsCalendar/MonthSelector';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import DoctorPopup from '@components/AppointmentsCalendar/DoctorPopup';
+import Event from 'components/AppointmentsCalendar/Event';
+import TimeSlot from 'components/AppointmentsCalendar/TimeSlot';
+import DailyToolbar from 'components/AppointmentsCalendar/DailyToolbar';
+import DailyNavigation from 'components/AppointmentsCalendar/DailyNavigation';
+import WeeklyNavigation from 'components/AppointmentsCalendar/WeeklyNavigation';
+import WeekSelector from 'components/AppointmentsCalendar/WeekSelector';
+import MonthlyNavigation from 'components/AppointmentsCalendar/MonthlyNavigation';
+import MonthSelector from 'components/AppointmentsCalendar/MonthSelector';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import DoctorPopup from 'components/AppointmentsCalendar/DoctorPopup';
 
 // utils
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import {colorTypes} from '@constants/colors';
-import {doctorsOptions} from '@constants/options';
+import {colorTypes} from 'constants/colors';
+import {doctorsOptions} from 'constants/options';
 
 // hooks
 import {useState, useRef, useEffect} from 'react';
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 // data placeholder
-import {events, disabled} from '@db/calendar_appointments';
-import CustomSelect from '@ui/Select';
+import {events, disabled} from 'db/calendar_appointments';
+import CustomSelect from 'UI/Select';
 
 const AppointmentsCalendar = ({viewChangeHandler, current, type}) => {
     const width = useWindowSize().width;

@@ -1,14 +1,14 @@
 // styled components
-import {ListItem, Main, Header, Button} from '@components/TestItem/style';
+import {ListItem, Main, Header, Button} from 'components/TestItem/style';
 
 // components
-import IconLink from '@ui/IconLink';
-import MenuDots from '@ui/MenuDots';
+import IconLink from 'UI/IconLink';
+import MenuDots from 'UI/MenuDots';
 import {motion, AnimatePresence} from 'framer-motion';
 
 // utils
 import moment from 'moment';
-import {fadePresence} from '@constants/framer';
+import {fadePresence} from 'constants/framer';
 
 const TestItem = ({data}) => {
     const {doctor, title, date} = data;

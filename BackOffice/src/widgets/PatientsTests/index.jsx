@@ -1,25 +1,25 @@
 // styled components
-import {List, Header} from '@widgets/PatientsTests/style';
+import {List, Header} from 'widgets/PatientsTests/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
-import CustomSelect from '@ui/Select';
-import MonthNavigator from '@ui/Navigator/MonthNavigator';
-import SearchBar from '@ui/SearchBar';
-import TestItem from '@components/TestItem';
-import GroupSeparator from '@ui/GroupSeparator';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
+import CustomSelect from 'UI/Select';
+import MonthNavigator from 'UI/Navigator/MonthNavigator';
+import SearchBar from 'UI/SearchBar';
+import TestItem from 'components/TestItem';
+import GroupSeparator from 'UI/GroupSeparator';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
-import {testsOptions} from '@constants/options';
+import {testsOptions} from 'constants/options';
 import moment from 'moment';
 
 // hooks
 import {useEffect, useRef, useState} from 'react';
 
 // data placeholder
-import {patient_tests} from '@db/patient_tests';
+import {patient_tests} from 'db/patient_tests';
 
 const PatientsTests = () => {
     const contentRef = useRef(null);

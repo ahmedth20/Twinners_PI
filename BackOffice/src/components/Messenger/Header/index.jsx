@@ -1,10 +1,10 @@
 // styled components
-import {HeaderContainer} from '@components/Messenger/Header/style';
+import {HeaderContainer} from 'components/Messenger/Header/style';
 
 // components
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
-import ActionButton from '@ui/ActionButton';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
+import ActionButton from 'UI/ActionButton';
 
 // utils
 import PropTypes from 'prop-types';

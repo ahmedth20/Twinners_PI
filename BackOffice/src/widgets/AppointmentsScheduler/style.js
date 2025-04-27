@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {effects, dark, flex, light, breakpoints} from '@styles/vars';
-import {StyledCalendar} from '@components/AppointmentsCalendar/style';
+import {effects, dark, flex, light, breakpoints} from 'styles/vars';
+import {StyledCalendar} from 'components/AppointmentsCalendar/style';
 
 const borderColor = theme('theme', {
     light: '#DCE2E8',

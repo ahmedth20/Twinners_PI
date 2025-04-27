@@ -2,11 +2,11 @@
 import {List, Block, Text} from "./style";
 
 // components
-import Progress from '@ui/Progress';
+import Progress from 'UI/Progress';
 
 // utils
 import PropTypes from 'prop-types';
-import {confirmedPalette} from '@styles/vars';
+import {confirmedPalette} from 'styles/vars';
 
 const ListItem = ({data, period}) => {
     const {label} = data;

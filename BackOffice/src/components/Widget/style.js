@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, light, dark, colors, textSizes, effects, breakpoints} from '@styles/vars';
+import {flex, light, dark, colors, textSizes, effects, breakpoints} from 'styles/vars';
 
 const bg = theme('theme', {
     light: light.widgetBg,

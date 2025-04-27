@@ -1,20 +1,20 @@
 // styled components
-import {Divider} from '@components/Widget/style';
-import {Footer} from '@widgets/PaymentsFeed/style';
+import {Divider} from 'components/Widget/style';
+import {Footer} from 'widgets/PaymentsFeed/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import Payments from '@widgets/PaymentsFeed/Payments';
-import Field from '@ui/Field';
-import ScrollContainer from '@components/ScrollContainer';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import Payments from 'widgets/PaymentsFeed/Payments';
+import Field from 'UI/Field';
+import ScrollContainer from 'components/ScrollContainer';
 
 // hooks
 import {useState, useRef} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 // data placeholder
-import {payments} from '@db/payments';
+import {payments} from 'db/payments';
 
 const PaymentsFeed = () => {
     const headerRef = useRef(null);

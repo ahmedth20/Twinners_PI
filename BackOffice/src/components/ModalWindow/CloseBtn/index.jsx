@@ -1,5 +1,5 @@
 // styling
-import {colors, flex, textSizes} from '@styles/vars';
+import {colors, flex, textSizes} from 'styles/vars';
 import styled from 'styled-components';
 import {darken} from 'polished';
 

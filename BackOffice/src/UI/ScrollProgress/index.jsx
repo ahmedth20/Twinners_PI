@@ -1,7 +1,7 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, dark} from '@styles/vars';
+import {colors, dark} from 'styles/vars';
 
 // animation
 import { motion, useScroll, useSpring } from 'framer-motion';

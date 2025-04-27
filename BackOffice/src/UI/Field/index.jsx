@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {colors, dark, light, textSizes} from '@styles/vars';
+import {colors, dark, light, textSizes} from 'styles/vars';
 import theme from 'styled-theming';
 
 // utils

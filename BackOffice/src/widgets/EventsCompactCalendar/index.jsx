@@ -1,12 +1,12 @@
 // styled components
-import {EventsCalendar, Container, Popup, Backdrop} from '@widgets/EventsCompactCalendar/style';
+import {EventsCalendar, Container, Popup, Backdrop} from 'widgets/EventsCompactCalendar/style';
 
 // components
-import Widget from '@components/Widget';
+import Widget from 'components/Widget';
 import Calendar from 'react-calendar';
-import Timestamp from '@ui/Timestamp';
+import Timestamp from 'UI/Timestamp';
 import Grow from '@mui/material/Grow';
-import CloseBtn from '@components/ModalWindow/CloseBtn';
+import CloseBtn from 'components/ModalWindow/CloseBtn';
 
 // hooks
 import {useState, useRef} from 'react';

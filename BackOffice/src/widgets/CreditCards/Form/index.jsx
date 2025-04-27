@@ -11,7 +11,7 @@ import {useState} from 'react';
 import {useDispatch} from 'react-redux';
 
 // actions
-import {addCard} from '@store/features/cards';
+import {addCard} from 'store/features/cards';
 
 const Form = ({isVisible, handler}) => {
     const initialState = {

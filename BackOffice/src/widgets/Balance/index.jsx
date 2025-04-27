@@ -2,10 +2,10 @@
 import {Wrapper, Block, BalanceInfo} from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Btn from '@ui/Btn';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Btn from 'UI/Btn';
 
 const Balance = () => {
     return (

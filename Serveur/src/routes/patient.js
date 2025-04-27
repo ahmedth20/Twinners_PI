@@ -9,6 +9,7 @@ router.get("/:id", patientController.getPatientById);
 router.get("/details/:id", patientController.getPatientInfoById);
 router.post("/", patientController.createPatient);
 router.post("/createSimplePatient", patientController.createSimplePatient);
+router.post("/createSimplePatientFront", patientController.createSimplePatientFront);
 router.put("/:id", patientController.updatePatient);
 router.put("/updateSimplePatient/:id", patientController.updateSimplePatient);
 router.delete("/:id", patientController.deletePatient);
