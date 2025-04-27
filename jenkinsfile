@@ -45,7 +45,7 @@ pipeline {
             echo 'SonarQube analysis done.'
         }
     }
-}*/
+}
 
 
 
@@ -55,7 +55,7 @@ stage('Quality Gate') {
             waitForQualityGate abortPipeline: true
         }
     }
-}
+}*/
 
         stage('Build application') {
             steps {
