@@ -34,16 +34,16 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps{
-                script {
-                    def scannerHome = tool 'jenkinsSonar'
-                    withSonarQubeEnv {
-                        sh "sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'"
-                    }
-                }
+stage('SonarQube Analysis') {
+    steps {
+        script {
+            withSonarQubeEnv('YourSonarServer') {
+                sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'
             }
         }
+    }
+}
+
 
 stage('Quality Gate') {
     steps {
