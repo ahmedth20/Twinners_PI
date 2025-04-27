@@ -39,7 +39,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'jenkinsSonar'
                     withSonarQubeEnv {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                        sh "sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'"
                     }
                 }
             }
