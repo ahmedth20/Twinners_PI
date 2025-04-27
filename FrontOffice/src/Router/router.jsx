@@ -31,6 +31,7 @@ import Resetpassword1 from '../screens/restpasswordslouma';
 import Home2 from '../Pages/HomeLogin/Home2';
 import Map from '../Pages/InnerPage/Map/Map';
 import CallAmbulance from '../Pages/InnerPage/Notifications/CallAmbulance';
+import ProfileSettings from '../Pages/Profile/ProfileSettings';
 
 const PrivateRoute = ({ children }) => {
   const user = useSelector(state => state.auth.user);
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
       { path: 'contact', element: <PrivateRoute><ContactInner /></PrivateRoute> },
       { path: 'notif', element: <PrivateRoute><CallAmbulance/></PrivateRoute> },
       { path: 'map', element: <PrivateRoute><Map /></PrivateRoute> },
+      { path: 'profile', element: <PrivateRoute><ProfileSettings /></PrivateRoute> },
     ],
   },
   { path: '*', errorElement: <ErrorPage /> },
