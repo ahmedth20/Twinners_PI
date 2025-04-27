@@ -1,17 +1,17 @@
 // styled components
-import {BasicBadge} from '@ui/Badge/style';
+import {BasicBadge} from 'UI/Badge/style';
 import {ListItemContainer, Content, Main, Label, Secondary} from './list';
-import {PlannerItemContainer, Wrapper, TimestampWrapper} from '@components/Todos/Todo/planner';
+import {PlannerItemContainer, Wrapper, TimestampWrapper} from 'components/Todos/Todo/planner';
 
 // components
-import Timestamp from '@ui/Timestamp';
-import Checkbox from '@ui/Checkbox';
+import Timestamp from 'UI/Timestamp';
+import Checkbox from 'UI/Checkbox';
 import Collapse from '@mui/material/Collapse';
-import {Badge} from '@ui/Badge/style';
+import {Badge} from 'UI/Badge/style';
 
 // utils
-import {toggleComplete} from '@store/features/todos';
-import {tasksColors} from '@constants/colors';
+import {toggleComplete} from 'store/features/todos';
+import {tasksColors} from 'constants/colors';
 import moment from 'moment';
 
 // hooks

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, light, dark, flex, textSizes, breakpoints} from '@styles/vars';
+import {colors, light, dark, flex, textSizes, breakpoints} from 'styles/vars';
 
 const bodyBg = theme('theme', {
     light: light.bodyBg,

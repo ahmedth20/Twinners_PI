@@ -1,9 +1,9 @@
 // components
-import Page from '@layout/Page';
-import TasksList from '@widgets/TasksList';
-import ConfirmedDiagnoses from '@widgets/ConfirmedDiagnoses';
-import DiagnosesDonut from '@widgets/DiagnosesDonut';
-import RadarAreaChart from '@widgets/RadarAreaChart';
+import Page from 'layout/Page';
+import TasksList from 'widgets/TasksList';
+import ConfirmedDiagnoses from 'widgets/ConfirmedDiagnoses';
+import DiagnosesDonut from 'widgets/DiagnosesDonut';
+import RadarAreaChart from 'widgets/RadarAreaChart';
 
 const DashboardC = () => {
     return (

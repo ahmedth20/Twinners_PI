@@ -1,7 +1,7 @@
 // components
-import GroupSeparator from '@ui/GroupSeparator';
+import GroupSeparator from 'UI/GroupSeparator';
 
-import PatientList from '@components/PatientList';
+import PatientList from 'components/PatientList';
 
 
 // utils

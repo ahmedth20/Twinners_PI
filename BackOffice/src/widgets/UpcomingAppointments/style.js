@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, textSizes, light, dark, flex, effects} from '@styles/vars';
+import {colors, textSizes, light, dark, flex, effects} from 'styles/vars';
 
 export const RangePickerWrapper = styled.div`
   margin-top: -15px;

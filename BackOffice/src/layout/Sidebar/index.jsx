@@ -1,20 +1,20 @@
 // styling
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // styled components
 import {Header} from './style';
 
 // components
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import Logo from '@ui/Logo';
-import MenuButton from '@ui/MenuButton';
+import Logo from 'UI/Logo';
+import MenuButton from 'UI/MenuButton';
 import Content from './Content';
 import Emergency from './Emergency';
 
 // hooks
-import {useSidebarContext} from '@contexts/sidebarContext';
+import {useSidebarContext} from 'contexts/sidebarContext';
 import {useWindowSize} from 'react-use';
-import {useInterfaceContext} from '@contexts/interfaceContext';
+import {useInterfaceContext} from 'contexts/interfaceContext';
 import {useTheme} from 'styled-components';
 
 const Sidebar = () => {

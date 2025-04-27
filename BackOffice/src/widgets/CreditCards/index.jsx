@@ -2,20 +2,20 @@
 import {Footer, Container, Navigation} from './style';
 
 // components
-import Widget from '@components/Widget';
-import {Divider} from '@components/Widget/style';
+import Widget from 'components/Widget';
+import {Divider} from 'components/Widget/style';
 import Card from './Card';
-import TabNav from '@ui/TabNav';
-import {Item, Button} from '@ui/TabNav/style'
-import Btn from '@ui/Btn';
+import TabNav from 'UI/TabNav';
+import {Item, Button} from 'UI/TabNav/style'
+import Btn from 'UI/Btn';
 import Form from './Form';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import ScrollContainer from '@components/ScrollContainer';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import ScrollContainer from 'components/ScrollContainer';
 
 // hooks
 import {useState, useRef, useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 const CreditCards = () => {
     const allCards = useSelector(state => state['cards'].cards);

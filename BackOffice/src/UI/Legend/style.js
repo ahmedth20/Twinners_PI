@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {textSizes, fonts} from '@styles/vars';
+import {textSizes, fonts} from 'styles/vars';
 
 export const List = styled.ul`
   display: flex;

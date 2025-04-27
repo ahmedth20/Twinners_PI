@@ -3,17 +3,17 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 // components
 import Widget from 'components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
+import WidgetHeader from 'components/Widget/WidgetHeader';
 import {Calendar, momentLocalizer} from 'react-big-calendar';
-import DailyNavigation from '@components/AppointmentsCalendar/DailyNavigation';
-import Event from '@components/AppointmentsCalendar/Event';
-import Field from '@ui/Field';
-import CustomSelect from '@ui/Select';
-import Btn from '@ui/Btn';
-import SelectableSlot from '@components/AppointmentsCalendar/SelectableSlot';
+import DailyNavigation from 'components/AppointmentsCalendar/DailyNavigation';
+import Event from 'components/AppointmentsCalendar/Event';
+import Field from 'UI/Field';
+import CustomSelect from 'UI/Select';
+import Btn from 'UI/Btn';
+import SelectableSlot from 'components/AppointmentsCalendar/SelectableSlot';
 
 // styled components
-import {StyledAppointmentsScheduler, Container} from '@widgets/AppointmentsScheduler/style';
+import {StyledAppointmentsScheduler, Container} from 'widgets/AppointmentsScheduler/style';
 
 // utils
 import moment from 'moment/moment';
@@ -22,7 +22,7 @@ import moment from 'moment/moment';
 import {useState, useRef, useEffect} from 'react';
 
 // constants
-import {colorTypes} from '@constants/colors';
+import {colorTypes} from 'constants/colors';
 
 const AppointmentsScheduler = () => {
     const localizer = momentLocalizer(moment);

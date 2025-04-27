@@ -1,6 +1,6 @@
 // styled components
 import {DateInputWrapper} from './style';
-import {Input} from '@ui/Field';
+import {Input} from 'UI/Field';
 
 // components
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';

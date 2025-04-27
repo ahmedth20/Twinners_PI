@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, textSizes, flex} from '@styles/vars';
-import {ModalContent} from '@components/ModalWindow';
+import {colors, textSizes, flex} from 'styles/vars';
+import {ModalContent} from 'components/ModalWindow';
 
 export const Container = styled.ul`
   position: fixed;

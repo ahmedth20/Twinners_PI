@@ -1,28 +1,28 @@
 // styled components
-import {ReviewsContent, ReviewsHeader, HeaderWrapper, Wrapper} from '@components/Reviews/style';
+import {ReviewsContent, ReviewsHeader, HeaderWrapper, Wrapper} from 'components/Reviews/style';
 
 // components
 import Tab from 'react-bootstrap/Tab';
-import Widget from '@components/Widget';
-import Navigator from '@ui/Navigator';
-import ScrollContainer from '@components/ScrollContainer';
-import Review from '@components/Reviews/Review';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import SelectPlaceholder from '@ui/SelectPlaceholder';
-import Avatar from '@ui/Avatar';
-import CustomRating from '@ui/CustomRating';
+import Widget from 'components/Widget';
+import Navigator from 'UI/Navigator';
+import ScrollContainer from 'components/ScrollContainer';
+import Review from 'components/Reviews/Review';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import SelectPlaceholder from 'UI/SelectPlaceholder';
+import Avatar from 'UI/Avatar';
+import CustomRating from 'UI/CustomRating';
 
 // data placeholder
-import {doctors} from '@db/doctors';
-import {doctors_reviews} from '@db/doctors_reviews';
+import {doctors} from 'db/doctors';
+import {doctors_reviews} from 'db/doctors_reviews';
 
 // hooks
 import {useEffect, useMemo, useRef, useState} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
-import useArrayNav from '@hooks/useArrayNav';
+import useContentHeight from 'hooks/useContentHeight';
+import useArrayNav from 'hooks/useArrayNav';
 
 // utils
-import {getMonthArray, getYearDaysArray} from '@utils/dates';
+import {getMonthArray, getYearDaysArray} from 'utils/dates';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 

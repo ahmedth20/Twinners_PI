@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {colors, textSizes} from '@styles/vars';
+import {colors, textSizes} from 'styles/vars';
 import {darken} from 'polished';
 
 // utils

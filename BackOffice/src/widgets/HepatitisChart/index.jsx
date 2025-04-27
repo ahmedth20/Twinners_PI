@@ -1,17 +1,17 @@
 // styling
-import {colors, light, dark} from '@styles/vars';
+import {colors, light, dark} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 import {PieChart, Pie, Cell, ResponsiveContainer, Tooltip} from 'recharts';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 import {useTheme} from 'styled-components';
 
 const HepatitisChart = () => {

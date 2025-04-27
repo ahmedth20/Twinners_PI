@@ -1,24 +1,24 @@
 // styled components
-import Field from '@ui/Field';
-import {Footer, Header, List} from '@components/Messenger/style';
-import {Container, Button} from '@ui/TabNav/style';
+import Field from 'UI/Field';
+import {Footer, Header, List} from 'components/Messenger/style';
+import {Container, Button} from 'UI/TabNav/style';
 
 // components
-import Widget from '@components/Widget';
+import Widget from 'components/Widget';
 import Nav from 'react-bootstrap/Nav';
-import User from '@components/Messenger/UsersList/User';
-import ScrollContainer from '@components/ScrollContainer';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import User from 'components/Messenger/UsersList/User';
+import ScrollContainer from 'components/ScrollContainer';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
 import PropTypes from 'prop-types';
 
 // hooks
 import {useRef, useState} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 // data placeholder
-import {doctor, patient} from '@db/messenger';
+import {doctor, patient} from 'db/messenger';
 
 const UserList = ({variant, user, onUserSelect, setModal, activeList, setActiveList}) => {
     const [query, setQuery] = useState('');

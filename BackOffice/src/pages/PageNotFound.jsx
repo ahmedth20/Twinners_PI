@@ -1,19 +1,19 @@
 // styling
 import styled from 'styled-components';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 
 // components
-import Page from '@layout/Page';
-import {Container} from '@components/Widget/style';
+import Page from 'layout/Page';
+import {Container} from 'components/Widget/style';
 import Lottie from 'lottie-react';
-import Btn from '@ui/Btn';
+import Btn from 'UI/Btn';
 import {motion} from 'framer-motion';
 
 // hooks
 import {useNavigate} from 'react-router-dom';
 
 // assets
-import notFound from '@assets/404.json';
+import notFound from 'assets/404.json';
 
 const FlexContainer = styled(Container)`
   justify-content: center;

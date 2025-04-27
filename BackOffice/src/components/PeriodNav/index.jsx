@@ -1,8 +1,8 @@
 // styled components
-import {Container, Item, Button} from '@ui/TabNav/style';
+import {Container, Item, Button} from 'UI/TabNav/style';
 
 // hooks
-import usePeriodNav from '@hooks/usePeriodNav';
+import usePeriodNav from 'hooks/usePeriodNav';
 
 // utils
 import {nanoid} from 'nanoid';

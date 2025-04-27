@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import {flex, colors, textSizes, dark, light, fonts, breakpoints} from '@styles/vars';
+import {flex, colors, textSizes, dark, light, fonts, breakpoints} from 'styles/vars';
 import theme from 'styled-theming';
-import add from '@assets/add.svg';
+import add from 'assets/add.svg';
 
 const borderColor = theme('theme', {
     light: '#DCE2E8',

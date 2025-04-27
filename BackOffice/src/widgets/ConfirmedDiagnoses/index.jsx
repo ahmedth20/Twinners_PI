@@ -1,20 +1,20 @@
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import ConfirmedDiagnosesList from '@widgets/ConfirmedDiagnoses/List';
-import PeriodNav from '@components/PeriodNav';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import ConfirmedDiagnosesList from 'widgets/ConfirmedDiagnoses/List';
+import PeriodNav from 'components/PeriodNav';
 
 // utils
 import PropTypes from 'prop-types';
 
 // hooks
-import usePeriodNav from '@hooks/usePeriodNav';
-import useArrayNav from '@hooks/useArrayNav';
+import usePeriodNav from 'hooks/usePeriodNav';
+import useArrayNav from 'hooks/useArrayNav';
 
 // data placeholder
-import {confirmed} from '@db/confirmed';
+import {confirmed} from 'db/confirmed';
 
 const ConfirmedDiagnoses = ({nav}) => {
     const {period, periods, setPeriod} = usePeriodNav();

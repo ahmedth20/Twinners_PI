@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {effects, flex} from '@styles/vars';
+import {effects, flex} from 'styles/vars';
 
 export const List = styled.div`
   ${flex.col};

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {textSizes, colors} from '@styles/vars';
+import {textSizes, colors} from 'styles/vars';
 
 export const Footer = styled.div`
   padding: 24px;

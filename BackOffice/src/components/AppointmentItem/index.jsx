@@ -1,11 +1,11 @@
 // styled components
-import {ListItem, Main, Footer} from '@components/AppointmentItem/style';
+import {ListItem, Main, Footer} from 'components/AppointmentItem/style';
 
 // components
-import Avatar from '@ui/Avatar';
-import Truncated from '@components/Truncated';
-import ShapeButton from '@ui/ShapeButton';
-import MenuDots from '@ui/MenuDots';
+import Avatar from 'UI/Avatar';
+import Truncated from 'components/Truncated';
+import ShapeButton from 'UI/ShapeButton';
+import MenuDots from 'UI/MenuDots';
 import {motion, AnimatePresence} from 'framer-motion';
 import {Fragment} from 'react';
 

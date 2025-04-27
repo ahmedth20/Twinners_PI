@@ -6,24 +6,22 @@ import { FiExternalLink } from "react-icons/fi";
 import styled from "styled-components";
 import { CiMedicalClipboard } from "react-icons/ci";
 // components
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
-import Reminder from '@ui/Reminder';
-import Progress from '@ui/Progress';
-import CustomRating from '@ui/CustomRating';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
+import Reminder from 'UI/Reminder';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 
 // utils
-import { fadePresence } from '@constants/framer';
+import { fadePresence } from 'constants/framer';
 import PropTypes from 'prop-types';
-import ReactIcons from '@ui/ReactIcons';
+import ReactIcons from 'UI/ReactIcons';
 import PatientService from 'services/PatientService';
 import axios from "axios";
 // Modal for confirmation
-import ConfirmActionModal from '@ui/ConfirmActionModal'
-import UpdateSimplePatientPopup from '@pages/UpdateSimplePatientPopup';
-import DetailsPopUp from '@pages/DetailsPopUp';
+import ConfirmActionModal from 'UI/ConfirmActionModal'
+import UpdateSimplePatientPopup from 'pages/UpdateSimplePatientPopup';
+import DetailsPopUp from 'pages/DetailsPopUp';
 
 const StyledClipboardIcon = styled(CiMedicalClipboard)`
   color: rgb(129, 135, 139);

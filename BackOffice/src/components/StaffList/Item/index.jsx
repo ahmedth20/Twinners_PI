@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Wrapper, Block, Button } from './style';
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
-import EditStaffForm from '@pages/EditStaffForm'; // Assurez-vous d'importer le bon composant de pop-up
-import Reminder from '@ui/Reminder';
+import EditStaffForm from 'pages/EditStaffForm'; // Assurez-vous d'importer le bon composant de pop-up
+import Reminder from 'UI/Reminder';
 import StaffService from 'services/StaffService';
 
 const Item = ({ type, data, onEdit, onDelete }) => {
@@ -40,10 +40,8 @@ const Item = ({ type, data, onEdit, onDelete }) => {
   };
 
   const { user, online, avatar, phone, role } = data;
-  const [isActive, setIsActive] = useState(false);
-  const toggleActivation = () => {
-    setIsActive(!isActive);
-  };
+
+ 
 
   const Common = () => (
     <Block>

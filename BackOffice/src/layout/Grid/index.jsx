@@ -6,10 +6,10 @@ import {Responsive, WidthProvider} from 'react-grid-layout';
 import {withSize} from 'react-sizeme';
 
 // hooks
-import {useInterfaceContext} from '@contexts/interfaceContext';
+import {useInterfaceContext} from 'contexts/interfaceContext';
 import {useDispatch} from 'react-redux';
-import {updateLayout, saveToLocalStorage} from '@store/features/layout';
-import useWindowSize from '@hooks/useWindowSize';
+import {updateLayout, saveToLocalStorage} from 'store/features/layout';
+import useWindowSize from 'hooks/useWindowSize';
 
 const ResponsiveGridLayout = withSize()(WidthProvider(Responsive));
 

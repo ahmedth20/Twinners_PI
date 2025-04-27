@@ -2,14 +2,14 @@
 import {ListItem, Wrapper, Footer} from '../style';
 
 // components
-import Pill from '@ui/Pill';
-import ShapeButton from '@ui/ShapeButton';
-import Truncated from '@components/Truncated';
-import Timestamp from '@ui/Timestamp';
+import Pill from 'UI/Pill';
+import ShapeButton from 'UI/ShapeButton';
+import Truncated from 'components/Truncated';
+import Timestamp from 'UI/Timestamp';
 
 // utils
 import {motion, AnimatePresence} from "framer-motion"
-import {fadePresence} from '@constants/framer';
+import {fadePresence} from 'constants/framer';
 
 const RecentQuestionsItem = ({date, text}) => {
     return (
