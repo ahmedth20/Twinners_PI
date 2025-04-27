@@ -20,7 +20,7 @@ const CurrentUser = () => {
     const [lastName, setLastName] = useState("");   
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
-   const [loading, setLoading] = useState(false);
+   const [setLoading] = useState(false);
    const navigate = useNavigate();
    
    const handleLogout = () => {
