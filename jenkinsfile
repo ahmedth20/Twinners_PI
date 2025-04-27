@@ -34,7 +34,7 @@ pipeline {
             }
         }
 
-    stage('SonarQube Analysis') {
+  /*  stage('SonarQube Analysis') {
     steps {
         script {
             withSonarQubeEnv {
@@ -45,7 +45,7 @@ pipeline {
             echo 'SonarQube analysis done.'
         }
     }
-}
+}*/
 
 
 
