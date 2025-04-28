@@ -1,11 +1,11 @@
 // styling
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // styled components
 import {Header, Main} from './style';
 
 // components
-import Widget from '@components/Widget';
+import Widget from 'components/Widget';
 import Cardiogram from 'react-cardiogram';
 
 const HeartRate = () => {

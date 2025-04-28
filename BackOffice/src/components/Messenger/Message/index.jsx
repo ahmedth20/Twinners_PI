@@ -1,8 +1,8 @@
 // styled components
-import {MessageContainer} from '@components/Messenger/Message/style';
+import {MessageContainer} from 'components/Messenger/Message/style';
 
 // components
-import Waveform from '@components/Waveform';
+import Waveform from 'components/Waveform';
 
 // hooks
 import {useTheme} from 'styled-components';

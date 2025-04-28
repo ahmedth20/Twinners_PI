@@ -1,19 +1,19 @@
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import ScrollContainer from '@components/ScrollContainer';
-import PeriodNav from '@components/PeriodNav';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import ScrollContainer from 'components/ScrollContainer';
+import PeriodNav from 'components/PeriodNav';
 import Tab from 'react-bootstrap/Tab';
-import DoctorRatingItem from '@components/DoctorRatingItem';
+import DoctorRatingItem from 'components/DoctorRatingItem';
 
 // hooks
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 import {useRef, useState, useEffect} from 'react';
-import usePeriodNav from '@hooks/usePeriodNav';
+import usePeriodNav from 'hooks/usePeriodNav';
 
 // data placeholder
-import {doctors} from '@db/doctors';
+import {doctors} from 'db/doctors';
 
 const DoctorsRatingList = () => {
     const [current, setCurrent] = useState(usePeriodNav().period);

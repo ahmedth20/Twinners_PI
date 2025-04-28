@@ -2,7 +2,7 @@
 import {DraggableListItem, DraggablePlannerItem} from './style';
 
 // components
-import Todo from '@components/Todos/Todo';
+import Todo from 'components/Todos/Todo';
 import {
     DndContext,
     closestCenter,
@@ -26,7 +26,7 @@ import useMobileDetect from 'use-mobile-detect-hook';
 
 // utils
 import propTypes from 'prop-types';
-import {updateOrder} from '@store/features/todos';
+import {updateOrder} from 'store/features/todos';
 
 const DnDLayout = ({variant}) => {
     const device = useMobileDetect();

@@ -1,12 +1,12 @@
 // components
-import Page from '@layout/Page';
-import UserList from '@components/Messenger/UsersList';
-import ModalWindow from '@components/ModalWindow';
+import Page from 'layout/Page';
+import UserList from 'components/Messenger/UsersList';
+import ModalWindow from 'components/ModalWindow';
 import Tab from 'react-bootstrap/Tab';
 
 // hooks
 import {useState} from 'react';
-import Messenger from '@components/Messenger';
+import Messenger from 'components/Messenger';
 
 const DoctorMessenger = () => {
     const [activeList, setActiveList] = useState('patients');

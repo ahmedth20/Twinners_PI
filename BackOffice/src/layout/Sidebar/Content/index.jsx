@@ -1,27 +1,27 @@
 // styled components
 import {LinksList, List, MainItem} from '../style';
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // components
 import Accordion from 'react-bootstrap/Accordion';
 import {NavLink} from 'react-router-dom';
-import {useDispatch,useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 // hooks
-import {useSidebarContext} from '@contexts/sidebarContext';
+import {useSidebarContext} from 'contexts/sidebarContext';
 
 // menu links
-import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from '@constants/menu';
-import { useState, useEffect } from "react";
+import {menuadmin,menuchefservice,menudoctors,menuparamedic,menustaff} from 'constants/menu';
+
 
 const Content = () => {
    const token = useSelector(state => state.auth.user.token);
-    const secretKey = "abc123";
+   
 
     const {toggleSidebar} = useSidebarContext();
     const activeStyle = {color: colors.blue};
    /* const decoded = jwt.decode(token,secretKey, { complete: true });*/
-    const [user, setUser] = useState(null);
+   
     const decoded = jwtDecode(token);
     console.log(decoded);
     console.log(decoded.userId);
@@ -31,7 +31,7 @@ const Content = () => {
    
 
     return (
-      <> { decoded.role == "medecin" &&<List as={Accordion}>
+      <> { decoded.role === "medecin" &&<List as={Accordion}>
             {
                 menudoctors.map((item, index) => {
                     if (item.cat) {
@@ -80,7 +80,7 @@ const Content = () => {
                 })
             }
         </List>}
-      { decoded.role == "service manager" &&<List as={Accordion}>
+      { decoded.role === "service manager" &&<List as={Accordion}>
             {
                 menuchefservice.map((item, index) => {
                     if (item.cat) {
@@ -130,7 +130,7 @@ const Content = () => {
             }
         </List>}
         
-        { decoded.role == "staff" &&<List as={Accordion}>
+        { decoded.role === "staff" &&<List as={Accordion}>
             {
                 menustaff.map((item, index) => {
                     if (item.cat) {
@@ -180,7 +180,7 @@ const Content = () => {
             }
         </List>}
         
-        { decoded.role == "paramedic" &&<List as={Accordion}>
+        { decoded.role === "paramedic" &&<List as={Accordion}>
             {
                 menuparamedic.map((item, index) => {
                     if (item.cat) {
@@ -230,7 +230,7 @@ const Content = () => {
             }
         </List>}
 
-        { decoded.role == "admin" &&<List as={Accordion}>
+        { decoded.role === "admin" &&<List as={Accordion}>
             {
                 menuadmin.map((item, index) => {
                     if (item.cat) {

@@ -1,7 +1,7 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, flex, light, dark} from '@styles/vars';
+import {colors, flex, light, dark} from 'styles/vars';
 
 const color = theme('theme', {
     light: light.widgetBg,

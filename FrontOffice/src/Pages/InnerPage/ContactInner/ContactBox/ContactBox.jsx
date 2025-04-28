@@ -4,24 +4,24 @@ import contactBoxIcon2 from '/images/icon-call.png';
 import contactBoxIcon3 from '/images/icon-location.png';
 
 const processData = [
-  {
+ /* {
     id: 1,
     contactBoxIcon: contactBoxIcon,
     contactBoxSubTitle: 'Send Now',
     contactBoxTitle: 'E-Mail Address',
     contactBoxDesc: 'mediic@example.com',
-  },
+  },*/
   {
     id: 2,
     contactBoxIcon: contactBoxIcon2,
-    contactBoxSubTitle: 'Call us',
-    contactBoxTitle: 'Phone Number',
-    contactBoxDesc: '+123 (4547) 563',
+    contactBoxSubTitle: 'Getting Ambulance',
+    contactBoxTitle: 'Location',
+    contactBoxDesc: 'A-1, Envanto Headquarter, Australia',
   },
   {
     id: 3,
     contactBoxIcon: contactBoxIcon3,
-    contactBoxSubTitle: 'Meet Us',
+    contactBoxSubTitle: 'Make registration',
     contactBoxTitle: 'Location',
     contactBoxDesc: 'A-1, Envanto Headquarter, Australia',
   },

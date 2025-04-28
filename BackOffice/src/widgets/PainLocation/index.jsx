@@ -1,12 +1,12 @@
 // styled components
-import {PainLocationWrapper} from '@widgets/PainLocation/style';
+import {PainLocationWrapper} from 'widgets/PainLocation/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import TabNav from '@ui/TabNav';
-import TabNavItem from '@ui/TabNav/TabNavItem';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import TabNav from 'UI/TabNav';
+import TabNavItem from 'UI/TabNav/TabNavItem';
 import {Tab} from 'react-bootstrap';
 import Body from './Body';
 

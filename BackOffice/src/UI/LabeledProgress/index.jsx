@@ -2,8 +2,8 @@
 import styled from 'styled-components';
 
 // components
-import Progress from '@ui/Progress';
-import {flex, textSizes} from '@styles/vars';
+import Progress from 'UI/Progress';
+import {flex, textSizes} from 'styles/vars';
 
 const ListItem = styled.li`
   ${flex.col}

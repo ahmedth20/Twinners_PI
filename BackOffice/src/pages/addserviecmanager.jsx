@@ -4,11 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
-  ModalContent, ModalOverlay, CloseButton,Error, Title, StepContainer, Step, InputRow, Select, FormTitle
+   Input, Form,  SubmitButton, 
+  ModalContent, ModalOverlay, CloseButton,Error, Title,  InputRow,  FormTitle
 } from "../styles/PopUpAddPatient";
 import PatientService from "../services/ServiceMangerService";
-import { margin } from "polished";
 
 // ✅ Définition du schéma de validation avec Zod
 const patientSchema = z.object({
@@ -21,13 +20,10 @@ const patientSchema = z.object({
 
 });
 
-const steps = [
-  { number: 1, label: "User Information" },
-  { number: 2, label: "Personal Information" },
-];
+
 
 const AddSimplePatientPopup = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState(1);
+  const [step] = useState(1);
   
   const {
     register,
@@ -36,9 +32,6 @@ const AddSimplePatientPopup = ({ isOpen, onClose }) => {
   } = useForm({
     resolver: zodResolver(patientSchema),
   });
-
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit = async (data) => {
     try {

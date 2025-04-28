@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {light, textSizes, fonts, flex} from '@styles/vars';
+import {light, textSizes, fonts, flex} from 'styles/vars';
 
 export const StyledTooltip = styled.div`
   font-family: ${fonts.accent};

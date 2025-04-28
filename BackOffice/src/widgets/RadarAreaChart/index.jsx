@@ -1,18 +1,18 @@
 // styling
 import styled from 'styled-components';
-import {colors, fonts, textSizes, light, dark, flex, breakpoints} from '@styles/vars';
+import {colors, fonts, textSizes, light, dark, flex, breakpoints} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import Navigator from '@ui/Navigator';
+import Widget from 'components/Widget';
+import Navigator from 'UI/Navigator';
 import {ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Text, Tooltip} from 'recharts';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useTheme} from 'styled-components';
-import usePeriodNav from '@hooks/usePeriodNav';
-import useWindowSize from '@hooks/useWindowSize';
+import usePeriodNav from 'hooks/usePeriodNav';
+import useWindowSize from 'hooks/useWindowSize';
 
 const Container = styled.div`
   ${flex.col};

@@ -1,28 +1,28 @@
 // styling
 import styled from 'styled-components';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Navigator from '@ui/Navigator';
-import TestItem from '@components/TestItem';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import ScrollContainer from '@components/ScrollContainer';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Navigator from 'UI/Navigator';
+import TestItem from 'components/TestItem';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import ScrollContainer from 'components/ScrollContainer';
 
 // utils
-import {getYearDaysArray} from '@utils/dates';
+import {getYearDaysArray} from 'utils/dates';
 import moment from 'moment';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useEffect, useRef} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
-import useWindowSize from '@hooks/useWindowSize';
+import useContentHeight from 'hooks/useContentHeight';
+import useWindowSize from 'hooks/useWindowSize';
 
 // data placeholder
-import {patient_tests} from '@db/patient_tests';
+import {patient_tests} from 'db/patient_tests';
 
 const List = styled.div`
   ${flex.col};

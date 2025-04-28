@@ -1,6 +1,6 @@
-import {tasksColors} from '@constants/colors';
-import LegendItem from '@ui/Legend/LegendItem';
-import Legend from '@ui/Legend';
+import {tasksColors} from 'constants/colors';
+import LegendItem from 'UI/Legend/LegendItem';
+import Legend from 'UI/Legend';
 
 export default function TodosLegend() {
     return (

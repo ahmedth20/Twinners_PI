@@ -1,11 +1,11 @@
 // components
-import Widget from "@components/Widget";
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import LegendList from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from "components/Widget";
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import LegendList from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 import {Area, AreaChart, ResponsiveContainer, Tooltip} from 'recharts';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
 import {useTheme} from 'styled-components';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import {colors, flex} from '@styles/vars';
-import {aura} from '@styles/keyframes';
+import {colors, flex} from 'styles/vars';
+import {aura} from 'styles/keyframes';
 
 export const PainLocationWrapper = styled.div`
   height: 100%;

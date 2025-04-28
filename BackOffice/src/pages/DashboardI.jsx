@@ -1,10 +1,10 @@
 // components
-import Page from '@layout/Page';
-import DailyPlanner from '@widgets/DailyPlanner';
-import MapChart from '@widgets/MapChart';
-import EpiContextPeriodChart from '@widgets/EpiContextPeriodChart';
-import RecoveryRate from '@widgets/RecoveryRate';
-import DailyAppointmentChart from '@widgets/DailyAppointmentChart';
+import Page from 'layout/Page';
+import DailyPlanner from 'widgets/DailyPlanner';
+import MapChart from 'widgets/MapChart';
+import EpiContextPeriodChart from 'widgets/EpiContextPeriodChart';
+import RecoveryRate from 'widgets/RecoveryRate';
+import DailyAppointmentChart from 'widgets/DailyAppointmentChart';
 
 const DashboardI = () => {
     return (

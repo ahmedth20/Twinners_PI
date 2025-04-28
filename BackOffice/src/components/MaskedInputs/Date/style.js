@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 import theme from 'styled-theming';
 
 export const DateInputWrapper = styled.div`

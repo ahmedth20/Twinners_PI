@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, breakpoints, flex, light} from '@styles/vars';
+import {dark, breakpoints, flex, light} from 'styles/vars';
 
 export const Header = styled.div`
   margin-bottom: 20px;

@@ -1,7 +1,7 @@
-import { Badge } from '@ui/Badge/style';
+import { Badge } from 'UI/Badge/style';
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import { dark, light, flex, colors } from '@styles/vars';
+import { dark, light, flex, colors } from 'styles/vars';
 import PropTypes from 'prop-types';
 
 const bg = theme('theme', {

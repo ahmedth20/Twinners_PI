@@ -1,9 +1,9 @@
 // assets
-import logo from '@assets/favicon-96x96.png'
+import logo from 'assets/favicon-96x96.png'
 
 // styling
 import styled from 'styled-components';
-import {colors, fonts, textSizes, breakpoints} from '@styles/vars';
+import {colors, fonts, textSizes, breakpoints} from 'styles/vars';
 import theme from 'styled-theming';
 
 // components

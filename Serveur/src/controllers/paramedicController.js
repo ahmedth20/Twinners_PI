@@ -35,6 +35,26 @@ exports.getParamedicById = async (req, res) => {
     }
 };
 
+// controllers/paramedicController.js
+
+exports.getParamedicByAmbulance = async (req, res) => {
+    try {
+      // Recherche les paramedics associés à l'ambulance
+      const paramedics = await Paramedic.find({ ambulance: req.params.ambulanceId })
+        .populate('ambulance')
+        .populate('patientsFile')
+        .populate('user');
+      
+      if (!paramedics || paramedics.length === 0) {
+        return res.status(404).json({ message: 'No paramedics found for this ambulance' });
+      }
+      
+      res.status(200).json(paramedics);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 // Update a paramedic by ID
 exports.updateParamedic = async (req, res) => {
     try {

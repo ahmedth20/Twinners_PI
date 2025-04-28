@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import theme from 'styled-theming';
 
 // hooks
-import useElementScroll from '@hooks/useElementScroll';
+import useElementScroll from 'hooks/useElementScroll';
 import {useRef} from 'react';
 
 const Scroller = styled.div`

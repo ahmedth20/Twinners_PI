@@ -2,13 +2,13 @@
 import {Wrapper, Main, Test, Footer} from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import IconLink from '@ui/IconLink';
-import Pill from '@ui/Pill';
-import MenuDots from '@ui/MenuDots';
-import Truncated from '@components/Truncated';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import IconLink from 'UI/IconLink';
+import Pill from 'UI/Pill';
+import MenuDots from 'UI/MenuDots';
+import Truncated from 'components/Truncated';
 import {SwiperSlide, Swiper} from 'swiper/react';
 import {EffectFade} from 'swiper';
 
@@ -16,9 +16,9 @@ import {EffectFade} from 'swiper';
 import {nanoid} from 'nanoid';
 
 // hooks
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 import {useState, useEffect} from 'react';
-import {useInterfaceContext} from '@contexts/interfaceContext';
+import {useInterfaceContext} from 'contexts/interfaceContext';
 
 const LaboratoryTests = () => {
     const window = useWindowSize();

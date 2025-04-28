@@ -1,8 +1,8 @@
 // components
-import Widget from '@components/Widget';
+import Widget from 'components/Widget';
 import Tab from 'react-bootstrap/Tab';
-import SelectPlaceholder from '@ui/SelectPlaceholder';
-import Main from '@components/Messenger/Main';
+import SelectPlaceholder from 'UI/SelectPlaceholder';
+import Main from 'components/Messenger/Main';
 
 const Messenger = ({variant, user}) => {
     return (

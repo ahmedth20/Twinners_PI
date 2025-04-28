@@ -1,9 +1,9 @@
 // styling
 import styled from 'styled-components';
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // hooks
-import {useSidebarContext} from '@contexts/sidebarContext';
+import {useSidebarContext} from 'contexts/sidebarContext';
 
 export const Button = styled.button`
   width: 20px;

@@ -1,26 +1,26 @@
 // styled components
-import {RangePickerWrapper} from '@widgets/UpcomingAppointments/style';
+import {RangePickerWrapper} from 'widgets/UpcomingAppointments/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import AppointmentItem from '@components/AppointmentItem';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import AppointmentItem from 'components/AppointmentItem';
 import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import ScrollContainer from '@components/ScrollContainer';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import ScrollContainer from 'components/ScrollContainer';
 
 // utils
 import moment from 'moment';
 
 // hooks
 import {useState, useRef} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 // data placeholder
-import {upcoming} from '@db/upcoming';
+import {upcoming} from 'db/upcoming';
 
 const UpcomingAppointments = () => {
     const [visible, setVisible] = useState(false);

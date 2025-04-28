@@ -1,20 +1,20 @@
 // styled components
-import {SearchWrapper, NavItem} from '@components/Reviews/style';
+import {SearchWrapper, NavItem} from 'components/Reviews/style';
 
 // components
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import ScrollContainer from '@components/ScrollContainer';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import ScrollContainer from 'components/ScrollContainer';
 import Nav from 'react-bootstrap/Nav';
-import DoctorRatingItem from '@components/DoctorRatingItem';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
-import Widget from '@components/Widget';
+import DoctorRatingItem from 'components/DoctorRatingItem';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
+import Widget from 'components/Widget';
 
 // hooks
 import {useRef, useState} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 // data placeholder
-import {doctors} from '@db/doctors';
+import {doctors} from 'db/doctors';
 
 const ReviewsRatingList = ({tab, setTab, setModal}) => {
     const [query, setQuery] = useState('');

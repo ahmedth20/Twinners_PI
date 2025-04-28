@@ -1,13 +1,13 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {light, dark, textSizes, colors, fonts, breakpoints} from '@styles/vars';
+import {light, dark, textSizes, colors, fonts, breakpoints} from 'styles/vars';
 
 // utils
 import PropTypes from 'prop-types';
 
 // hooks
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 const SearchBarForm = styled.form`
   height: 40px;

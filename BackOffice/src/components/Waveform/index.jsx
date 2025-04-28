@@ -1,10 +1,10 @@
 // styling
 import styled from 'styled-components';
-import {colors, light, fonts, textSizes} from '@styles/vars';
+import {colors, light, fonts, textSizes} from 'styles/vars';
 
 // components
 import WaveSurfer from 'wavesurfer.js';
-import ShapeButton from '@ui/ShapeButton';
+import ShapeButton from 'UI/ShapeButton';
 
 // hooks
 import {useState, useEffect} from 'react';

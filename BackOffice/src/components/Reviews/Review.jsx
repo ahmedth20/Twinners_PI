@@ -2,14 +2,14 @@
 import {Wrapper, HeaderWrapper, ReviewMain} from './style';
 
 // components
-import Avatar from '@ui/Avatar';
-import CustomRating from '@ui/CustomRating';
-import Timestamp from '@ui/Timestamp';
-import MenuDots from '@ui/MenuDots';
+import Avatar from 'UI/Avatar';
+import CustomRating from 'UI/CustomRating';
+import Timestamp from 'UI/Timestamp';
+import MenuDots from 'UI/MenuDots';
 import {motion} from 'framer-motion';
 
 // constants
-import {fadePresence} from '@constants/framer';
+import {fadePresence} from 'constants/framer';
 
 const Review = ({data, variant}) => {
     const {name, online, rating, title, text, date, avatar} = data;

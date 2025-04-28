@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {cards} from '@db/cards';
+import {cards} from 'db/cards';
 import {nanoid} from 'nanoid';
 
 export const Cards = createSlice({

@@ -1,25 +1,25 @@
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, dark, light, breakpoints} from '@styles/vars';
+import {colors, dark, light, breakpoints} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components//Widget/WidgetBody';
-import PeriodNav from '@components/PeriodNav';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components//Widget/WidgetBody';
+import PeriodNav from 'components/PeriodNav';
 import {ResponsiveContainer, Scatter, ScatterChart, ReferenceLine, Cell, Tooltip} from 'recharts';
 import CountUp from 'react-countup';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import usePeriodNav from '@hooks/usePeriodNav';
-import useContentHeight from '@hooks/useContentHeight';
+import usePeriodNav from 'hooks/usePeriodNav';
+import useContentHeight from 'hooks/useContentHeight';
 import {useRef, useState} from 'react';
 import {useTheme} from 'styled-components';
 
 // data placeholder
-import {year, month, week} from '@db/disease';
+import {year, month, week} from 'db/disease';
 
 const Container = styled.div`
   height: 250px;

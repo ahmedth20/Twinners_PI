@@ -2,9 +2,9 @@
 import {Container} from './style';
 
 // components
-import ShapeButton from '@ui/ShapeButton';
-import Btn from '@ui/Btn';
-import ModalWindow from '@components/ModalWindow';
+import ShapeButton from 'UI/ShapeButton';
+import Btn from 'UI/Btn';
+import ModalWindow from 'components/ModalWindow';
 
 const DoctorPopup = ({name, open, handler, elemsHeight}) => {
     return (

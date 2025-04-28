@@ -2,8 +2,8 @@
 import {ButtonWrapper, Container, Label} from './style';
 
 // components
-import ShapeButton from '@ui/ShapeButton';
-import {Badge} from '@ui/Badge/style';
+import ShapeButton from 'UI/ShapeButton';
+import {Badge} from 'UI/Badge/style';
 
 const Emergency = () => {
     return (

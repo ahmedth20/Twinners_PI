@@ -1,8 +1,8 @@
-import {colors, dark, flex, light, textSizes, breakpoints, fonts} from '@styles/vars';
+import {colors, dark, flex, light, textSizes, breakpoints, fonts} from 'styles/vars';
 import styled from 'styled-components';
-import {colorTypes} from '@constants/colors';
+import {colorTypes} from 'constants/colors';
 import theme from 'styled-theming';
-import {ModalContent} from '@components/ModalWindow';
+import {ModalContent} from 'components/ModalWindow';
 
 const disabled = theme => theme === 'dark' ? light.text : '#DCE2E8';
 

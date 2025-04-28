@@ -1,20 +1,20 @@
 // styling
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // styled components
-import {Total, List} from '@widgets/PaymentsOverview/style';
+import {Total, List} from 'widgets/PaymentsOverview/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import LabeledProgress from '@ui/LabeledProgress';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import LabeledProgress from 'UI/LabeledProgress';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 
 // utils
-import {getWeekArray} from '@utils/dates';
+import {getWeekArray} from 'utils/dates';
 import moment from 'moment';
 
 const PaymentsOverview = () => {
