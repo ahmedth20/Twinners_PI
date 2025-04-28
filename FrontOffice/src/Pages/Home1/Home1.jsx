@@ -10,8 +10,22 @@ import Service from '../../Component1/Service/Service';
 import Subscribe from '../../Component1/Subscribe/Subscribe';
 import TeamMember from '../../Component1/TeamMember/TeamMember';
 import Testimonial from '../../Component1/Testimonial/Testimonial';
+import { useEffect, useRef } from "react";
 
 const Home1 = () => {
+  const appoinmentRef = useRef(null);
+
+  useEffect(() => {
+    const handleScrollToAppoinment = () => {
+      appoinmentRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    window.addEventListener("scrollToAppoinment", handleScrollToAppoinment);
+
+    return () => {
+      window.removeEventListener("scrollToAppoinment", handleScrollToAppoinment);
+    };
+  }, []);
   return (
     <>
       <Banner />
@@ -20,7 +34,9 @@ const Home1 = () => {
       <About />
       <ContentSlider />
       <Service />
-      <Appoinment />
+      <div ref={appoinmentRef}>
+        <Appoinment />
+      </div>
       <TeamMember />
       <Testimonial />
       <Brand />

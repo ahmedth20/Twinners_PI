@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, fonts, light, textSizes, flex} from '@styles/vars';
+import {dark, fonts, light, textSizes, flex} from 'styles/vars';
 
 const Placeholder = styled.div`
   display: flex;

@@ -1,9 +1,9 @@
 // styling
 import styled from 'styled-components/macro';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 
 // components
-import Item from '@components/StaffList/Item';
+import Item from 'components/StaffList/Item';
 
 // utils
 import PropTypes from 'prop-types';

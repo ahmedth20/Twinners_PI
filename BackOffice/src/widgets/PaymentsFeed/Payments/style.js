@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, textSizes, colors, fonts, light, dark, breakpoints} from '@styles/vars';
+import {flex, textSizes, colors, fonts, light, dark, breakpoints} from 'styles/vars';
 
 export const PaymentItem = styled.div`
   ${flex.col};

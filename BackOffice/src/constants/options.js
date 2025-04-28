@@ -1,5 +1,5 @@
-import {doctors} from '@db/doctors';
-import Avatar from '@ui/Avatar';
+import {doctors} from 'db/doctors';
+import Avatar from 'UI/Avatar';
 
 export const tasksOptions = [
     {value: 'work', label: 'Work'},

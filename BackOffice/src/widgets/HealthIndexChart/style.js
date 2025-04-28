@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, textSizes, breakpoints, flex} from '@styles/vars';
+import {colors, textSizes, breakpoints, flex} from 'styles/vars';
 
 export const HealthIndexChartWrapper = styled.div`
   height: 100%;

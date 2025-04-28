@@ -2,16 +2,16 @@
 import {Form, BtnWrapper, InputWrapper} from './style';
 
 // components
-import CustomSelect from '@ui/Select';
-import Field from '@ui/Field';
-import Btn from '@ui/Btn';
+import CustomSelect from 'UI/Select';
+import Field from 'UI/Field';
+import Btn from 'UI/Btn';
 import Grow from '@mui/material/Grow';
 import Collapse from '@mui/material/Collapse';
 
 // utils
 import {useDispatch} from 'react-redux';
-import {addTodo, toggleCollapse} from '@store/features/todos';
-import {tasksOptions} from '@constants/options';
+import {addTodo, toggleCollapse} from 'store/features/todos';
+import {tasksOptions} from 'constants/options';
 import {useState} from 'react';
 import {nanoid} from 'nanoid';
 

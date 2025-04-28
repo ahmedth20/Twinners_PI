@@ -1,9 +1,9 @@
 // components
-import Page from '@layout/Page';
-import UserList from '@components/Messenger/UsersList';
-import ModalWindow from '@components/ModalWindow';
+import Page from 'layout/Page';
+import UserList from 'components/Messenger/UsersList';
+import ModalWindow from 'components/ModalWindow';
 import Tab from 'react-bootstrap/Tab';
-import Messenger from '@components/Messenger';
+import Messenger from 'components/Messenger';
 
 // hooks
 import {useState} from 'react';

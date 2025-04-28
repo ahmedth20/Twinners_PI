@@ -1,10 +1,10 @@
 // components
-import Page from '@layout/Page';
-import AppointmentsScheduler from '@widgets/AppointmentsScheduler';
-import DiseaseRate from '@widgets/DiseaseRate';
-import PatientsRadialBar from '@widgets/PatientsRadialBar';
-import PaymentsOverview from '@widgets/PaymentsOverview';
-import RadarAreaChart from '@widgets/RadarAreaChart';
+import Page from 'layout/Page';
+import AppointmentsScheduler from 'widgets/AppointmentsScheduler';
+import DiseaseRate from 'widgets/DiseaseRate';
+import PatientsRadialBar from 'widgets/PatientsRadialBar';
+import PaymentsOverview from 'widgets/PaymentsOverview';
+import RadarAreaChart from 'widgets/RadarAreaChart';
 
 const DashboardJ = () => {
     return (

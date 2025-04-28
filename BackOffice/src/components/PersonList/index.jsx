@@ -1,9 +1,9 @@
 // styling
 import styled from 'styled-components';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 
 // components
-import Item from '@components/PersonList/Item';
+import Item from 'components/PersonList/Item';
 
 // utils
 import PropTypes from 'prop-types';
@@ -32,7 +32,7 @@ const PersonList = ({ arr, type, gender, deps }) => {
 
 
 PersonList.propTypes = {
-    type: PropTypes.oneOf(['doctor', 'patient', 'staff']).isRequired,
+    type: PropTypes.oneOf(['doctor', 'patient', 'staff','servicemanager']).isRequired,
     arr: PropTypes.array.isRequired
 }
 

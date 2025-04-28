@@ -1,9 +1,9 @@
 // components
-import LegendItem from '@ui/Legend/LegendItem';
-import Legend from '@ui/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import Legend from 'UI/Legend';
 
 // utils
-import {colorTypes} from '@constants/colors';
+import {colorTypes} from 'constants/colors';
 
 const ChartLegend = () => {
     return (

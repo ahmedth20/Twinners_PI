@@ -2,7 +2,7 @@
 const Staff = require("../models/staff");
 const User = require("../models/user");
 const mongoose = require("mongoose");
-
+const nodemailer = require('nodemailer');
 const staffController = {
   // 📌 Récupérer tous les patients
   async getAllstaffs(req, res) {
@@ -48,7 +48,7 @@ const staffController = {
         console.log("✅ Données utilisateur valides");
 
         // 1️⃣ Création et enregistrement de l'utilisateur
-        const newUser = new User({ firstName, lastName, email, password });
+        const newUser = new User({ firstName, lastName, email, password,role:"staff" });
         const savedUser = await newUser.save({ session });
 
         console.log("✅ Utilisateur enregistré :", savedUser._id);
@@ -60,6 +60,39 @@ const staffController = {
         });
 
         const savedStaff = await newStaff.save({ session });
+          var transport = nodemailer.createTransport({
+                    service: "Gmail",
+                    auth: {
+                        user: "gytgutu@gmail.com",
+                        pass: "strp rifw uhso ciin",
+                    },
+                });
+        
+                var mailOptions = {
+                    from: "smart 190",
+                    to: email,
+                    subject: "Création de votre compte",
+                    html: `
+                        <div>
+                            <h1>Bienvenue ${firstName} ${lastName} !</h1>
+                            <h2>Votre compte a été créé avec succès.</h2>
+                            <p>Voici vos informations de connexion :</p>
+                            <p><strong>Email :</strong> ${email}</p>
+                            <p><strong>Mot de passe :</strong> ${password}</p>
+                            <p>Vous pouvez vous connecter en cliquant sur le lien ci-dessous :</p>
+                            <a href="http://localhost:5173/loginPage">Se connecter</a>
+                        </div>
+                    `,
+                };
+        
+                transport.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log("Mail envoyé:", info.response);
+                    }
+                });
+        
         console.log("✅ Staff enregistré :", savedStaff._id);
 
         // ✅ Validation et fin de la transaction

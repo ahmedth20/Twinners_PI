@@ -2,50 +2,45 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./yosr.css";
-import Register from './register'
-import { GoogleLogin } from '@react-oauth/google';
 import { login,logout } from "../../slices/authSlice";
-import FacebookLogin from '@greatsumini/react-facebook-login';
-function Yosr() {
-  const [isSignUp, setIsSignUp] = useState(false);
+import { Snackbar, Alert } from "@mui/material";
+
+
+
+function Login() {
+ const [isSignUp] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // États du formulaire d'inscription
-  const [name, setName] = useState("");
+ // const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  const [phoneNumber, setphoneNumber] = useState("");
+ // const [phoneNumber, setphoneNumber] = useState("");
 
-  
-
-
-  const [emailError1, setEmailError1] = useState(false);
-  const [passwordError1, setPasswordError1] = useState(false);
-  const [showPassword1] = React.useState(false);
-  const [email1, setEmail1] = useState("");
-        const [emailError, setEmailError] = useState(false);
-        const [password1, setPassword1] = useState("");
-        const [passwordError, setPasswordError] = useState(false);
-   
-      const [showPassword] = React.useState(false);
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [showPassword] = React.useState(false);
     
-    const decodeJWT = (token) => {
+  /*  const decodeJWT = (token) => {
         const base64Url = token.split(".")[1]; // Récupère la partie payload du token
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         return JSON.parse(atob(base64)); // Décode en JSON
     };
-    
-      const handleGoogleRegister = async (credentialResponse) => {
+    */
+   /*   const handleGoogleRegister = async (credentialResponse) => {
         try {
             const { credential } = credentialResponse;
             const decoded = decodeJWT(credential); 
             const userGoogleData = {
                 email: decoded.email,
-                name: decoded.name,
+                firstName: decoded.name,
                 googleId: decoded.sub,
                 avatar: decoded.picture,
+                role:"patient"
             };
     
             console.log("Google User Data:", userGoogleData);
@@ -60,9 +55,7 @@ function Yosr() {
             });
             console.log("Google User Data:", response);
     
-           
-    
-           
+            
         } catch (error) {
             console.error("Erreur d'enregistrement Google :", error);
             alert("Échec de l'enregistrement avec Google. Veuillez réessayer.");
@@ -75,8 +68,8 @@ function Yosr() {
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
-            facebookId: response.id,
+            firstName: response.name,
+            facebookId: response.id, role:"patient"
          //   accessToken: response.accessToken,
           };
       
@@ -103,7 +96,7 @@ function Yosr() {
           alert("Échec de connexion avec Facebook. Veuillez réessayer.");
         }
       };
-    
+   
       const handleSubmit1 = async (e) => {
         e.preventDefault();
     
@@ -118,7 +111,7 @@ function Yosr() {
                 body: JSON.stringify({name:name,phoneNumber:phoneNumber,
                     email: email,
                     password: password,
-                    role: "medecin"
+                   
                 })
             });
             const data = await response.json(); // ✅ Vérifier la réponse JSON
@@ -128,13 +121,13 @@ function Yosr() {
             console.error("Erreur:", error);
         }
     };
-     
+     */ 
     
 
    const handleSubmit = async (e) => {
            e.preventDefault();
          console.log('aa')
-         const response = await fetch("http://localhost:5000/users/auth", {
+         const response = await fetch("http://localhost:5000/users/authback", {
           method: "POST",
           headers: {
               "Content-Type": "application/json", // ✅ Correction ici
@@ -144,16 +137,32 @@ function Yosr() {
           body: JSON.stringify({
               email: email,
               password: password,
-              role: "medecin"
+             
           })
       });              const data = await response.json();
       console.log(data)
 
-      dispatch(login({ user: data }));
-      if(data.user1.role=="patient"){    setTimeout(()=>{navigate("/home");},200)
+      if(data.message==="Connexion réussie"){
+        setSuccess("your logged successfully"); 
+     
+      console.log("1111")
+      setTimeout(() => {  dispatch(login({ user: data })); }, 1000)
+  
+        //setTimeout(() => { navigate("/home"); }, 1500)
       }
-      if(data.user1.role!="medecin"){    setTimeout(()=>{navigate("/patient");},500)
-      }  console.log(data)
+        else if(data.message==="Utilisateur non trouvé"){      setErr("Utilisateur non trouvé"); 
+        }
+        else if(data.message==="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
+        }
+  
+       else  if(data.message==="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+       }
+  
+       else  if(data.message==="mot de passe invalide"){      setErr("mot de passe invalide"); 
+       }
+  
+     
+       
   setTimeout(() => {
     fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {
@@ -170,14 +179,14 @@ function Yosr() {
       
         }
 
-  const handleFacebookLoginA = async (response) => {
+ /* const handleFacebookLoginA = async (response) => {
         try {
           console.log("Facebook Login Response:", response);
           
         
           const userFacebookData = {
             email: response.email,
-            name: response.name,
+            firstName: response.name,
             facebookId: response.id,
          //   accessToken: response.accessToken,
           };
@@ -220,7 +229,7 @@ function Yosr() {
                 console.log(credential)
                 const userGoogleData = {
                     email: decoded.email,
-                    name: decoded.name,
+                    firstName: decoded.name,
                 };
         
                 console.log("Google User Data:", userGoogleData); // Vérifier dans la console
@@ -238,7 +247,7 @@ function Yosr() {
                 const data = await response.json();
                 console.log("aaa", data);
 
-                dispatch(login({ user: data }));if(data.role=="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
+                dispatch(login({ user: data }));if(data.role==="medecin"){    setTimeout(()=>{navigate("/dashboard_b");},500)
                 }
                
                 setTimeout(() => {
@@ -254,8 +263,8 @@ function Yosr() {
             }
         };
         
-  
-        const isFormValid = () => email && !emailError && password.length >= 8 && !passwordError;
+  */
+   const isFormValid = () => email && !emailError && password.length >= 8 && !passwordError;
       //  const isFormValid1 = () => email1 && !emailError1 && password1.length >= 8 && !passwordError1;
 
   const handleEmailChange = (event) => {
@@ -263,7 +272,8 @@ function Yosr() {
     setEmail(value);
     setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
-  const handlenameChange = (event) => {
+
+ /* const handlenameChange = (event) => {
     const { value } = event.target;
     setName(value);
   };
@@ -283,7 +293,7 @@ function Yosr() {
     setEmail(value);
     setEmailError(value === "" || !/\S+@\S+\.\S+/.test(value));
   };
-
+*/
   const handlePasswordChange = (event) => {
     const { value } = event.target;
     setPassword(value);
@@ -332,51 +342,14 @@ function Yosr() {
   </button>
  
 
-      <GoogleLogin text="signin_with" 
-        onSuccess={handleGoogleLogin}
-        onError={() => alert("Échec de connexion avec Google.")}
-        />
-       
-        <FacebookLogin style={{
-backgroundColor: '#fff',
-color: '#4267b2',
-fontSize: '14px',
-border: '1 px solid blue', // Bordure noire
-borderRadius: '4px',
-}}
-          text="aa"
-          appId="2033452340414185"
-          render={(renderProps) => (
-            <button
-              onClick={renderProps.onClick}
-              style={{
-                backgroundColor: "#fff",padding: '10px',
-                color: "#4267b2",
-                fontSize: "14px",
-               // padding: "12px 24px",
-               border: '1px solid blue',
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >     <i className="fab fa-facebook-f"  style={{
-backgroundColor: '#fff',
-color: '#4267b2',
-fontSize: '14px',marginRight:'14px',
-borderRadius: '4px',
-}}/>
-
-               Sign in with Facebook
-            </button>
-          )}
-          onProfileSuccess={handleFacebookLoginA}
-        />
+     
     </form>
   </div>
 
             )}
 
             {/* Formulaire d'Inscription */}
-            {isSignUp && (
+           {/*  {isSignUp && (
            <div className="form-container sign-up-container">
                 <form >
                 
@@ -462,7 +435,7 @@ borderRadius: '4px',
                      />
                 </form>
               </div>
-            )}
+            )}*/}
           </div>
 
           {/* Section Droite avec Image et Animation */}
@@ -487,8 +460,42 @@ borderRadius: '4px',
           </div>
         </div>
       </div>
+      <Snackbar
+             autoHideDuration={2500}
+             open={err === "" ? false : true}
+             onClose={() => {
+               setErr("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="error"
+               onClose={() => {
+                 setErr("");
+               }}
+             >
+               {err}
+             </Alert>
+           </Snackbar>
+           <Snackbar
+             autoHideDuration={2500}
+             open={success === "" ? false : true}
+             onClose={() => {
+               setSuccess("");
+             }}
+           >
+             <Alert
+               variant="filled"
+               severity="success"
+               onClose={() => {
+                 setSuccess("");
+               }}
+             >
+               {success}
+             </Alert>
+           </Snackbar>
     </main>
   );
 }
 
-export default Yosr;
+export default Login;

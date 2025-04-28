@@ -1,7 +1,7 @@
 // utils
 import {cloneElement} from 'react';
 import moment from 'moment';
-import {addZero} from '@utils/numbers';
+import {addZero} from 'utils/numbers';
 
 const TimeSlot = (props, step, day, isRender) => {
     const differenceMs = moment() - moment(props.value)

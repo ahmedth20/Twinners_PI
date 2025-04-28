@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from '@styles/vars';
+import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from 'styles/vars';
 
 export const Search = styled.form`
   position: relative;
@@ -195,3 +195,65 @@ export const Header = styled.header`
     }
   }
 `
+
+export const PopupOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+`;
+
+export const PopupContent = styled.div`
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    button[type="submit"] {
+        background: #4CAF50;
+        color: white;
+    }
+
+    button[type="button"] {
+        background: #f44336;
+        color: white;
+    }
+`;

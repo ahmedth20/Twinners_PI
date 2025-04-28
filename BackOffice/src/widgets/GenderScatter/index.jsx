@@ -1,28 +1,28 @@
 // styling
-import {colors, light, textSizes, fonts, dark} from '@styles/vars';
+import {colors, light, textSizes, fonts, dark} from 'styles/vars';
 import {rgba} from 'polished';
 
 // styled components
-import {Navbar} from '@components/Widget/style';
+import {Navbar} from 'components/Widget/style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 import {CartesianGrid, Scatter, ScatterChart, Tooltip, ResponsiveContainer, YAxis, XAxis} from 'recharts';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useTheme} from 'styled-components';
 
 // utils
-import {addZero} from '@utils/numbers';
+import {addZero} from 'utils/numbers';
 
 // data placeholder
-import {y2020, y2021, y2022} from '@db/scatter';
+import {y2020, y2021, y2022} from 'db/scatter';
 
 const GenderScatter = () => {
     const {theme} = useTheme();

@@ -1,9 +1,9 @@
 // components
-import Page from '@layout/Page';
-import TaskScheduler from '@widgets/TaskScheduler';
-import PatientsGenderLineChart from '@widgets/PatientsGenderLineChart';
-import RadarAreaChart from '@widgets/RadarAreaChart';
-import BloodTest from '@widgets/BloodTest';
+import Page from 'layout/Page';
+import TaskScheduler from 'widgets/TaskScheduler';
+import PatientsGenderLineChart from 'widgets/PatientsGenderLineChart';
+import RadarAreaChart from 'widgets/RadarAreaChart';
+import BloodTest from 'widgets/BloodTest';
 
 const DashboardD = () => {
     return (

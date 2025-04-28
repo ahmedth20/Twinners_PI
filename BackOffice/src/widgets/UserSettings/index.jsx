@@ -1,12 +1,12 @@
 // styled components
-import {SettingsHeader} from '@widgets/UserSettings/style';
-import {Divider} from '@components/Widget/style';
+import {SettingsHeader} from 'widgets/UserSettings/style';
+import {Divider} from 'components/Widget/style';
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
 import {Tab} from 'react-bootstrap'
-import TabNav from '@ui/TabNav';
-import TabNavItem from '@ui/TabNav/TabNavItem';
+import TabNav from 'UI/TabNav';
+import TabNavItem from 'UI/TabNav/TabNavItem';
 import Form from './Form';
 
 const UserSettings = () => {

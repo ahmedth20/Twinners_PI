@@ -26,67 +26,69 @@ const doctorController = {
   },
 
  // 📌 Ajouter un nouveau médecin
-async createDoctor(req, res) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-  
-    try {
-      console.log("🟢 Début de la création d'un médecin");
-      console.log("Données reçues :", req.body);
-  
-      // Extraire les données de la requête
-      const { firstName, lastName, email, password, badgeNumber, departement, speciality, emailPerso, phone } = req.body;
-  
-      // // Vérification des données requises
-      // if (!firstName || !lastName || !email || !password || !badgeNumber || !departement || !speciality || !emailPerso || !phone) {
-      //   throw new Error("Données manquantes ! Veuillez vérifier tous les champs.");
-      // }
-  
-      console.log("✅ Données utilisateur valides");
-  
-      // 🔐 Hash du mot de passe
-      const hashedPassword = bcrypt.hashSync(password, 10);
-  
-      // 1️⃣ Création et enregistrement de l'utilisateur
-      const newUser = new User({ firstName, lastName, email, password: hashedPassword });
-      const savedUser = await newUser.save({ session });
-  
-      console.log("✅ Utilisateur enregistré :", savedUser._id);
-  
-      // 2️⃣ Création et enregistrement du médecin
-      const newDoctor = new Doctor({
-        badgeNumber,
-        departement,
-        speciality,
-        emailPerso,
-        phone,
-        user: savedUser._id,
-      });
-  
-      const savedDoctor = await newDoctor.save({ session });
-      console.log("✅ Médecin enregistré :", savedDoctor._id);
-  
-      // ✅ Validation et fin de la transaction
-      await session.commitTransaction();
-      session.endSession();
-  
-      res.status(201).json({
-        message: "Médecin enregistré avec succès",
-        doctor: savedDoctor,
-      });
-    } catch (error) {
-      // En cas d'erreur, annuler la transaction
-      await session.abortTransaction();
-      session.endSession();
-      console.error("❌ Erreur lors de l'enregistrement :", error);
-  
-      // Retourner un message d'erreur détaillé
-      res.status(500).json({ 
-        message: "Erreur lors de l'enregistrement", 
-        error: error.message || "Une erreur inconnue est survenue" 
-      });
-    }
-  },
+// doctorController.js
+
+
+async createDoctor (req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      badgeNumber,
+      departement,
+      speciality,
+      emailPerso,
+      phone
+    } = req.body;
+
+    console.log("📦 Données reçues :", req.body);
+
+    // Crée l'utilisateur
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password,
+      role: "medecin"
+    });
+
+    await user.save({ session });
+
+    // Crée le médecin lié à l'utilisateur
+    const doctor = new Doctor({
+      badgeNumber,
+      departement,
+      speciality,
+      emailPerso,
+      phone,
+      user: user._id
+    });
+
+    await doctor.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(201).json({ message: "Médecin créé avec succès", doctor });
+
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error("❌ Erreur lors de la création du médecin :", error);
+
+    return res.status(500).json({
+      message: "Erreur lors de l'enregistrement",
+      error: error.message
+    });
+  }
+}
+,
 
 // 📌 Mettre à jour un médecin
 async updateDoctor(req, res) {

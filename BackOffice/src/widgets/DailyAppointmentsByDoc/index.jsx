@@ -2,23 +2,23 @@
 import styled from 'styled-components';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import CustomSelect from '@ui/Select';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import CustomSelect from 'UI/Select';
 import {ResponsiveContainer, AreaChart, Area} from 'recharts';
-import LabeledProgress from '@ui/LabeledProgress';
+import LabeledProgress from 'UI/LabeledProgress';
 
 // utils
-import {doctorsOptions} from '@constants/options';
+import {doctorsOptions} from 'constants/options';
 
 // hooks
 import {useState} from 'react';
 import {useTheme} from 'styled-components';
 
 // data placeholder
-import {doctors} from '@db/doctors';
-import {colors} from '@styles/vars';
+import {doctors} from 'db/doctors';
+import {colors} from 'styles/vars';
 
 const Container = styled.div`
   position: relative;

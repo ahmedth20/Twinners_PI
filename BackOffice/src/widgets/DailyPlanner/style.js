@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {fonts, textSizes, light, dark} from '@styles/vars';
+import {fonts, textSizes, light, dark} from 'styles/vars';
 
 export const AddButton = styled.button`
   font-family: ${fonts.accent};

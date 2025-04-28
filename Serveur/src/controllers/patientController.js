@@ -83,7 +83,7 @@ const patientController = {
 
 
         // Création et enregistrement de l'utilisateur avec rôle "patient"
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword, role: "patient" });
+        const newUser = new User({ firstName, lastName, email, password: generatedPassword, role: "patient" });
         const savedUser = await newUser.save({ session });
 
         console.log("✅ Utilisateur enregistré :", savedUser._id);
@@ -158,7 +158,39 @@ const patientController = {
         res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
     }
 },
-  
+async createSimplePatientFront(req, res) {
+    const session = await mongoose.startSession();
+
+    try {
+        console.log("🟢 Début de la création d'un patient");
+        console.log("Données reçues :", req.body);
+
+        const { user,sex, age, phone, address } = req.body;
+
+        console.log("✅ Données utilisateur valides");
+
+        // Création et enregistrement du patient
+        const newPatient = new Patient({ 
+            reference: Math.floor(Math.random() * 10000), 
+            sex, age, phone, address, 
+            user: user._id, 
+        });
+
+        const savedPatient = await newPatient.save({ session });
+        console.log("✅ Patient enregistré :", savedPatient._id);
+
+        res.status(201).json({ 
+            message: "Patient et utilisateur enregistrés avec succès. Un email contenant les informations de connexion a été envoyé.",
+            patient: savedPatient
+        });
+
+    } catch (error) {
+       if (savedPatient) {
+            await Patient.findByIdAndDelete(savedPatient._id);
+        }
+        res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
+    }
+},
   async createPatient(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -188,7 +220,7 @@ const patientController = {
         const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
         // 1️⃣ Création et enregistrement de l'utilisateur
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+        const newUser = new User({ firstName, lastName, email, password: generatedPassword,role:"patient" });
         const savedUser = await newUser.save({ session });
         console.log("✅ Utilisateur enregistré :", savedUser._id);
 
@@ -427,6 +459,7 @@ async updatePatient(req, res) {
     }
 }
 ,
+
 
   // 📌 Supprimer un patient
   async deletePatient(req, res) {

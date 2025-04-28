@@ -10,6 +10,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 const helmetContext = {}; // Define helmetContext here
+import 'leaflet/dist/leaflet.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -22,6 +25,7 @@ root.render(
       <React.StrictMode>     <HelmetProvider context={helmetContext}> 
           <Preloader />
           <RouterProvider router={router} />
+          <ToastContainer position="top-right" autoClose={3000} />
         </HelmetProvider> </React.StrictMode>
         </GoogleOAuthProvider>
 

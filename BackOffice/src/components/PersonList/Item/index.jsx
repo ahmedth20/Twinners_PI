@@ -1,17 +1,17 @@
 import { Wrapper, Block,Button } from './style';
 
 // components
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
-import Reminder from '@ui/Reminder';
-import Progress from '@ui/Progress';
-import CustomRating from '@ui/CustomRating';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
+import Reminder from 'UI/Reminder';
+import Progress from 'UI/Progress';
+import CustomRating from 'UI/CustomRating';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 // utils
-import { fadePresence } from '@constants/framer';
+import { fadePresence } from 'constants/framer';
 import PropTypes from 'prop-types';
 
 const Item = ({ type, data }) => {
@@ -99,6 +99,34 @@ const Item = ({ type, data }) => {
               {visibleInfo[data._id] && phone && (
                 <div className="phone-number">{phone}</div>
               )}
+              <ShapeButton icon="trash" label="Trash" />             
+
+
+           
+            </Block>
+          </>
+        );
+        case 'servicemanager':
+        return (
+          <>
+            <Common type={type} />
+            {data.reminder ? <Reminder reminder={data.reminder} /> : null}
+            <Block className="actions">
+              <div className="wrapper">
+              <Button className="btn-action" onClick={() => navigate("/dashboard_f", { state: { data} })}>
+                <i className="icon icon-doctor"></i>
+                <span className="text">Case history</span>
+              </Button>
+              </div>
+              <ShapeButton icon="comment-text" label="Message" shape="round" hasNotification={data.message} />
+              <ShapeButton icon="phone" label="Call" shape="round" onClick={() => togglePhoneVisibility(data._id)} />
+              {visibleInfo[data._id] && phone && (
+                <div className="phone-number">{phone}</div>
+              )}
+              <ShapeButton icon="trash" label="Trash" />              <ShapeButton icon="trash" label="Trash" />
+
+
+           
             </Block>
           </>
         );

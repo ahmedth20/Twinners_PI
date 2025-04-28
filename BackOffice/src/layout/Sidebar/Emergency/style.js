@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {light, fonts, textSizes, breakpoints, colors} from '@styles/vars';
+import {light, fonts, textSizes, breakpoints, colors} from 'styles/vars';
 
 export const Container = styled.div`
   display: flex;

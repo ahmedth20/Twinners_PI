@@ -2,7 +2,7 @@
 import {CardItem, TextButton, Actions} from './style';
 
 // components
-import Radio from '@ui/Radio';
+import Radio from 'UI/Radio';
 import Collapse from '@mui/material/Collapse';
 
 // hooks
@@ -10,12 +10,12 @@ import {useState, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 
 // utils
-import {setArchived, removeCard, setTitle, setMain} from '@store/features/cards';
+import {setArchived, removeCard, setTitle, setMain} from 'store/features/cards';
 import PropTypes from 'prop-types';
 
 // assets
-import visa from '@assets/visa.svg'
-import mc from '@assets/mastercard.svg'
+import visa from 'assets/visa.svg'
+import mc from 'assets/mastercard.svg'
 
 const Card = ({data}) => {
     const [collapsed, setCollapsed] = useState(false);

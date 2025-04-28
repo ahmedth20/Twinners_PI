@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
 import { motion } from "framer-motion";
-import Page from "@layout/Page";
-import StaffList from "@widgets/StaffList";
+import Page from "layout/Page";
+import StaffList from "widgets/StaffList";
 import { 
   GlobalStyles, Input, DisabledBackground, Form, ButtonContainer, 
   Line, ProgressBar, NavButton, NextButton, SubmitButton, Container, 
   AddButton, ModalContent, ModalOverlay, CloseButton, Title, StepContainer, Step, 
-  InputRow, ButtonRow, Select, FormTitle
+  InputRow, FormTitle
 } from "../styles/PopUpAddStaff";
 import StaffService from "../services/StaffService";
 
@@ -45,7 +44,7 @@ const Staff = () => {
       // Réinitialiser le formulaire et fermer la modale
       setFormData({ firstName: "", lastName: "", email: "", password: "", badgeNumber: "", service: "" });
       setIsOpen(false);
-      
+      window.location.reload();
     } catch (error) {
       console.error("❌ Erreur lors de l'ajout du staff :", error.response?.data || error);
     }

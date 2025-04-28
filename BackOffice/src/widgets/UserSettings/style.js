@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, light, dark, textSizes, breakpoints, colors} from '@styles/vars';
+import {flex, light, dark, textSizes, breakpoints, colors} from 'styles/vars';
 
 export const SettingsHeader = styled.div`
   ${flex.col};

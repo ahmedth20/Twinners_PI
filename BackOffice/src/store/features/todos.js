@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {todos} from '@db/todos';
+import {todos} from 'db/todos';
 
 export const Todos = createSlice({
     name: 'todos',

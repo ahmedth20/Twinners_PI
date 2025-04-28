@@ -1,6 +1,6 @@
 // components
-import Widget from '@components/Widget';
-import AppointmentsCalendar from '@components/AppointmentsCalendar';
+import Widget from 'components/Widget';
+import AppointmentsCalendar from 'components/AppointmentsCalendar';
 
 const PatientCalendar = ({handler, current}) => {
     return (

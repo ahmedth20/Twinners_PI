@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
 import { motion } from "framer-motion";
-import Page from "@layout/Page";
+import Page from "layout/Page";
 import StaffService from "../services/StaffService";
 import { 
-  GlobalStyles, Input, DisabledBackground, Form, ButtonContainer, 
+  GlobalStyles, Input,  Form, ButtonContainer, 
   Line, ProgressBar, NavButton, NextButton, SubmitButton, Container, 
   AddButton, ModalContent, ModalOverlay, CloseButton, Title, StepContainer, Step, 
-  InputRow, ButtonRow, Select, FormTitle
+  InputRow, FormTitle
 } from "../styles/PopUpAddStaff";
 
 const steps = [
@@ -69,6 +68,7 @@ const EditStaffForm = ({ staffData, closeForm }) => {
         console.log("Personnel mis à jour", updatedStaff);
         alert("Mise à jour réussie !");
         closeForm();
+        window.location.reload();
     } catch (error) {
         // Gestion des erreurs avec des détails
         console.error("Erreur lors de la mise à jour :", error.response?.data || error.message);

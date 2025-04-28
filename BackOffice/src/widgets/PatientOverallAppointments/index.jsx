@@ -1,9 +1,9 @@
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import ChartLegend from '@components/OverallAppointmentChart/ChartLegend';
-import ChartBars from '@components/OverallAppointmentChart/ChartBars';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import ChartLegend from 'components/OverallAppointmentChart/ChartLegend';
+import ChartBars from 'components/OverallAppointmentChart/ChartBars';
 
 const PatientOverallAppointments = () => {
     const data = [

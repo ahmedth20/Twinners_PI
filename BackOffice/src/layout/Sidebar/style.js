@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {colors, breakpoints, flex, textSizes, fonts} from '@styles/vars';
+import {colors, breakpoints, flex, textSizes, fonts} from 'styles/vars';
 
 const navItem = `
     display: inline-flex;

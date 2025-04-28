@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, colors, textSizes, light, dark} from '@styles/vars';
+import {flex, colors, textSizes, light, dark} from 'styles/vars';
 import {rgba} from 'polished';
-import {pen} from '@styles/keyframes';
+import {pen} from 'styles/keyframes';
 
 const borderColor = theme('theme', {
     light: rgba(light.bodyBg, 0.5),

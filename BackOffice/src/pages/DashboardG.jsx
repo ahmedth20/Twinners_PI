@@ -1,8 +1,8 @@
 // components
-import Page from '@layout/Page';
-import DoctorsRatingList from '@widgets/DoctorRatingList';
-import HealthIndexChart from '@widgets/HealthIndexChart';
-import DoctorCureRate from '@widgets/DoctorCureRate';
+import Page from 'layout/Page';
+import DoctorsRatingList from 'widgets/DoctorRatingList';
+import HealthIndexChart from 'widgets/HealthIndexChart';
+import DoctorCureRate from 'widgets/DoctorCureRate';
 
 const DashboardG = () => {
     return (

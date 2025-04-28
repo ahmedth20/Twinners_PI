@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {light, effects, textSizes, dark, breakpoints, flex, colors, fonts} from '@styles/vars';
+import {light, effects, textSizes, dark, breakpoints, flex, colors, fonts} from 'styles/vars';
 import theme from 'styled-theming';
 
 export const Container = styled.div`

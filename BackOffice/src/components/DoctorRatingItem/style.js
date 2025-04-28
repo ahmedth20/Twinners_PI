@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {effects, colors, light, flex, breakpoints} from '@styles/vars';
+import {effects, colors, light, flex, breakpoints} from 'styles/vars';
 
 const hover = theme('theme', {
     light: colors.light_gray,
