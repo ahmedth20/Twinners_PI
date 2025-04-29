@@ -55,12 +55,28 @@ app.use("/hh", express.static(path.join(__dirname, "Medical-React-Dashboard/buil
 app.use("/emergency", emergencyRoutes);
 // Servir le Back-Office (mediic)
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
+app.use(cookieParser());
 
+app.get("/set-cookie", (req, res) => {
+  res.cookie("myCookie", "123456", {
+    httpOnly: true,
+    sameSite: "Lax", // Important: "Strict" ou "Lax" = first-party only
+  });
+  res.send("Cookie défini !");
+});
+
+app.get("/get-cookie", (req, res) => {
+  const cookie = req.cookies.myCookie;
+  res.send(`Cookie lu : ${cookie}`);
+});
 // 🔹 3. Middlewares essentiels
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+
+const appointmentRoutes = require('./src/routes/appointments.js');
+app.use('/appointments', appointmentRoutes);
 // 🔹 4. Routes
 app.use("/users", userRoutes);
 app.use("/patient", patientRoutes);
