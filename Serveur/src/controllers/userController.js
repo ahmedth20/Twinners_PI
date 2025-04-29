@@ -82,7 +82,6 @@ const authUserbackoff = asyncHandler(async (req, res) => {
     if (!allowedRoles.includes(user.role)) {
       return res.status(401).json({ message: "Utilisateur non autorisé" });
     }
-
     if (!user.isActive) {
       res.clearCookie('jwt'); // Supprimer tout cookie existant
       return res.status(403).json({ message: "Votre compte est désactivé. Veuillez contacter l'administrateur." });

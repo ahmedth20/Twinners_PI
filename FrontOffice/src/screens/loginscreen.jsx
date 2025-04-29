@@ -311,7 +311,7 @@ const handleSubmit1 = async (e) => {
 
         dispatch(login({ user: data })); 
      
-      
+       
   
           setTimeout(() => { navigate("/home"); }, 1500)
       }
