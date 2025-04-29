@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const paramedicController = require('../controllers/paramedicController'); 
 
-router.post('/', paramedicController.createParamedic);
+router.post('/paramedics', paramedicController.createParamedic);
 router.get('/paramedics/', paramedicController.getParamedics);
 router.get('/paramedics/:id', paramedicController.getParamedicById);
 router.put('/paramedics/:id', paramedicController.updateParamedic);

@@ -63,24 +63,11 @@ export const Button = styled.button`
   }
 `;
 
-const socket = io("http://localhost:5000"); // Port du serveur Node.js
 
 const ShapeButton = ({ hasNotification, icon, handler, label, shape, ...props }) => {
     const [notificationCount, setNotificationCount] = useState(0);
 
-    useEffect(() => {
-        // Écouter l'événement 'new-registration' depuis le serveur
-        socket.on("new-registration", (data) => {
-            console.log("Notification reçue :", data);
-            setNotificationCount((prevCount) => prevCount + 1); // Incrémenter le compteur
-        });
-        
-
-        // Nettoyer le socket lors du démontage du composant
-        return () => {
-            socket.off("new-registration");
-        };
-    }, []);
+   
 
     return (
         <Button className={shape} onClick={handler} aria-label={label} {...props}>

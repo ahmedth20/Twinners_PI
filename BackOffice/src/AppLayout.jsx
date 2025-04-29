@@ -46,6 +46,8 @@ const Finances = lazy(() => import('@pages/Finances'));
 const Settings = lazy(() => import('@pages/Settings'));
 const MedicalForm = lazy(() => import('@pages/MedicalForm'));
 const PageNotFound = lazy(() => import('@pages/PageNotFound'));
+const Par = lazy(() => import('@pages/Par'));
+const Ser = lazy(() => import('@pages/Ser'));
 
 const Servicemanager = lazy(() => import('@pages/srevicemanager'));
 
@@ -71,10 +73,10 @@ const AppLayout = () => {
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
-      <Route path="/Paramedic" element={ <Paramedics /> } />
+      <Route path="/Paramedic" element={ <Par /> } />
       <Route path="/tests" element={ <Tests /> } />
       <Route path="/doctors" element={ <Doctors /> } />
-      <Route path="/servicemanager" element={ <Servicemanager /> } />
+      <Route path="/servicemanager" element={ <Ser /> } />
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
@@ -85,9 +87,11 @@ const AppLayout = () => {
       <Route path="/medical_form" element={ <MedicalForm/> } />
       <Route path="/forgotpassword" element={ <Forgotpassword/> } />
       <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
-      <Route path="/equipements" element={ <Equipements/> } />
+      <Route path="/equipements" element={ <Equipements /> } />
 
-      
+      <Route path="/par" element={ <Par /> } />
+      <Route path="/ser" element={ <Ser /> } />
+
 
                     </Routes>
                

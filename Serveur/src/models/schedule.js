@@ -15,6 +15,7 @@ const scheduleSchema = new mongoose.Schema({
   serviceManager: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceManager", required: false }
 }, { timestamps: false, versionKey: false });
 
+
 // Auto-incrémentation de `reference` avant l'enregistrement
 scheduleSchema.pre("save", async function (next) {
   if (!this.reference) {

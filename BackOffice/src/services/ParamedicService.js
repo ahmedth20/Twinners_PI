@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/paramedics";
+const API_URL = "http://localhost:5000/paramedics/paramedics";
 
 const ParamedicService = {
  getAllParamedics: async () => {
@@ -26,6 +26,8 @@ const ParamedicService = {
   createParamedic: async (ParamedicData) => {
     try {
       const response = await axios.post(API_URL, ParamedicData);
+      console.log(response.data)
+      
       return response.data;
     } catch (error) {
       console.error("Erreur lors de la création du Paramedic:", error);

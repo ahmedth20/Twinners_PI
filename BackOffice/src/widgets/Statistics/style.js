@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {colors, textSizes, flex, fonts, breakpoints} from '@styles/vars';
+import { colors, textSizes, flex, fonts, breakpoints } from '@styles/vars';
 
 export const Card = styled.div`
   background-color: ${props => colors[props.className]};
@@ -47,3 +47,22 @@ export const Content = styled.div`
   }
 `;
 
+export const StatHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  .resource-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .resource-title {
+    font-size: ${textSizes['16']};
+    font-weight: bold;
+    color: ${colors.dark};
+  }
+`;

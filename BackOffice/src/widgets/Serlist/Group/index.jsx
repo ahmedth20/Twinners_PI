@@ -1,7 +1,7 @@
 // components
 import GroupSeparator from '@ui/GroupSeparator';
 import PersonList from '@components/PersonList';
-import StaffList from '@components/StaffList';
+import StaffList from '@components/Servlist';
 
 // utils
 import PropTypes from "prop-types";
@@ -26,7 +26,7 @@ const Group = ({char, arr, type, gender}) => {
 Group.propTypes = {
     char: PropTypes.string.isRequired,
     arr: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['patient', 'doctor', 'staff','paramedic']).isRequired,
+    type: PropTypes.oneOf(['patient', 'doctor', 'staff','paramedic','service manager']).isRequired,
 }
 
 export default Group;

@@ -10,6 +10,7 @@ const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
+const ressources = require("./src/routes/ressources");
 
 const staffRoutes = require("./src/routes/staff.js");
 
@@ -18,37 +19,13 @@ const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
 
 const http = require('http');
 
-
-dotenv.config();
-connectDB();
-const { Server } = require('socket.io');
-
 const app = express();
 const port = process.env.PORT || 5000;
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:5173", "http://localhost:3000"], // FrontOffice et BackOffice
-        methods: ["GET", "POST"]
-    }
-});
-io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
+dotenv.config();
+connectDB();
 
-  socket.on('disconnect', () => {
-      console.log('Client disconnected:', socket.id);
-  });
 
-  // Listen for patient registration from FrontOffice
-  socket.on('patient-registered', (patientData) => {
-      console.log('New patient registered:', patientData);
-      // Emit notification to BackOffice
-      io.emit('new-registration',  { name: patientData.name });
-  });
-});
-app.get('/', (req, res) => {
-  res.send('Socket server is running');
-});
+
 // 🔹 1. Configurer CORS correctement
 app.use(
   cors({
@@ -70,6 +47,7 @@ app.use(
     }),
   })
 );
+app.use('/ressources', ressources);
 
 // 🔹 2. Activer le support des requêtes `OPTIONS` (Preflight)
 app.options("*", cors());
