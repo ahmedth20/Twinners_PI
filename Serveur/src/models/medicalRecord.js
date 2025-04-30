@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const medicalRecordSchema = new mongoose.Schema({
   reference: { type: Number,  unique: true },
   diagnostic: {
-    condition: { type: String, required: true },
-    symptoms: [{ type: String, required: true }],
-    severity: { type: String, required: true },
+    condition: { type: String},
+    symptoms: [{ type: String}],
+    severity: { type: String},
     notes: { type: String }
   },
   treatment: {
@@ -28,6 +28,8 @@ const medicalRecordSchema = new mongoose.Schema({
     bloodTest: { type: String },
     oxygenSaturation: { type: String }
   },
+  bloodGroup:{type:String},
+  MedicalHistory:[{type:String}],
   createdDate: { type: Date, default: Date.now, immutable: true }, // Ne change jamais après création
   updateDate: { type: Date, default: Date.now }, // Change à chaque mise à jour
   patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },

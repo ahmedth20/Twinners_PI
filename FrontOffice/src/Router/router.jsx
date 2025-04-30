@@ -79,6 +79,7 @@ const router = createBrowserRouter([
       { path: 'contact', element: <PrivateRoute><ContactInner /></PrivateRoute> },
       { path: 'notif', element: <PrivateRoute><CallAmbulance/></PrivateRoute> },
       { path: 'map', element: <PrivateRoute><Map /></PrivateRoute> },
+      { path: 'profile', element: <PrivateRoute><ProfileSettings /></PrivateRoute> },
     ],
   },
   { path: '*', errorElement: <ErrorPage /> },

@@ -432,65 +432,74 @@ const Navbar = () => {
                 </nav>
               </div>
             </div>
-            <div className='col-span-3'>
-              <div className='header-right-box flex items-center gap-10 lg:gap-0 justify-end'>
-                <div className='size-[50px] rounded-full bg-BodyBg2-0 hidden sm:flex lg:hidden 2xl:flex items-center justify-center text-HeadingColor-0 relative z-10 transition-all duration-500 hover:text-white before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-PrimaryColor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100'>
-                  <button onClick={handleMenuSearchClick}>
-                    <IoSearch size={'18'} />
-                  </button>
-                  <button
-                    
-                  >
-                     
-                  </button>
-                </div>
-                <div className='header-btn hidden lg:block' onClick={handleSubmit1}>
-                  <Link>
-                    logout<span></span>
-                   
-                   
-                  </Link>
-                </div>
-                <div className='header-btn hidden lg:block'  >
-                <Link to='/editprofile'>
+            <div className="col-span-3">
+  <div className="header-right-box flex items-center gap-10 lg:gap-0 justify-end">
+      {/* User Profile Dropdown */}
+      <div className="header-main-menu text-center mr-4">
+      <nav>
+        <ul>
+          <li className="has-dropdown hidden 2xl:block ml-2 relative">
+            <div
+              style={{
+                backgroundImage: `url(${user1?.picture})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+              className="menu-sidebar size-[50px] rounded-full bg-PrimaryColor-0 flex items-center justify-center text-white relative z-10 before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-Secondarycolor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100"
+            ></div>
 
-    {user1.firstName}<span></span>
-    </Link>
-   
-</div><div className='hidden 2xl:block ml-2'>
-                  <div
-                   style={{
-      backgroundImage: `url(${user1?.picture})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }}
-                    className='menu-sidebar size-[50px] rounded-full bg-PrimaryColor-0 flex items-center justify-center text-white relative z-10 before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-Secondarycolor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100'
-                  > 
-                    
-                  </div>
-                </div>
- 
-                <div className='hidden 2xl:block ml-2'>
-                  <button
-                    ref={menuSideBarRef}
-                    className='menu-sidebar size-[50px] rounded-full bg-PrimaryColor-0 flex items-center justify-center text-white relative z-10 before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-Secondarycolor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100'
-                  >
-                    <CgMenuGridO size={'30'} />
-                  </button>
-                </div>
-                <div className='header-bar lg:hidden'>
-                  <button
-                    ref={menuBarRef}
-                    className='menu-bar'
-                  >
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </button>
-                
-                </div>
-              </div>
-            </div>
+            {/* Dropdown menu positioned correctly */}
+            <ul className="submenu absolute right-0 top-full mt-2 w-max bg-white rounded-lg shadow-lg z-20">
+              <li>
+                <Link to={"/profile"}>{user1.email}</Link>
+              </li>
+              <li>
+                <Link to={"/profile"}>Account</Link>
+              </li>
+              <li>
+                <Link to={"/editprofile"}>Edit</Link>
+              </li>
+              <li>
+                <Link to={"/logout"} onClick={handleSubmit1}>
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {/* Search Button */}
+    <div className="size-[50px] rounded-full bg-BodyBg2-0 hidden sm:flex lg:hidden 2xl:flex items-center justify-center text-HeadingColor-0 relative z-10 transition-all duration-500 hover:text-white before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-PrimaryColor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100 mr-4">
+      <button onClick={handleMenuSearchClick}>
+        <IoSearch size={"18"} />
+      </button>
+    </div>
+
+  
+
+    {/* Sidebar Menu Button (Large Screens) */}
+    <div className="hidden 2xl:block ml-2">
+      <button
+        ref={menuSideBarRef}
+        className="menu-sidebar size-[50px] rounded-full bg-PrimaryColor-0 flex items-center justify-center text-white relative z-10 before:absolute before:left-0 before:top-0 before:w-full before:rounded-full before:h-full before:bg-Secondarycolor-0 before:transition-all before:duration-500 before:-z-10 before:scale-0 hover:before:scale-100 mr-4"
+      >
+        <CgMenuGridO size={"30"} />
+      </button>
+    </div>
+
+    {/* Sidebar Menu Button (Mobile View) */}
+    <div className="header-bar lg:hidden">
+      <button ref={menuBarRef} className="menu-bar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
           </div>
         </div>
         <div className='sidebar-content'>
