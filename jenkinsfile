@@ -8,8 +8,13 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexus"
+<<<<<<< HEAD
         DOCKER_USERNAME = 'yosrcharek'  
         DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA' 
+=======
+        DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
+        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+>>>>>>> 0fbdb484918c07c7197b0fb498969582635a3cc5
     }
     stages {
         stage('Install dependencies') {
@@ -45,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Build application') {
+    /*    stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -60,7 +65,7 @@ pipeline {
                     }
                 }
             }
-        } 
+        } */
 
         /*  stage('Building images (node and mongo)') {
             steps {
@@ -82,7 +87,11 @@ pipeline {
             }
         }*/
 
+<<<<<<< HEAD
      /*   stage('Build and Tag Docker Image') {
+=======
+    /*    stage('Build and Tag Docker Image') {
+>>>>>>> 0fbdb484918c07c7197b0fb498969582635a3cc5
             steps {
                 script {
                     // On se place dans le dossier où se trouve ton Dockerfile
