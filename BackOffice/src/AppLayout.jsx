@@ -62,6 +62,7 @@ const AppLayout = () => {
       <Route path="/dashboard_j" element={ <DashboardJ /> } />
       <Route path="/dashboard_k" element={ <DashboardK /> } />
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
+      <Route path="/staff_appointments" element={ <StaffAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
       <Route path="/Paramedic" element={ <Par /> } />

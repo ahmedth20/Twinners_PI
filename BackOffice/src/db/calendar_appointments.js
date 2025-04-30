@@ -2,33 +2,44 @@ import moment from 'moment';
 
 export const disabled = [
     {
-        start: moment().set({ hour: 12, minute: 30, second: 0 }).toDate(),
+        start: moment().add(-3, 'day').set({ hour: 9, minute: 0, second: 0 }).toDate(),
+        end: moment().add(-3, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+        type: 'disabled'
+    },
+    {
+        start: moment().add(-2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+        end: moment().add(-2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+        type: 'disabled'
+    },
+    {
+        start: moment().add(-1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+        end: moment().add(-1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+        type: 'disabled'
+    },
+    {
+        start: moment().set({ hour: 12, minute: 0, second: 0 }).toDate(),
         end: moment().set({ hour: 13, minute: 0, second: 0 }).toDate(),
         type: 'disabled'
     },
     {
-        start: moment().add(1, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
-        end: moment().add(1, 'day').set({ hour: 10, minute: 30, second: 0 }).toDate(),
+        start: moment().add(1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+        end: moment().add(1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
         type: 'disabled'
     },
     {
-        start: moment().add(1, 'day').set({ hour: 14, minute: 0, second: 0 }).toDate(),
-        end: moment().add(1, 'day').set({ hour: 14, minute: 30, second: 0 }).toDate(),
+        start: moment().add(1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+        end: moment().add(1, 'day').set({ hour: 13, minute: 30, second: 0 }).toDate(),
         type: 'disabled'
     },
+
     {
-        start: moment().add(2, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
-        end: moment().add(2, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
-        type: 'disabled'
-    },
-    {
-        start: moment().add(2, 'day').set({ hour: 12, minute: 30, second: 0 }).toDate(),
+        start: moment().add(2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
         end: moment().add(2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
         type: 'disabled'
     },
     {
-        start: moment().add(4, 'day').set({ hour: 14, minute: 30, second: 0 }).toDate(),
-        end: moment().add(4, 'day').set({ hour: 15, minute: 30, second: 0 }).toDate(),
+        start: moment().add(3, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+        end: moment().add(3, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
         type: 'disabled'
     },
 ];
@@ -36,27 +47,76 @@ export const disabled = [
 export const events = {
     doctor: [
         {
-            name: 'MRI',
-            start: moment().set({ hour: 9, minute: 30, second: 0 }).toDate(),
-            end: moment().set({ hour: 10, minute: 0, second: 0 }).toDate(),
+            name: 'Day OFF ',
+            start: moment().add(-3, 'day').set({ hour: 9, minute: 0, second: 0 }).toDate(),
+            end: moment().add(-3, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'checkup'
+        },
+        {
+            name: 'Working',
+            start: moment().add(-2, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
+            end: moment().add(-2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
             allDay: false,
             type: 'test'
         },
         {
-            name: 'Runny nose',
-            start: moment().set({ hour: 10, minute: 30, second: 0 }).toDate(),
-            end: moment().set({ hour: 11, minute: 0, second: 0 }).toDate(),
+            name: 'Break ',
+            start: moment().add(-2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            end: moment().add(-2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
             allDay: false,
-            type: 'sick'
+            type: 'checkup'
         },
         {
-            name: 'Keeping pregnant',
-            start: moment().set({ hour: 11, minute: 30, second: 0 }).toDate(),
+            name: 'Working',
+            start: moment().add(-2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            end: moment().add(-2, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        {
+            name: 'Working',
+            start: moment().add(-1, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
+            end: moment().add(-1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        {
+            name: 'Break ',
+            start: moment().add(-1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            end: moment().add(-1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'checkup'
+        },
+        {
+            name: 'Working',
+            start: moment().add(-1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            end: moment().add(-1, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        {
+            name: 'Working',
+            start: moment().set({ hour: 9, minute: 0, second: 0 }).toDate(),
             end: moment().set({ hour: 12, minute: 0, second: 0 }).toDate(),
             allDay: false,
-            type: 'consultation'
+            type: 'test'
         },
         {
+            name: 'Break ',
+            start: moment().set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            end: moment().set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'checkup'
+        },
+        {
+            name: 'Working',
+            start: moment().set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            end: moment().set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        /*{
             name: 'Ultrasound diagnostics',
             start: moment().set({ hour: 13, minute: 30, second: 0 }).toDate(),
             end: moment().set({ hour: 14, minute: 0, second: 0 }).toDate(),
@@ -76,14 +136,60 @@ export const events = {
             end: moment().set({ hour: 16, minute: 0, second: 0 }).toDate(),
             allDay: false,
             type: 'checkup'
-        },
+        },*/ 
         {
-            name: 'Blood test',
+            name: 'Working',
             start: moment().add(1, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
-            end: moment().add(1, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
+            end: moment().add(1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
             allDay: false,
             type: 'test'
         },
+        {
+            name: 'Break ',
+            start: moment().add(1, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            end: moment().add(1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'checkup'
+        },
+        {
+            name: 'Working',
+            start: moment().add(1, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            end: moment().add(1, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        
+        {
+            name: 'Working',
+            start: moment().add(2, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
+            end: moment().add(2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        {
+            name: 'Break ',
+            start: moment().add(2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
+            end: moment().add(2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'checkup'
+        },
+        {
+            name: 'Working',
+            start: moment().add(2, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            end: moment().add(2, 'day').set({ hour: 17, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'test'
+        },
+        {
+            name: 'Working',
+            start: moment().add(3, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
+            end: moment().add(3, 'day').set({ hour: 13, minute: 0, second: 0 }).toDate(),
+            allDay: false,
+            type: 'consultation'
+        },
+        
+        
+        /*
         {
             name: 'Family appointment',
             start: moment().add(1, 'day').set({ hour: 10, minute: 30, second: 0 }).toDate(),
@@ -106,11 +212,11 @@ export const events = {
             type: 'consultation'
         },
         {
-            name: 'Gastritis',
-            start: moment().add(2, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
-            end: moment().add(2, 'day').set({ hour: 11, minute: 0, second: 0 }).toDate(),
+            name: 'Travailling',
+            start: moment().add(2, 'day').set({ hour: 9, minute: 0, second: 0 }).toDate(),
+            end: moment().add(2, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
             allDay: false,
-            type: 'sick'
+            type: 'test'
         },
         {
             name: 'Cardio checkup',
@@ -134,13 +240,13 @@ export const events = {
             type: 'test'
         },
         {
-            name: 'MRI',
-            start: moment().add(4, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
-            end: moment().add(4, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
+            name: 'Travailling',
+            start: moment().add(3, 'day').set({ hour: 9, minute: 30, second: 0 }).toDate(),
+            end: moment().add(3, 'day').set({ hour: 12, minute: 0, second: 0 }).toDate(),
             allDay: false,
             type: 'test'
         },
-        {
+        /*{
             name: 'Family appointment',
             start: moment().add(4, 'day').set({ hour: 10, minute: 0, second: 0 }).toDate(),
             end: moment().add(4, 'day').set({ hour: 10, minute: 30, second: 0 }).toDate(),
@@ -167,7 +273,7 @@ export const events = {
             end: moment().add(4, 'day').set({ hour: 16, minute: 0, second: 0 }).toDate(),
             allDay: false,
             type: 'emergency'
-        },
+        },*/
     ],
     patient: {
         general: [

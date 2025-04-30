@@ -2,14 +2,14 @@ pipeline {
     agent any
     environment {
         registryCredentials = "nexus"
-        registry = "192.168.33.10:8083"
+        registry = "http://localhost:8081"
         NEXUS_VERSION = "nexus3"
-        NEXUS_URL = 'http://192.168.33.10:8081'
+        NEXUS_URL = 'http://localhost:8081'
         NEXUS_PROTOCOL = "http"
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexus"
-        //DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
-        //DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+        DOCKER_USERNAME = 'yosrcharek'  
+        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA' 
     }
     stages {
         stage('Install dependencies') {
@@ -34,16 +34,44 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps{
-                script {
-                    def scannerHome = tool 'jenkinsSonar'
-                    withSonarQubeEnv {
-                        sh "${scannerHome}/bin/sonar-scanner"
+            stage('SonarQube Analysis') {
+                steps {
+                    script {
+                        def scannerHome = tool 'jenkinsSonar'
+                        withSonarQubeEnv('SonarQube') {
+                            // Ajouter cette ligne
+                            sh 'export SONAR_SCANNER_OPTS="-Xmx1024m -Dsonar.javascript.bridge.server.timeout=60000 -Dsonar.exclusions=src/controllers/ambulanceController.js"'
+            
+                            // Ensuite lancer le scanner
+                            sh "${scannerHome}/bin/sonar-scanner -X"
+                        }
                     }
                 }
             }
+
+
+  /*  stage('SonarQube Analysis') {
+    steps {
+        script {
+            withSonarQubeEnv {
+                // Exécuter le scanner
+                sh 'C:/Users/thabt/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/jenkinsSonar/bin/sonar-scanner'
+            }
+            // Vérification explicite du succès
+            echo 'SonarQube analysis done.'
         }
+    }
+}
+
+
+
+stage('Quality Gate') {
+    steps {
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}*/
 
         stage('Build application') {
             steps {
@@ -62,14 +90,14 @@ pipeline {
             }
         } 
 
-          /*stage('Building images (node and mongo)') {
+        /*  stage('Building images (node and mongo)') {
             steps {
                     script {
                         sh 'cd Serveur docker-compose build'
                     }
             }
-        }*/
-
+           }
+*/
 
         /*stage('Run application') {
             steps {
@@ -82,7 +110,7 @@ pipeline {
             }
         }*/
 
-        stage('Build and Tag Docker Image') {
+     /*   stage('Build and Tag Docker Image') {
             steps {
                 script {
                     // On se place dans le dossier où se trouve ton Dockerfile
@@ -97,8 +125,8 @@ pipeline {
             }
         }
 
-
-        stage('Deploy to Nexus') {
+*/
+     /*   stage('Deploy to Nexus') {
             steps {
                 script {
                     docker.withRegistry("http://${registry}", registryCredentials) {
@@ -120,7 +148,7 @@ pipeline {
                 }
             }
         }
-}
+}*/
 }
 }
 
