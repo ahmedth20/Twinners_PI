@@ -139,7 +139,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('general', 'General', generalRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'general' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'general' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -154,7 +154,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('consultations', 'Consultations', consultationsRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'consultations' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'consultations' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -168,7 +168,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('medicalRecord', 'Medical Record', medicalRecordRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'medicalRecord' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'medicalRecord' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -182,7 +182,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('operations', 'Operations', operationsRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'operations' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'operations' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -196,7 +196,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('testResult', 'Test Result', testResultRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'testResult' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'testResult' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
