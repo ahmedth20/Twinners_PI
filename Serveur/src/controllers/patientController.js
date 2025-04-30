@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 const Operation = require('../models/operation');
 const nodemailer = require('nodemailer');
+const PatientFile = require("../models/patientFile");
 const patientController = {
   // 📌 Récupérer tous les patients
   async getAllPatients(req, res) {
@@ -160,37 +161,77 @@ const patientController = {
 },
 async createSimplePatientFront(req, res) {
     const session = await mongoose.startSession();
+    session.startTransaction(); // Il manquait aussi ça pour la transaction
 
     try {
         console.log("🟢 Début de la création d'un patient");
         console.log("Données reçues :", req.body);
 
-        const { user,sex, age, phone, address } = req.body;
+        const { user, sex, age, phone, address, allergies, medicalHistory, bloodGroup, mainSymptom } = req.body;
 
         console.log("✅ Données utilisateur valides");
 
         // Création et enregistrement du patient
-        const newPatient = new Patient({ 
-            reference: Math.floor(Math.random() * 10000), 
-            sex, age, phone, address, 
-            user: user._id, 
+        const newPatient = new Patient({
+            reference: Math.floor(Math.random() * 10000),
+            sex,
+            age,
+            phone,
+            address,
+            user: user,
         });
 
         const savedPatient = await newPatient.save({ session });
         console.log("✅ Patient enregistré :", savedPatient._id);
 
-        res.status(201).json({ 
-            message: "Patient et utilisateur enregistrés avec succès. Un email contenant les informations de connexion a été envoyé.",
-            patient: savedPatient
+        // Création du dossier médical
+        const newMedicalRecord = new MedicalRecord({
+            reference: Math.floor(Math.random() * 10000),
+            bloodGroup: bloodGroup,
+            allergies: allergies ? [allergies] : [],
+            MedicalHistory: medicalHistory ? [medicalHistory] : [],
+            diagnostic: {
+                symptoms: [mainSymptom],
+            },
+            patient: savedPatient._id,
+        });
+
+        const savedMedicalRecord = await newMedicalRecord.save({ session });
+        console.log("✅ Dossier médical enregistré :", savedMedicalRecord._id);
+
+        // Création du fichier patient
+        const newPatientFile = new PatientFile({
+            reference: Math.floor(Math.random() * 10000),
+            dateIssued: new Date().toISOString().split('T')[0],
+            symptoms: mainSymptom,
+            medicalRecord: savedMedicalRecord._id,
+            patient: savedPatient._id,
+        });
+
+        const savedPatientFile = await newPatientFile.save({ session });
+        console.log("✅ Patient file enregistré :", savedPatientFile._id);
+
+        // Ajout du patientFile dans le medicalRecord
+        savedMedicalRecord.patientFiles.push(savedPatientFile._id);
+        await savedMedicalRecord.save({ session });
+
+        await session.commitTransaction();
+
+        res.status(201).json({
+            message: "Patient, dossier médical et fichier patient créés avec succès.",
+            patient: savedPatient,
         });
 
     } catch (error) {
-       if (savedPatient) {
-            await Patient.findByIdAndDelete(savedPatient._id);
-        }
+        console.error(error);
+        await session.abortTransaction();
+       
         res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
+    } finally {
+        session.endSession();
     }
-},
+}
+,
   async createPatient(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -512,7 +553,88 @@ async getAllDoctors(req, res) {
     res.status(500).json({ message: "Erreur lors de la récupération des doctors", error });
   }
 },
-
+async getPatientProfile (req, res) {
+    try {
+      const patient = await Patient.findOne({ user: req.params.user }).populate("user");
+   
+      if (patient) {
+        // Si le patient est trouvé, renvoyer les informations
+        res.json({
+          _id: patient._id,
+          lastName: patient.user?.lastName,
+          firstName: patient.user?.firstName,
+          picture: patient.user?.picture,
+          email: patient.user?.email,
+          sex: patient.sex,
+          age: patient.age,
+          phone: patient.phone,
+          address: patient.address,
+        });
+      } else {
+        res.status(404).json({ message: 'Patient not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+},
+async updatePatientProfile(req, res) {
+    try {
+      // Récupérer l'utilisateur par ID
+      const user = await User.findById(req.params.user);
+  
+      if (user) {
+        // Mise à jour des informations de l'utilisateur
+        user.lastName = req.body.lastName || user.lastName;
+        user.email = req.body.email || user.email;
+        user.firstName = req.body.firstName || user.firstName;
+  
+        // Mise à jour de l'image si un fichier est téléchargé
+        if (req.file) {
+          user.picture = req.file.path; // Stocke le chemin du fichier téléchargé
+        }
+  
+        // Mise à jour des informations du patient
+        const patient = await Patient.findOne({ user: user._id }); // Trouver le patient associé à cet utilisateur
+  
+        if (patient) {
+          patient.age = req.body.age || patient.age;
+          patient.address = req.body.address || patient.address;
+          patient.sex = req.body.sex || patient.sex;
+          patient.phone = req.body.phone || patient.phone;
+          patient.firstName = req.body.firstName || patient.firstName;
+          patient.lastName = req.body.lastName || patient.lastName;
+  
+          // Sauvegarder le patient mis à jour
+          await patient.save();
+        }
+  
+        // Sauvegarde de l'utilisateur mis à jour
+        const updatedUser = await user.save();
+  
+        // Retour des informations mises à jour
+        res.json({
+          _id: updatedUser._id,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          firstName: updatedUser.firstName,
+          picture: updatedUser.picture, // Retourner l'image mise à jour
+          patient: {
+            age: patient ? patient.age : undefined,
+            address: patient ? patient.address : undefined,
+            sex: patient ? patient.sex : undefined,
+            phone: patient ? patient.phone : undefined,
+          },
+        });
+      } else {
+        // Si l'utilisateur n'est pas trouvé
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error) {
+      // Gestion des erreurs en cas d'échec de la mise à jour
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+  
 };
 
 

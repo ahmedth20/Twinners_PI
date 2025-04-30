@@ -122,8 +122,7 @@ export const menudoctors = [
         cat: 'messages',
         icon: 'comment',
         links: [
-            { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' },
+            { name: "Paramedic Messenger", link: '/paramedicchat' },
         
         ]
     },
@@ -237,7 +236,8 @@ export const menuparamedic = [
         icon: 'comment',
         links: [
             { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
-            { name: "Doctor Messenger", link: '/doctor_messenger' },
+            { name: "Doctor Messenger", link: '/doctorchat' },
+
 
         ]
     },

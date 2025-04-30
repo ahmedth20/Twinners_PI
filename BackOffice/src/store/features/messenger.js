@@ -9,8 +9,8 @@ export const Messenger = createSlice({
     },
     reducers: {
         addMessage: (state, action) => {
-            const {db, id, message} = action.payload;
-            state[db].find(item => item.id === id).chatHistory.push(message);
+          //  const {db, id, message} = action.payload;
+           // state[db].find(item => item.id === id).chatHistory.push(message);
         }
     }
 })

@@ -8,7 +8,7 @@ import Toast from 'react-bootstrap/Toast';
 import { Snackbar, Alert } from "@mui/material";
 
 const Appoinment = () => {
-    const user = useSelector(state => state.auth.user.user.id);
+    const user = useSelector(state => state.auth.user.user1.id);
     const [user1, setUser1] = useState({});
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
