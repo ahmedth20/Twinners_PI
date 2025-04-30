@@ -237,11 +237,10 @@ export const menuparamedic = [
         icon: 'comment',
         links: [
             { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
+            { name: "Doctor Messenger", link: '/doctor_messenger' },
 
         ]
     },
-   
-    
     {
         cat: 'reviews',
         icon: 'star',
