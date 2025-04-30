@@ -3,12 +3,12 @@ import {Container, MenuModal} from './style';
 
 // components
 import {motion} from 'framer-motion';
-import ModalWindow from '@components/ModalWindow';
-import {ScaleControl, ContrastControl, ThemeControl, DirectionControl} from '@components/GlobalSettingsControls';
+import ModalWindow from 'components/ModalWindow';
+import {ScaleControl, ContrastControl, ThemeControl, DirectionControl} from 'components/GlobalSettingsControls';
 
 // hooks
 import {useNavigate} from 'react-router-dom';
-import {useSidebarContext} from '@contexts/sidebarContext';
+import {useSidebarContext} from 'contexts/sidebarContext';
 import {useState} from 'react';
 
 const BottomMenu = () => {

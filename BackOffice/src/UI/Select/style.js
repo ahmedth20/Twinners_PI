@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {textSizes, light, dark, colors, fonts, breakpoints} from '@styles/vars';
-import {fadeIn} from '@styles/keyframes';
+import {textSizes, light, dark, colors, fonts, breakpoints} from 'styles/vars';
+import {fadeIn} from 'styles/keyframes';
 import Select from 'react-select';
 
 const basicBg = theme('theme', {

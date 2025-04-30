@@ -9,4 +9,6 @@ router.put('/paramedics/:id', paramedicController.updateParamedic);
 router.delete('/paramedics/:id', paramedicController.deleteParamedic);
 router.put('/paramedics/:id/deactivate', paramedicController.deactivateParamedic);
 router.put('/paramedics/:id/activate', paramedicController.activateParamedic);
+router.get('/paramedics/ambulance/:ambulanceId', paramedicController.getParamedicByAmbulance); // Recherche des paramedics par ambulance
+
 module.exports = router;

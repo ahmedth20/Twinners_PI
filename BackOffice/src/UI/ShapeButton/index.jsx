@@ -11,12 +11,8 @@ import { useEffect, useState } from 'react';
 // styling
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import { dark, light, flex, colors } from '@styles/vars';
 
-const bg = theme('theme', {
-  light: light.bodyBg,
-  dark: dark.highlight
-});
+import { dark, light, flex, colors } from '@styles/vars';
 
 export const Button = styled.button`
   width: 40px;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {light, dark, flex, textSizes, fonts, colors, breakpoints} from '@styles/vars';
+import {light, dark, flex, textSizes, fonts, colors, breakpoints} from 'styles/vars';
 
 export const Container = styled.div`
   position: relative;

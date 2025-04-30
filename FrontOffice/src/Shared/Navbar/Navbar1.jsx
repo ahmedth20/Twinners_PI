@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from '/images/favicon-96x96.png';
 import Logo2 from '/images/logo2.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './navbar.css';
 
 import { useEffect, useRef, useState } from 'react';
@@ -332,7 +330,8 @@ const Navbar = () => {
                     src={Logo}
                     draggable='false'
                   />
-                </Link>
+                </Link> 
+                
               </div>
             </div>
             <div className='col-span-6 hidden lg:block'>
@@ -457,7 +456,7 @@ const Navbar = () => {
                 </div>
                 <div className='header-btn hidden lg:block'  >
                 <Link to='/editprofile'>
-    <FontAwesomeIcon icon={faUser} className="mr-2"   /> {/* Icône d'utilisateur */}
+
     {user1.firstName}<span></span>
     </Link>
    

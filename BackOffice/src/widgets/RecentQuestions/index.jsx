@@ -1,13 +1,13 @@
 // styling
-import {textSizes, dark, fonts, colors, light} from '@styles/vars';
+import {textSizes, dark, fonts, colors, light} from 'styles/vars';
 
 // styled components0
 import {List} from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
 import RecentQuestionsItem from './RecentQuestionsItem';
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@mui/material/Tabs';

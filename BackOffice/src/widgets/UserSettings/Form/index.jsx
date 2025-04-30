@@ -1,14 +1,14 @@
 // styled components
-import {StyledForm, Container} from '@widgets/UserSettings/style';
-import {Input} from '@ui/Field';
+import {StyledForm, Container} from 'widgets/UserSettings/style';
+import {Input} from 'UI/Field';
 
 // components
-import DropFiles from '@components/DropFiles';
-import Btn from '@ui/Btn';
-import LabeledFormInput from '@ui/LabeledFormInput';
-import CustomSelect from '@ui/Select';
-import DateInput from '@components/MaskedInputs/Date';
-import Phone from '@components/MaskedInputs/Phone';
+import DropFiles from 'components/DropFiles';
+import Btn from 'UI/Btn';
+import LabeledFormInput from 'UI/LabeledFormInput';
+import CustomSelect from 'UI/Select';
+import DateInput from 'components/MaskedInputs/Date';
+import Phone from 'components/MaskedInputs/Phone';
 
 // utils
 import PropTypes from 'prop-types';
@@ -17,7 +17,7 @@ import {City} from 'country-state-city';
 
 // hooks
 import {useState} from 'react';
-import useNotistack from '@hooks/useNotistack';
+import useNotistack from 'hooks/useNotistack';
 
 const Form = ({type}) => {
     const {notify} = useNotistack('Your changes have been successfully saved.', 'success');

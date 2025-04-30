@@ -2,8 +2,8 @@
 import { Card, Info, Content, StatHeader } from './style';
 
 // components
-import Widget from '@components/Widget';
-import WidgetBody from '@components/Widget/WidgetBody';
+import Widget from 'components/Widget';
+import WidgetBody from 'components/Widget/WidgetBody';
 import CountUp from 'react-countup';
 
 const Statistics = ({ data, title, image }) => {

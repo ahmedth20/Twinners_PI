@@ -83,8 +83,8 @@ const ParamedicList = () => {
   const [filteredParamedics, setFilteredParamedics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState('');
-  const [filterFunction, setFilterFunction] = useState('');
+ const [search] = useState('');
+ const [filterFunction] = useState('');
   const [newParamedic, setNewParamedic] = useState({
     function: '',
     ambulance: '',
@@ -149,7 +149,7 @@ const ParamedicList = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/paramedics', newParamedicData);
+      const response = await axios.post('http://localhost:5000/paramedics/paramedics', newParamedicData);
       console.log('Paramedic créé:', response.data);
       setParamedics((prev) => [...prev, response.data]);
       setNewParamedic({
@@ -275,7 +275,7 @@ const ParamedicList = () => {
   if (loading) return <div style={styles.loading}>Chargement...</div>;
   if (error) return <div style={styles.error}>Erreur: {error}</div>;
 
-  const functions = [...new Set(paramedics.map((p) => p.function).filter(Boolean))];
+
 
 // Formulaire d'édition
 return (

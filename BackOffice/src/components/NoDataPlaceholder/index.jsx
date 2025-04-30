@@ -1,11 +1,11 @@
 // styling
 import styled from 'styled-components';
-import {colors, flex} from '@styles/vars';
+import {colors, flex} from 'styles/vars';
 
 // assets
-import search_light from '@assets/search_light.json';
-import search_dark from '@assets/search_dark.json';
-import cards from '@assets/cards.json';
+import search_light from 'assets/search_light.json';
+import search_dark from 'assets/search_dark.json';
+import cards from 'assets/cards.json';
 
 // components
 import {AnimatePresence, motion} from 'framer-motion';
@@ -13,7 +13,7 @@ import Lottie from 'lottie-react';
 
 // utils
 import PropTypes from 'prop-types';
-import {fadePresence} from '@constants/framer';
+import {fadePresence} from 'constants/framer';
 
 // hooks
 import {useTheme} from 'styled-components';

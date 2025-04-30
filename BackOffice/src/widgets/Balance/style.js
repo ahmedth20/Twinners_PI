@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, flex, textSizes, breakpoints} from '@styles/vars';
+import {colors, flex, textSizes, breakpoints} from 'styles/vars';
 
 export const Wrapper = styled.div`
   margin-bottom: 16px;

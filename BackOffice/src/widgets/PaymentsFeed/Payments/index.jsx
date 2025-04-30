@@ -1,12 +1,12 @@
 // styled components
-import {Divider} from '@components/Widget/style';
+import {Divider} from 'components/Widget/style';
 import {PaymentItem, Additional, Content} from './style';
 
 // components
-import GroupSeparator from '@ui/GroupSeparator';
-import ShapeButton from '@ui/ShapeButton';
-import Avatar from '@ui/Avatar';
-import NoDataPlaceholder from '@components/NoDataPlaceholder';
+import GroupSeparator from 'UI/GroupSeparator';
+import ShapeButton from 'UI/ShapeButton';
+import Avatar from 'UI/Avatar';
+import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
 import PropTypes from 'prop-types';

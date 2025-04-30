@@ -2,19 +2,19 @@
 import styled from 'styled-components';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import {Navbar} from '@components/Widget/style';
-import Btn from '@ui/Btn'
-import TodosLegend from '@components/Todos/TodosLegend';
-import AddForm from '@components/Todos/AddForm';
-import DnDLayout from '@components/Todos/DnDLayout';
-import ScrollContainer from '@components/ScrollContainer';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import {Navbar} from 'components/Widget/style';
+import Btn from 'UI/Btn'
+import TodosLegend from 'components/Todos/TodosLegend';
+import AddForm from 'components/Todos/AddForm';
+import DnDLayout from 'components/Todos/DnDLayout';
+import ScrollContainer from 'components/ScrollContainer';
 
 // hooks
 import {useSelector} from 'react-redux';
 import {useState, useRef, useEffect} from 'react';
-import useContentHeight from '@hooks/useContentHeight';
+import useContentHeight from 'hooks/useContentHeight';
 
 const Footer = styled.div`
   padding: 2px 24px 22px 24px;

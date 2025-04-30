@@ -1,6 +1,6 @@
 // styling
-import {colors} from '@styles/vars';
-import {StyledTooltip} from '@components/Chart/Tooltip';
+import {colors} from 'styles/vars';
+import {StyledTooltip} from 'components/Chart/Tooltip';
 
 // components
 import {LineChart, Line, ResponsiveContainer, CartesianGrid, AreaChart, Area, Tooltip} from 'recharts';
@@ -8,10 +8,10 @@ import {LineChart, Line, ResponsiveContainer, CartesianGrid, AreaChart, Area, To
 // hooks
 import {useTheme} from 'styled-components';
 import {useLayoutEffect, useState} from 'react';
-import useWindowSize from '@hooks/useWindowSize';
+import useWindowSize from 'hooks/useWindowSize';
 
 // utils
-import {generateGridPoints} from '@utils/recharts';
+import {generateGridPoints} from 'utils/recharts';
 
 const CartesianChart = ({variant, id, data, elems, ...props}) => {
     const {width} = useWindowSize();

@@ -1,33 +1,34 @@
 import { Menu, UserWrapper, PopupOverlay, PopupContent } from '../style';
-import Avatar from '@ui/Avatar';
 import { useDispatch } from 'react-redux';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { useState, useEffect } from 'react';
 import { logout } from '../../../slices/authSlice';
-import doc1jpg from '@assets/avatars/doc1.jpg';
-import doc1webp from '@assets/avatars/doc1.jpg?as=webp';
-import * as z from "zod";
+import doc1jpg from 'assets/avatars/doc1.jpg';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import {
-  GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
-  ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle
+  Input, Form, SubmitButton, Error, InputRow, FormTitle
 } from "../../../styles/PopUpAddPatient";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Snackbar, Alert } from "@mui/material";
 
 const CurrentUser = () => {
-    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [user1, setUser1] = useState({});
     const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState("");   
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
-
+   const [loading, setLoading] = useState(false);
+   const navigate = useNavigate();
+   
+   const handleLogout = () => {
+    dispatch(logout());
+    navigate("/"); // 👈 redirection vers la home
+};
     const user = useSelector(state => state.auth.user.user.id);
 
     useEffect(() => {
@@ -45,9 +46,7 @@ const CurrentUser = () => {
                 setPicture(data.picture || null);
             } catch (error) {
                 console.error("Erreur lors du chargement des données", error);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
         fetchUser();
     }, [user]);
@@ -109,7 +108,7 @@ const CurrentUser = () => {
                             <button onClick={() => setShowPopup(true)}>
                                 <i className="icon icon-circle-user" /> Update profile
                             </button>
-                            <button onClick={() => dispatch(logout())}>
+                            <button onClick={handleLogout}>
                                 <i className="icon icon-logout" /> Logout
                             </button>
                         </Menu>

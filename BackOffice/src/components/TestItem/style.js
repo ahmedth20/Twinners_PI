@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from '@styles/vars';
+import {colors, dark, breakpoints, effects, flex, fonts, light, textSizes} from 'styles/vars';
 import theme from 'styled-theming';
 
 export const ListItem = styled.li`

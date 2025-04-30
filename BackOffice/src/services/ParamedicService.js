@@ -61,6 +61,17 @@ const ParamedicService = {
       throw error;
     }
   },
+
+  getParamedicByAmbulance: async (id) => {
+    try {
+      const response = await axios.get(`${API_URL}/ambulance/${id}`);
+
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors du chargement des ambulances:", error);
+      throw error;
+    }
+  },
 };
 
 export default ParamedicService;

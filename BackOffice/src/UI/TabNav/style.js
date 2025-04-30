@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, textSizes, light, dark, colors} from '@styles/vars';
+import {flex, textSizes, light, dark, colors} from 'styles/vars';
 
 const current = theme('theme', {
     light: light.bodyBg,

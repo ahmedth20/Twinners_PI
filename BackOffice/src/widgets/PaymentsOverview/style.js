@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {light, dark, textSizes, fonts, breakpoints} from '@styles/vars';
+import {light, dark, textSizes, fonts, breakpoints} from 'styles/vars';
 
 export const Total = styled.div`
   margin: 0 2px 20px;

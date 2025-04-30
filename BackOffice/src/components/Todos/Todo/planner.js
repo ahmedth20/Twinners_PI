@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, light, flex} from '@styles/vars';
+import {dark, light, flex} from 'styles/vars';
 
 export const PlannerItemContainer = styled.div`
   background-color: ${theme('theme', {

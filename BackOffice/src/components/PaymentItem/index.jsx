@@ -2,8 +2,8 @@
 import {ListItem, Wrapper, Footer, Date} from './style';
 
 // components
-import IconLink from '@ui/IconLink';
-import MenuDots from '@ui/MenuDots';
+import IconLink from 'UI/IconLink';
+import MenuDots from 'UI/MenuDots';
 
 // utils
 import moment from 'moment';

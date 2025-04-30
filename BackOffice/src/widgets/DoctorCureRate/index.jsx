@@ -1,25 +1,25 @@
 // styling
 import {rgba} from 'polished';
-import {colors, light, dark} from '@styles/vars';
+import {colors, light, dark} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import CustomSelect from '@ui/Select';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import CartesianChart from '@components/CartesianChart';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import CustomSelect from 'UI/Select';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import CartesianChart from 'components/CartesianChart';
 
 // hooks
 import {useState} from 'react';
 import {useTheme} from 'styled-components';
 
 // utils
-import {doctorsOptions} from '@constants/options';
+import {doctorsOptions} from 'constants/options';
 
 // data placeholder
-import {data} from '@db/cure';
+import {data} from 'db/cure';
 
 const DoctorCureRate = () => {
     const {theme} = useTheme();

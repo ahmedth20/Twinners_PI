@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {breakpoints, flex} from '@styles/vars';
+import {breakpoints, flex} from 'styles/vars';
 
 export const Content = styled.div`
   padding: 20px 20px 84px;

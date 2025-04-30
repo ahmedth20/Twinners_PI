@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
+  Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
   ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, FormTitle
 } from "../styles/PopUpAddDoctor";
 import DoctorService from "services/DoctorService";

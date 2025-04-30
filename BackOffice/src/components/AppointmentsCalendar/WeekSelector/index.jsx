@@ -1,11 +1,11 @@
 // components
-import CustomSelect from '@ui/Select';
+import CustomSelect from 'UI/Select';
 
 // hooks
 import {useState} from 'react';
 
 // utils
-import {getWeekArray} from '@utils/dates';
+import {getWeekArray} from 'utils/dates';
 import moment from 'moment/moment';
 
 const WeekSelector = ({date, setter}) =>{

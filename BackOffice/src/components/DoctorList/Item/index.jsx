@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wrapper, Block, Button } from './style';
-import Avatar from '@ui/Avatar';
-import ShapeButton from '@ui/ShapeButton';
-import Reminder from '@ui/Reminder';
-import Progress from '@ui/Progress';
-import CustomRating from '@ui/CustomRating';
+import Avatar from 'UI/Avatar';
+import ShapeButton from 'UI/ShapeButton';
+import Reminder from 'UI/Reminder';
+import Progress from 'UI/Progress';
+import CustomRating from 'UI/CustomRating';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fadePresence } from '@constants/framer';
+import { fadePresence } from 'constants/framer';
 import PropTypes from 'prop-types';
-import UpdateDoctorPopup from '@pages/UpdateDoctorPopUp';
+import UpdateDoctorPopup from 'pages/UpdateDoctorPopUp';
 import DoctorService from 'services/DoctorService';
 
 const Item = ({ type, data, onDelete }) => {

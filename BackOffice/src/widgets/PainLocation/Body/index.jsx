@@ -1,19 +1,19 @@
 // styled components
-import {Rotate, BodyChart, View, Spots, Spot} from '@widgets/PainLocation/style';
+import {Rotate, BodyChart, View, Spots, Spot} from 'widgets/PainLocation/style';
 
 // components
 import {ThreeSixty} from '@mui/icons-material';
-import Btn from '@ui/Btn';
-import CustomTooltip from '@ui/CustomTooltip';
+import Btn from 'UI/Btn';
+import CustomTooltip from 'UI/CustomTooltip';
 
 // assets
-import male_front from '@assets/male_front.svg';
-import male_back from '@assets/male_back.svg';
-import female_front from '@assets/female_front.svg';
-import female_back from '@assets/female_back.svg';
+import male_front from 'assets/male_front.svg';
+import male_back from 'assets/male_back.svg';
+import female_front from 'assets/female_front.svg';
+import female_back from 'assets/female_back.svg';
 
 // hooks
-import useNotistack from '@hooks/useNotistack';
+import useNotistack from 'hooks/useNotistack';
 import {useState} from 'react';
 
 const Body = ({gender}) => {

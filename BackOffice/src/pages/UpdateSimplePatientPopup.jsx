@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  GlobalStyles, Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
+  Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
   ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle
 } from "../styles/PopUpAddPatient";
 import PatientService from "../services/PatientService";
@@ -49,9 +49,6 @@ useEffect(() => {
     });
   }
 }, [data, setValue]);
-
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit = async () => {
     try {

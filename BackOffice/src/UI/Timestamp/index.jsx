@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {fonts, textSizes} from '@styles/vars';
+import {fonts, textSizes} from 'styles/vars';
 
 // utils
 import moment from 'moment';

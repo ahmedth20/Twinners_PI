@@ -1,21 +1,10 @@
 // utils
-import {lazy, Suspense} from 'react';
+import {lazy} from 'react';
 
-// components
-import ScrollProgress from '@ui/ScrollProgress';
-import Panel from '@layout/Panel';
-import Sidebar from '@layout/Sidebar';
-import {Navigate, Route, Routes} from 'react-router-dom';
-import BottomMenu from '@layout/BottomMenu';
-import WidgetsLoader from '@components/WidgetsLoader';
+import { Route, Routes} from 'react-router-dom';
 
-// hooks
-import useWindowSize from '@hooks/useWindowSize';
-import usePageIsOverflow from '@hooks/usePageIsOverflow';
-import {useRef, useEffect} from 'react';
-import { useSelector } from "react-redux";
-import Forgotpassword from '@pages/screens/forgotpassword'
-import Resetpassword1 from '@pages/screens/restpasswordslouma'
+import Forgotpassword from 'pages/screens/forgotpassword'
+import Resetpassword1 from 'pages/screens/restpasswordslouma'
 
 // pages
 const Equipements = lazy(() => import('@pages/equipement'));
@@ -49,7 +38,9 @@ const PageNotFound = lazy(() => import('@pages/PageNotFound'));
 const Par = lazy(() => import('@pages/Par'));
 const Ser = lazy(() => import('@pages/Ser'));
 
-const Servicemanager = lazy(() => import('@pages/srevicemanager'));
+//const PageNotFound = lazy(() => import('pages/PageNotFound'));
+
+const Servicemanager = lazy(() => import('pages/srevicemanager'));
 
 
 const AppLayout = () => {
@@ -80,6 +71,9 @@ const AppLayout = () => {
       <Route path="/staff" element={ <StaffList /> } />
       <Route path="/doctor_messenger" element={ <DoctorMessenger /> } />
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
+      <Route path="/ParamedicResponseAmbulance" element={ <AmbulanceGettingMessage /> } />
+      <Route path="/chat" element={ <GeminiChatbot/> } />
+      
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />
       <Route path="/finances" element={ <Finances /> } />
