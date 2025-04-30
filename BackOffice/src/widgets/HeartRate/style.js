@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {colors, dark, flex, fonts, light, textSizes} from '@styles/vars';
-import {pulse} from '@styles/keyframes';
+import {colors, dark, flex, fonts, light, textSizes} from 'styles/vars';
+import {pulse} from 'styles/keyframes';
 import {rgba} from 'polished';
 
 const gridColor = theme('theme', {

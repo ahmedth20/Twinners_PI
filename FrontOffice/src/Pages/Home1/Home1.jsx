@@ -11,6 +11,7 @@ import Subscribe from '../../Component1/Subscribe/Subscribe';
 import TeamMember from '../../Component1/TeamMember/TeamMember';
 import Testimonial from '../../Component1/Testimonial/Testimonial';
 import { useEffect, useRef } from "react";
+import EmergencyChatbot from '../../Component1/Chatbot/EmergencyChatbot';
 
 const Home1 = () => {
   const appoinmentRef = useRef(null);
@@ -38,6 +39,7 @@ const Home1 = () => {
         <Appoinment />
       </div>
       <TeamMember />
+      <EmergencyChatbot />
       <Testimonial />
       <Brand />
       <Blog />

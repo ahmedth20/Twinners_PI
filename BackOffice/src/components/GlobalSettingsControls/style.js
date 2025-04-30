@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {textSizes, colors, light} from '@styles/vars';
+import {textSizes, colors, light} from 'styles/vars';
 
 export const ControlWrapper = styled.div`
   &:not(:last-of-type) {

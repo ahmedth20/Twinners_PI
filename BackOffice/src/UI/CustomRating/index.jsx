@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 // components
 import Rating from 'react-rating'
-import {ReactComponent as Filled} from '@assets/filledrating.svg';
-import {ReactComponent as Empty} from '@assets/emptyrating.svg';
+import {ReactComponent as Filled} from 'assets/filledrating.svg';
+import {ReactComponent as Empty} from 'assets/emptyrating.svg';
 
 // hooks
 import {useTheme} from '@mui/material/styles';

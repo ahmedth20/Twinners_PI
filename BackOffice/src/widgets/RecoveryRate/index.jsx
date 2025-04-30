@@ -1,19 +1,19 @@
 // styling
 import styled from 'styled-components';
-import {textSizes, flex, colors, fonts} from '@styles/vars';
+import {textSizes, flex, colors, fonts} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Navigator from '@ui/Navigator';
-import Progress from '@ui/Progress';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Navigator from 'UI/Navigator';
+import Progress from 'UI/Progress';
 
 // utils
-import {getMonthArray} from '@utils/dates';
+import {getMonthArray} from 'utils/dates';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
+import useArrayNav from 'hooks/useArrayNav';
 import {useEffect} from 'react';
 
 const List = styled.div`

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/paramedics";
+const API_URL = "http://localhost:5000/paramedics/paramedics";
 
 const ParamedicService = {
  getAllParamedics: async () => {
@@ -56,6 +56,17 @@ const ParamedicService = {
       await axios.delete(`${API_URL}/${id}`);
     } catch (error) {
       console.error("Erreur lors de la suppression du Paramedic:", error);
+      throw error;
+    }
+  },
+
+  getParamedicByAmbulance: async (id) => {
+    try {
+      const response = await axios.get(`${API_URL}/ambulance/${id}`);
+
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors du chargement des ambulances:", error);
       throw error;
     }
   },

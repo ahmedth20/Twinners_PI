@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {flex, colors, textSizes, breakpoints} from '@styles/vars';
+import {flex, colors, textSizes, breakpoints} from 'styles/vars';
 
 export const CardItem = styled.div`
   display: flex;

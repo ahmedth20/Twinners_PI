@@ -1,13 +1,12 @@
 // styling
 import styled from 'styled-components/macro';
-import {flex} from '@styles/vars';
+import {flex} from 'styles/vars';
 
 // components
-import Item from '@components/PersonList/Item';
+import Item from 'components/PersonList/Item';
 
 // utils
-import PropTypes from 'prop-types';
-import { useState, useRef, useEffect } from 'react';
+import { useState,  useEffect } from 'react';
 import PatientService from 'services/ServiceMangerService';
 
 const List = styled.ul`

@@ -56,7 +56,8 @@ export const menuchefservice = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+            { name: "chat", link: '/chat' },
         ]
     },
     {
@@ -122,7 +123,8 @@ export const menudoctors = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+        
         ]
     },
     {
@@ -181,7 +183,8 @@ export const menustaff = [
         icon: 'star',
         links: [
             { name: "Doctor Reviews", link: '/doctor_reviews' },
-            { name: "Patient Reviews", link: '/patient_reviews' }
+            { name: "Patient Reviews", link: '/patient_reviews' },
+
         ]
     },
    
@@ -226,7 +229,16 @@ export const menuparamedic = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
+            { name: "Patient File", link: '/patientFile' },
         
+        ]
+    },
+    {
+        cat: 'messages',
+        icon: 'comment',
+        links: [
+            { name: "Ambulance Emergency", link: '/ParamedicResponseAmbulance' },
+
         ]
     },
    
@@ -290,7 +302,8 @@ export const menuadmin = [
         links: [
             { name: "Doctors", link: '/doctors' },
             { name: "Staff", link: '/staff' },
-            { name: "Paramedic", link: '/Paramedic' }
+            { name: "Paramedic", link: '/Paramedic' },
+            { name: "Service Manager", link: '/servicemanager' }
         ]
     },
     {
@@ -298,7 +311,8 @@ export const menuadmin = [
         icon: 'comment',
         links: [
             { name: "Doctor Messenger", link: '/doctor_messenger' },
-            { name: "Patient Messenger", link: '/patient_messenger' }
+            { name: "Patient Messenger", link: '/patient_messenger' },
+
         ]
     },
     {

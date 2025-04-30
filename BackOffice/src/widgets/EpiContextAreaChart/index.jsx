@@ -1,19 +1,19 @@
 // styling
-import {colors} from '@styles/vars';
+import {colors} from 'styles/vars';
 
 // styled components
-import Labels from '@components/Chart/Labels';
+import Labels from 'components/Chart/Labels';
 
 // components
-import Widget from '@components/Widget';
-import WidgetHeader from '@components/Widget/WidgetHeader';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
-import CartesianChart from '@components/CartesianChart';
+import Widget from 'components/Widget';
+import WidgetHeader from 'components/Widget/WidgetHeader';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
+import CartesianChart from 'components/CartesianChart';
 
 // data placeholder
-import {week} from '@db/epi_period';
+import {week} from 'db/epi_period';
 
 const EpiContextAreaChart = () => {
     const common = {

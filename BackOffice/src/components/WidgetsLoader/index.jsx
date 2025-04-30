@@ -1,6 +1,6 @@
 // styling
 import styled from 'styled-components';
-import {colors} from '@styles/vars'
+import {colors} from 'styles/vars'
 
 // components
 import CircularProgress from '@mui/material/CircularProgress';

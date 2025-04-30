@@ -1,19 +1,19 @@
 // styling
 import styled from 'styled-components';
-import {flex, colors} from '@styles/vars';
+import {flex, colors} from 'styles/vars';
 
 // components
-import Widget from '@components/Widget';
-import WidgetNav from '@components/Widget/WidgetNav';
-import WidgetBody from '@components/Widget/WidgetBody';
-import Legend from '@ui/Legend';
-import LegendItem from '@ui/Legend/LegendItem';
+import Widget from 'components/Widget';
+import WidgetNav from 'components/Widget/WidgetNav';
+import WidgetBody from 'components/Widget/WidgetBody';
+import Legend from 'UI/Legend';
+import LegendItem from 'UI/Legend/LegendItem';
 import { RadialBarChart, RadialBar, Tooltip } from 'recharts';
-import ChartTooltip from '@components/Chart/Tooltip';
+import ChartTooltip from 'components/Chart/Tooltip';
 
 // hooks
-import useArrayNav from '@hooks/useArrayNav';
-import usePeriodNav from '@hooks/usePeriodNav';
+import useArrayNav from 'hooks/useArrayNav';
+import usePeriodNav from 'hooks/usePeriodNav';
 import {useTheme} from 'styled-components';
 import {useState} from 'react';
 

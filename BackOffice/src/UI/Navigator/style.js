@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {dark, flex, light, textSizes} from '@styles/vars';
+import {dark, flex, light, textSizes} from 'styles/vars';
 
 export const Wrapper = styled.div`
   display: flex;

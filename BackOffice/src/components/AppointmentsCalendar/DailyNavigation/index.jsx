@@ -1,5 +1,5 @@
 // components
-import {Wrapper} from '@ui/Navigator/style';
+import {Wrapper} from 'UI/Navigator/style';
 
 // utils
 import moment from 'moment/moment';

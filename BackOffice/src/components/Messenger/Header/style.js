@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from 'styled-theming';
-import {breakpoints, colors, dark, flex, light, textSizes} from '@styles/vars';
+import {breakpoints, colors, dark, flex, light, textSizes} from 'styles/vars';
 
 export const HeaderContainer = styled.div`
   padding: 20px 24px;
