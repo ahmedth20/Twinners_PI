@@ -28,6 +28,8 @@ const StaffList = lazy(() => import('pages/Staff'));
 const DoctorMessenger = lazy(() => import('pages/DoctorMessenger'));
 const PatientMessenger = lazy(() => import('pages/PatientMessenger'));
 const AmbulanceGettingMessage= lazy(() => import('Notifications/ParamedicResponseAmbulance'));
+const DoctorsChat= lazy(() => import('Notifications/DoctorsChat'));
+const ParamedicChat= lazy(() => import('Notifications/ParamedicChat'));
 const DoctorsReviews = lazy(() => import('pages/DoctorsReviews'));
 const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
@@ -70,6 +72,8 @@ const AppLayout = () => {
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
       <Route path="/ParamedicResponseAmbulance" element={ <AmbulanceGettingMessage /> } />
       <Route path="/chat" element={ <GeminiChatbot/> } />
+      <Route path="/doctorchat" element={ <DoctorsChat/> } />
+      <Route path="/paramedicchat" element={ <ParamedicChat/> } />
       
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />
