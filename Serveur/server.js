@@ -6,26 +6,22 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 const connectDB = require("./src/configs/db.config.js");
+
 const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
-const http = require('http');
-const { Server } = require('socket.io');
 const staffRoutes = require("./src/routes/staff.js");
-const doctorRoutes = require("./src/routes/doctor.js")
+const doctorRoutes = require("./src/routes/doctor.js");
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
-const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const patientFileRoutes = require('./src/routes/patientFileRoutes');
-const PatientFile = require('./src/models/patientFile');  // Ajustez le chemin si nécessaire
 const qaRoutes = require('./src/routes/qaRoutes');
+const appointments = require('./src/routes/appointments');
 
+const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
+const PatientFile = require("./src/models/patientFile");
 
-
-
-
-// Config
 dotenv.config();
 connectDB();
 
@@ -33,36 +29,52 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Créer un serveur HTTP
+const http = require("http");
 const server = http.createServer(app);
 
+// Initialiser Socket.IO
+const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    credentials: true,  // Ajoutez cela pour que Socket.io envoie les cookies
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], // Frontend
-    credentials: true,  // Permet d'envoyer des cookies avec les requêtes
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  })
-);
+// 🔸 Suivi des utilisateurs connectés
+let connectedUsers = {};
 
+// 🔸 Socket.IO - Événements
+io.on("connection", (socket) => {
+  console.log("✅ Utilisateur connecté :", socket.id);
 
+  // Enregistrement de l'utilisateur avec son userId
+  socket.on("register", (userId) => {
+    connectedUsers[userId] = socket.id;
+    console.log(`Utilisateur ${userId} enregistré avec le socket ${socket.id}`);
+  });
 
+ // 🔔 Notification : ajout d’un patient file
+ socket.on("new_patient_file", ({ doctorId, message }) => {
+  if (!doctorId || !message) {
+    console.warn("⚠️ Données invalides pour new_patient_file :", { doctorId, message });
+    return;
+  }
 
-io.on('connection', (socket) => {
-  console.log(`Utilisateur connecté: ${socket.id}`);
+  // Vérifiez si le médecin est le bon
+  if (doctorId === "medecin74@gmail.com") {
+    // Logique pour envoyer le fichier patient au médecin
+    console.log("Nouveau fichier patient pour le médecin :", doctorId);
+    // Ajoutez ici le code pour traiter le fichier et l'envoyer au médecin
+  } else {
+    console.log("Ce fichier patient n'est pas destiné à ce médecin.");
+  }
+});
 
-  // Quand un patient appelle une ambulance
+  // 🔁 Appel ambulance
   socket.on('call_ambulance', async (data) => {
     console.log('Demande d\'ambulance reçue:', data);
-    
-    // Enregistre dans la base
     try {
       await AmbulanceRequest.create({
         from: data.from,
@@ -71,54 +83,48 @@ io.on('connection', (socket) => {
     } catch (err) {
       console.error("Erreur enregistrement demande :", err);
     }
-
-    // Émet l'événement aux paramédics
     socket.broadcast.emit('ambulance_request', data);
   });
 
-  // Quand un paramédic répond
+  // Réponse du paramedic
   socket.on('ambulance_response', (data) => {
-    console.log('Réponse du paramedic:', data);
-    // Envoie la réponse au patient spécifique
     socket.to(data.to).emit('ambulance_response_result', { status: data.status });
   });
 
-  socket.on('disconnect', () => {
-    console.log(`Utilisateur déconnecté: ${socket.id}`);
+  // Déconnexion
+  socket.on("disconnect", () => {
+    for (let userId in connectedUsers) {
+      if (connectedUsers[userId] === socket.id) {
+        delete connectedUsers[userId];
+        break;
+      }
+    }
+    console.log("❌ Utilisateur déconnecté :", socket.id);
   });
 });
 
+// Middleware
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:3000"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+}));
 
-app.get('/patientFiles', async (req, res) => {
-  try {
-    const patientFile = await PatientFile.find()
-      .populate('medicalRecord'); 
-    res.json(patientFile);
-  } catch (err) {
-    console.error("Erreur dans /patientFiles :", err);
-    res.status(500).json({ message: err.message });
-  }
-});
-
-
-// Sessions
-app.use(
-  session({
-    secret: process.env.JWT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: "sessions",
-      ttl: 60
-    })
-  })
-);
-
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+  secret: process.env.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions",
+    ttl: 60
+  })
+}));
 
 // Routes
 app.use("/users", userRoutes);
@@ -131,71 +137,11 @@ app.use("/servicemanager", sermanagerRoutes);
 app.use("/ambulance", ambulanceRoutes);
 app.use("/patientFiles", patientFileRoutes);
 app.use('/api/qa', qaRoutes);
+app.use("/appointments", appointments);
 
-// Frontends
+// Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 
-// Démarrer serveur AVEC WebSocket support
+// Lancer le serveur
 server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
-
-
-
-
-/*
-
-
-
-dotenv.config();
-connectDB();
-
-const app = express();
-const port = process.env.PORT || 5000;
-
-// 🔹 1. Configurer CORS correctement
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], 
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  })
-);
-app.use(
-  session({
-    secret: process.env.JWT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI, 
-      collectionName: "sessions",
-      ttl: 60, 
-    }),
-  })
-);
-
-// 🔹 2. Activer le support des requêtes `OPTIONS` (Preflight)
-app.options("*", cors());
-app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
-app.use("/emergency", emergencyRoutes);
-// Servir le Back-Office (mediic)
-app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
-
-// 🔹 3. Middlewares essentiels
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-// 🔹 4. Routes
-app.use("/users", userRoutes);
-app.use("/patient", patientRoutes);
-
-app.use("/staff", staffRoutes);
-app.use("/doctors", doctorRoutes);
-app.use('/paramedics', paramedicRoutes);
-
-app.use("/servicemanager", sermanagerRoutes);
-
-// 🔹 5. Démarrer le serveur
-app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
-*/
