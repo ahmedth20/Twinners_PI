@@ -18,6 +18,8 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MedicalRecordService from '../../services/medicalRecordService';
+import ConsultationService from '../../services/consultationService';
+import OperationService from '../../services/operationService';
 
 const patientSchema = z.object({
   firstName: z.string().min(2, { message: "First name is required" }),
@@ -27,6 +29,12 @@ const patientSchema = z.object({
   phone: z.string().min(8, { message: "Phone number must be at least 8 digits" }),
   address: z.string().min(5, { message: "Address is required" }),
 });
+function getPatientStatus(medicalRecord) {
+  const oxygen = parseInt(medicalRecord?.testResults?.oxygenSaturation || 0);
+  if (oxygen >= 95) return 'ok';
+  if (oxygen >= 90) return 'warning';
+  return 'danger';
+}
 
 const ProfileSettings = () => {
   const user = useSelector(state => state.auth.user.user1.id);
@@ -41,6 +49,7 @@ const ProfileSettings = () => {
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
   const [medicalRecord, setMedicalRecord] = useState(null);
+  const [consultations, setConsultations] = useState([]);
 
   useEffect(() => {
       const fetchPatientProfile = async () => {
@@ -74,7 +83,7 @@ const ProfileSettings = () => {
     const fetchData = async () => {
       try {
         const response = await MedicalRecordService.getMedicalRecordByUserId(user);
-        console.log(response); // pour débug
+        console.log(response);
         setMedicalRecord(response);
       } catch (err) {
         console.error("Erreur lors de la récupération du dossier médical:", err);
@@ -83,7 +92,34 @@ const ProfileSettings = () => {
   
     fetchData();
   }, []);
-  
+
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      try {
+        const data = await ConsultationService.getConsultationsByUserId(user);
+        setConsultations(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des consultations:", error);
+      }
+    };
+
+    fetchConsultations();
+  }, [user]);
+
+  const [operations, setOperations] = useState([]);
+
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        const data = await OperationService.getOperationsByUserId(user);
+        setOperations(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des opérations:", error);
+      }
+    };
+    
+    fetchOperations();
+  }, [user]);
 
   const handleUpdateProfile = async (data) => {
     setLoading(true);
@@ -126,10 +162,11 @@ const ProfileSettings = () => {
 
   return (
     <>
-      <section className="py-[120px] bg-BodyBg-0">
-        <div className="Container">
-          <div className="grid grid-cols-3 gap-[50px] lg:gap-8 xl:gap-[50px]">
-            <div className="col-span-3 lg:col-span-1">
+<section className="py-[120px] bg-BodyBg-0">
+  <div className="w-full px-8 lg:px-12 xl:px-16">
+    <div className="grid grid-cols-12 gap-6">
+      {/* Sidebar (réduite) */}
+      <div className="col-span-12 lg:col-span-3">
               <div className="rounded-2xl px-7 pt-7 pb-6 overflow-hidden bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-7">
                 <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
                   Account Settings
@@ -139,7 +176,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('general', 'General', generalRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'general' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'general' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -154,7 +191,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('consultations', 'Consultations', consultationsRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'consultations' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'consultations' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -168,7 +205,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('medicalRecord', 'Medical Record', medicalRecordRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'medicalRecord' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'medicalRecord' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -182,7 +219,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('operations', 'Operations', operationsRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'operations' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'operations' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -196,7 +233,7 @@ const ProfileSettings = () => {
                     <button
                       onClick={() => handleTabClick('testResult', 'Test Result', testResultRef)}
                       className={`w-full font-AlbertSans text-left text-HeadingColor-0 transition-all duration-500 group px-7 py-4 flex items-center justify-between rounded-md bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-3 overflow-hidden ${
-                        activeTab === 'testResult' ? 'bg-blue-600 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
+                        activeTab === 'testResult' ? 'bg-blue-400 text-white' : 'hover:bg-PrimaryColor-0 hover:text-white'
                       }`}
                     >
                       <span className="flex items-center gap-3 lg:gap-1 xl:gap-3">
@@ -212,7 +249,7 @@ const ProfileSettings = () => {
             </div>
 
             {/* Section correspondant à l'onglet sélectionné */}
-            <div className="col-span-3 lg:col-span-2">
+            <div className="col-span-12 lg:col-span-9">
               <div className="rounded-2xl px-7 pt-7 pb-6 overflow-hidden bg-white bg-opacity-30 border-2 border-white border-opacity-80 mb-7">
                 <div ref={generalRef} id="general" className={`tab-section ${activeTab === 'general' ? 'block' : 'hidden'}`}>
                   <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
@@ -370,116 +407,62 @@ const ProfileSettings = () => {
             
               </div>
                 </div>
-
-
                 <div ref={consultationsRef} id="consultations" className={`tab-section ${activeTab === 'consultations' ? 'block' : 'hidden'}`}>
                 <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
                    Consultations 
                  {/* Contenu pour l'onglet Consultations */}
                  </h4>
+                 {consultations.length ? (
+                <div className="space-y-6">
+                  {consultations.map((c, i) => (
+                    <div key={i} className="bg-white p-6 rounded-xl shadow-md text-gray-800">
+                      <p><strong>Reference:</strong> {c.reference || '—'}</p>
+                      <p><strong>Date:</strong> {c.date ? new Date(c.date).toLocaleDateString() : '—'}</p>
+                      <p><strong>Duration:</strong> {c.duration || '—'} min</p>
+                      <p><strong>Status:</strong> {c.status || '—'}</p>
+                      <div className="mt-3">
+                        <p className="font-medium">🧪 Diagnostic:</p>
+                        <ul className="list-disc list-inside ml-4">
+                          {c.diagnostic ? (
+                            Object.entries(c.diagnostic).map(([key, value], i) => (
+                              <li key={i}><strong>{key}:</strong> {value || '—'}</li>
+                            ))
+                          ) : (
+                            <li>—</li>
+                          )}
+                        </ul>
+                      </div>
+                      <p className="mt-2"><strong>Patient ID:</strong> {c.patient || '—'}</p>
+                      <p><strong>Doctor ID:</strong> {c.doctor || '—'}</p>
+                    </div>
+                  ))}    </div>
+                ) : (
+                  <p className="text-gray-600 italic">No consultations found.</p>
+                )}
                 </div>
-                <div
-  ref={medicalRecordRef}
-  id="medicalRecord"
-  className={`tab-section ${activeTab === 'medicalRecord' ? 'block' : 'hidden'}`}
->
-  <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
-    🩺 Medical Record
-  </h4>
-
-  {medicalRecord ? (
-    <div className="bg-blue-300 bg-opacity-20 rounded-lg p-6 shadow-md">
-
-      {/* Diagnosis */}
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Diagnosis</h3>
-        <p><span className="font-medium">Condition:</span> {medicalRecord.diagnostic?.condition || '—'}</p>
-        <p><span className="font-medium">Symptoms:</span> {medicalRecord.diagnostic?.symptoms?.join(', ') || '—'}</p>
-        <p><span className="font-medium">Severity:</span> {medicalRecord.diagnostic?.severity || '—'}</p>
-        <p><span className="font-medium">Notes:</span> {medicalRecord.diagnostic?.notes || '—'}</p>
-      </section>
-
-      {/* Treatment */}
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Treatment</h3>
-        <div className="mb-4">
-          <h4 className="font-medium text-gray-600">Medications:</h4>
-          {medicalRecord.treatment?.medications?.length ? (
-            <ul className="list-disc list-inside">
-              {medicalRecord.treatment.medications.map((med, index) => (
-                <li key={index}>
-                  {med.name || 'N/A'} - {med.dosage || 'N/A'}, {med.frequency || 'N/A'}, {med.duration || 'N/A'}
-                  {med.notes && ` (${med.notes})`}
-                </li>
-              ))}
-            </ul>
-          ) : <p>—</p>}
-        </div>
-        <div className="mb-4">
-          <h4 className="font-medium text-gray-600">Procedures:</h4>
-          <p>{medicalRecord.treatment?.procedures?.name || '—'} - {medicalRecord.treatment?.procedures?.duration || '—'}</p>
-        </div>
-        <div>
-          <h4 className="font-medium text-gray-600">Lifestyle Recommendations:</h4>
-          {medicalRecord.treatment?.lifestyleRecommendations?.length ? (
-            <ul className="list-disc list-inside">
-              {medicalRecord.treatment.lifestyleRecommendations.map((rec, i) => <li key={i}>{rec}</li>)}
-            </ul>
-          ) : <p>—</p>}
-        </div>
-      </section>
-
-      {/* Additional Information */}
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Additional Information</h3>
-        <p><span className="font-medium">Allergies:</span> {medicalRecord.allergies?.join(', ') || '—'}</p>
-        <p><span className="font-medium">Blood Group:</span> {medicalRecord.bloodGroup || '—'}</p>
-        <div className="mt-2">
-          <h4 className="font-medium text-gray-600">Test Results:</h4>
-          <p><span className="font-medium">Chest X-Ray:</span> {medicalRecord.testResults?.chestXray || '—'}</p>
-          <p><span className="font-medium">Blood Test:</span> {medicalRecord.testResults?.bloodTest || '—'}</p>
-          <p><span className="font-medium">Oxygen Saturation:</span> {medicalRecord.testResults?.oxygenSaturation || '—'}</p>
-        </div>
-      </section>
-
-      {/* Medical History */}
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Medical History</h3>
-        {medicalRecord.MedicalHistory?.length ? (
-          <ul className="list-disc list-inside">
-            {medicalRecord.MedicalHistory.map((history, index) => <li key={index}>{history}</li>)}
-          </ul>
-        ) : <p>—</p>}
-      </section>
-
-      {/* Patient Files */}
-      <section>
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Patient Files</h3>
-        {medicalRecord.patientFiles?.length ? (
-          <ul className="list-disc list-inside">
-            {medicalRecord.patientFiles.map((file, index) => (
-              <li key={index} className="mb-2">
-                <p><span className="font-medium">Reference:</span> {file.reference || '—'}</p>
-                <p><span className="font-medium">Issued Date:</span> {file.dateIssued ? new Date(file.dateIssued).toLocaleDateString() : '—'}</p>
-                <p><span className="font-medium">Description:</span> {file.description || '—'}</p>
-                <p><span className="font-medium">Symptoms:</span> {file.symptoms || '—'}</p>
-                <p><span className="font-medium">Emergency Level:</span> {file.emergencyLevel || '—'}</p>
-              </li>
-            ))}
-          </ul>
-        ) : <p>—</p>}
-      </section>
-    </div>
-  ) : (
-    <p className="text-gray-600 italic">Loading medical record...</p>
-  )}
-</div>
 
                 <div ref={operationsRef} id="operations" className={`tab-section ${activeTab === 'operations' ? 'block' : 'hidden'}`}>
                   <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
                   Operations
                   {/* Contenu pour l'onglet Operations */}
                  </h4>
+                 {operations.length ? (
+                  <div className="space-y-6">
+                    {operations.map((op, i) => (
+                      <div key={i} className="bg-white p-6 rounded-xl shadow-md text-gray-800">
+                        <p><strong>Reference:</strong> {op.reference || '—'}</p>
+                        <p><strong>Type:</strong> {op.type || '—'}</p>
+                        <p><strong>Date:</strong> {op.date ? new Date(op.date).toLocaleDateString() : '—'}</p>
+                        <p><strong>Duration:</strong> {op.duration || '—'} min</p>
+                        <p><strong>Surgeon:</strong> {op.surgeon || '—'}</p>
+                        <p><strong>Notes:</strong> {op.notes || '—'}</p>
+                        <p><strong>Status:</strong> {op.status || '—'}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-600 italic">No operations found.</p>
+                )}
                 </div>
 
                 <div ref={testResultRef} id="testResult" className={`tab-section ${activeTab === 'testResult' ? 'block' : 'hidden'}`}>
@@ -487,6 +470,23 @@ const ProfileSettings = () => {
                 Test Result
                   {/* Contenu pour l'onglet Test Result */}
                   </h4>
+                  {medicalRecord ? (
+                    <div className="bg-white p-6 rounded-xl shadow-md font-AlbertSans text-gray-800">
+                      <ul className="list-disc list-inside space-y-2">
+                        <li>
+                          <strong>Chest X-Ray:</strong> {medicalRecord.testResults?.chestXray || '—'}
+                        </li>
+                        <li>
+                          <strong>Blood Test:</strong> {medicalRecord.testResults?.bloodTest || '—'}
+                        </li>
+                        <li>
+                          <strong>Oxygen Saturation:</strong> {medicalRecord.testResults?.oxygenSaturation || '—'}
+                        </li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <p className="text-gray-600 italic">Loading test results...</p>
+                  )}
                 </div>
               </div>
 

@@ -16,6 +16,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js")
+const consultationRoutes = require("./src/routes/consultation.js")
+const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
 const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 
@@ -117,6 +119,8 @@ app.use("/paramedics", paramedicRoutes);
 app.use("/servicemanager", sermanagerRoutes);
 app.use("/ambulance", ambulanceRoutes);
 app.use("/medicalrecord", medicalRecordRoutes);
+app.use("/consultation", consultationRoutes);
+app.use("/operation",operationRoutes);
 
 // Frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
