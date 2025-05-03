@@ -334,6 +334,7 @@ function Login() {
   />      {passwordError && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
 
       <a href="/forgotpassword">Forgot your password?</a>
+      <a href="http://localhost:5174/LoginRF">Login with FaceId</a>
       <button 
     type="submit"
     disabled={!isFormValid()} 

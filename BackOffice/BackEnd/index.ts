@@ -5,7 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { registerUser, getUsers, getUserByEmail } from './routes/FaceRecologin';
 
-const port: number = 5000; 
+const port: number = 5001; 
 const app: express.Application = express();
 
 app.use(express.json());

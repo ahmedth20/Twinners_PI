@@ -14,7 +14,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route >
-        <Route path="/" element={<UserSelect />} />
+        <Route path="/LoginRF" element={<UserSelect />} />
         <Route path="user-select" element={<UserSelect />} />
         <Route path="login" element={<Login />} />
         <Route path="protected" element={<Protected />} />

@@ -21,6 +21,9 @@ const appointments = require('./src/routes/appointments');
 
 const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const PatientFile = require("./src/models/patientFile");
+const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
+
+
 
 dotenv.config();
 connectDB();
@@ -142,6 +145,8 @@ app.use("/appointments", appointments);
 // Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
+
+app.use('/api', imagePredictionRoute);
 
 // Lancer le serveur
 server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));

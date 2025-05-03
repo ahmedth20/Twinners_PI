@@ -1,3 +1,4 @@
+//rc
 let io;
 const connectedUsers  = {}; // userId: socketId
 
