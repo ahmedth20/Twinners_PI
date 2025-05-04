@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Page from "layout/Page";
-import { Container, Title, SectionTitle, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
+import { Container, SectionTitle, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
 import PatientService from "../services/PatientService";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";  // <-- Ajout de l'import
 import { z } from "zod";
-
-// Définition du schéma Zod
+import { CloseButton, ModalContent, ModalOverlay, Title } from "styles/PopUpAddPatient";
+import { motion } from "framer-motion";
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required").optional(),
   lastName: z.string().min(1, "Last Name is required").optional(),
@@ -64,18 +64,40 @@ const formSchema = z.object({
     })
   ).optional()
 });
-
-
-
 const FormSection = ({ title, children }) => (
   <div>
     <SectionTitle>{title}</SectionTitle>
     {children}
   </div>
 );
+const MedicalFormUpdate = ({ isOpen, onClose, data }) => {
+  const [symptoms, setSymptoms] = useState([""]);
+  const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
 
-const MedicalFormUpdate = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const [allergies, setAllergies] = useState([""]);
+  const [operations, setOperations] = useState([{ type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+  const [doctors, setDoctors] = useState([]);
+
+  const addField = (setState) => setState(prev => [...prev, ""]);
+  const addMedication = () => setMedications(prev => [...prev, { name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
+  const addOperation = () => setOperations(prev => [...prev, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+  const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
+  const removeMedication = (index) => setMedications(medications.filter((_, i) => i !== index));
+  const removeOperation = (index) => {
+    setOperations(operations.filter((_, i) => i !== index));
+  };
+
+useEffect(() => {
+      const fetchDoctors = async () => {
+          try {
+              const data = await PatientService.getAllDoctors();
+              setDoctors(data);          } catch (error) {
+              console.error("Failed to fetch doctors", error);
+          }
+      };
+      fetchDoctors();
+  }, []);
+  const { register, handleSubmit, setValue,getValues,formState: { errors }, watch } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       consultations: [],  // Commencer avec un tableau vide pour les consultations
@@ -94,65 +116,87 @@ const MedicalFormUpdate = () => {
       }
     }
   });
+  useEffect(() => {
+    if (data) {
+      if (data.user) {
+        setValue("firstName", data.user.firstName || "");
+        setValue("lastName", data.user.lastName || "");
+      }
   
-
-  const [symptoms, setSymptoms] = useState([""]);
-  const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-
-  const [allergies, setAllergies] = useState([""]);
-  const [operations, setOperations] = useState([{ type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
-  const [doctors, setDoctors] = useState([]);
-
-  // Fonction d'ajout des champs dynamiques
-  const addField = (setState) => setState(prev => [...prev, ""]);
-  const addMedication = () => setMedications(prev => [...prev, { name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-  const addOperation = () => setOperations(prev => [...prev, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+      setValue("sex", data.sex || "");
+      setValue("age", data.age || "");
+      setValue("phone", data.phone || "");
+      setValue("address", data.address || "");
   
-
-  // Fonction de suppression des champs dynamiques
-  const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
-  const removeMedication = (index) => setMedications(medications.filter((_, i) => i !== index));
-  const removeOperation = (index) => {
-    setOperations(operations.filter((_, i) => i !== index));
-  };
-
-useEffect(() => {
-      const fetchDoctors = async () => {
-          try {
-              const data = await PatientService.getAllDoctors();
-              setDoctors(data);          } catch (error) {
-              console.error("Failed to fetch doctors", error);
+      if (data.medicalRecord) {
+        Object.entries(data.medicalRecord).forEach(([sectionKey, sectionValue]) => {
+          if (typeof sectionValue === "object" && sectionValue !== null) {
+            Object.entries(sectionValue).forEach(([field, value]) => {
+              setValue(`medicalRecord.${sectionKey}.${field}`, value);
+            });
+          } else {
+            setValue(`medicalRecord.${sectionKey}`, sectionValue);
           }
-      };
-      fetchDoctors();
-  }, []);
-  const onSubmit = async (data) => {
+        });
+      }
+  
+      setValue("consultations", data.consultations || []);
+    }
+  }, [data, setValue]);
+  
+  const onSubmit = async () => {
     try {
-      const updatedData = {
-        ...data,
-        consultations: [...(data.consultations || [])],
-        medicalRecord: {
-          ...(data.medicalRecord || {}),
+      const formValues = getValues();
+      const updatedData = {};
+  
+      // Comparaison des valeurs user
+      if (formValues.firstName !== data.user?.firstName) {
+        updatedData.firstName = formValues.firstName;
+      }
+      if (formValues.lastName !== data.user?.lastName) {
+        updatedData.lastName = formValues.lastName;
+      }
+  
+      // Comparaison des champs principaux
+      ["sex", "age", "phone", "address"].forEach((key) => {
+        if (formValues[key] !== data[key]) {
+          updatedData[key] = formValues[key];
         }
-      };
+      });
   
-      console.log("🟡 Données mises à jour :", updatedData);
+      // Comparaison consultations
+      if (JSON.stringify(formValues.consultations) !== JSON.stringify(data.consultations)) {
+        updatedData.consultations = formValues.consultations;
+      }
   
-      const patientId = "ton_patient_id"; // Remplace par la vraie source (ex: params.id ou props.id)
-      await PatientService.updatePatient(patientId, updatedData);
+      // Comparaison medicalRecord
+      if (JSON.stringify(formValues.medicalRecord) !== JSON.stringify(data.medicalRecord)) {
+        updatedData.medicalRecord = formValues.medicalRecord;
+      }
   
-      alert("✅ Patient mis à jour avec succès !");
+      if (Object.keys(updatedData).length > 0) {
+        await PatientService.updatePatient(data._id, updatedData);
+        alert("✅ Patient mis à jour avec succès !");
+      } else {
+        alert("Aucune modification détectée.");
+      }
+  
+      onClose();
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "Erreur inconnue.";
-      alert(`❌ ${errorMessage}`);
-      console.error("❌ Détails de l'erreur :", error);
+      console.error("❌ Erreur lors de la mise à jour :", error);
+      alert("Erreur lors de la mise à jour du patient.");
     }
   };
   
-  
+  if (!isOpen) return null;
   
   return (
-    <Page title="Medical Record">
+     <ModalOverlay>
+          <ModalContent as={motion.div} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
+            <CloseButton onClick={onClose}>✖</CloseButton>
+       <Title>Update Patient</Title>
+       
+    
       <Container>
         <Title>Medical Record Form</Title>
 
@@ -492,7 +536,9 @@ useEffect(() => {
         <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
    
-    </Page>
+    
+          </ModalContent>
+        </ModalOverlay>
   );
 };
 
