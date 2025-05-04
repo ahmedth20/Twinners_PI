@@ -164,7 +164,7 @@ export const menustaff = [
         cat: 'Schedules',
         icon: 'calendar',
         links: [
-            { name: "Doctor Schedules", link: '/doctor_appointments' }
+            { name: "Staff Schedules", link: '/staff_appointments' }
         ]
     },
   
@@ -176,17 +176,16 @@ export const menustaff = [
         
         ]
     },
-   
     {
-        cat: 'reviews',
-        icon: 'star',
+        cat: 'messages',
+        icon: 'comment',
         links: [
-            { name: "Doctor Reviews", link: '/doctor_reviews' },
-            { name: "Patient Reviews", link: '/patient_reviews' },
-
+            { name: "Doctor Messenger", link: '/doctor_messenger' },
+  
+        
         ]
     },
-   
+
     {
         icon: 'settings',
         name: 'Settings',
