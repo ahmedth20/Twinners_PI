@@ -14,6 +14,13 @@ const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
 const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
+const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
+const http = require('http');
+const { Server } = require('socket.io');
+const staffRoutes = require("./src/routes/staff.js");
+const doctorRoutes = require("./src/routes/doctor.js")
+const consultationRoutes = require("./src/routes/consultation.js")
+const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
 const patientFileRoutes = require('./src/routes/patientFileRoutes');
 const qaRoutes = require('./src/routes/qaRoutes');
@@ -74,6 +81,10 @@ io.on('connection', (socket) => {
     // Envoie la réponse au patient spécifique
     socket.to(data.to).emit('ambulance_response_result', { status: data.status });
   });
+  socket.on('send_message', (data) => {
+    console.log('Message received:', data);
+    socket.broadcast.emit('receive_message', data); // Diffuser à tous les autres clients
+  });
 
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);
@@ -119,6 +130,9 @@ app.use("/ambulance", ambulanceRoutes);
 app.use("/patientFiles", patientFileRoutes);
 app.use('/api/qa', qaRoutes);
 app.use("/appointments", appointments);
+app.use("/medicalrecord", medicalRecordRoutes);
+app.use("/consultation", consultationRoutes);
+app.use("/operation",operationRoutes);
 
 // Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));

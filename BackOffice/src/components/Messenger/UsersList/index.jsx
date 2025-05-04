@@ -1,85 +1,58 @@
-// styled components
 import Field from 'UI/Field';
-import {Footer, Header, List} from 'components/Messenger/style';
+import {Footer, List} from 'components/Messenger/style';
+import {useRef, useState, useEffect} from 'react';
 import {Container, Button} from 'UI/TabNav/style';
-
-// components
 import Widget from 'components/Widget';
 import Nav from 'react-bootstrap/Nav';
 import User from 'components/Messenger/UsersList/User';
 import ScrollContainer from 'components/ScrollContainer';
 import NoDataPlaceholder from 'components/NoDataPlaceholder';
-
-// utils
 import PropTypes from 'prop-types';
-
-// hooks
-import {useRef, useState} from 'react';
 import useContentHeight from 'hooks/useContentHeight';
+import DoctorService from 'services/DoctorService'; // assure-toi d’avoir ce service
 
-// data placeholder
-import {doctor, patient} from 'db/messenger';
-
-const UserList = ({variant, user, onUserSelect, setModal, activeList, setActiveList}) => {
+const UserList = ({ user, onUserSelect, setModal, activeList, setActiveList}) => {
     const [query, setQuery] = useState('');
-    const placeholder = variant === 'doctor' && activeList !== 'doctors' ? 'Search patients' : 'Search doctor or medical department';
-
+    const [doctors, setDoctors] = useState([]);
     const headerRef = useRef(null);
     const footerRef = useRef(null);
     const height = useContentHeight(headerRef, footerRef);
 
-    const drawList = (arr, role) => {
-        const list = arr.filter(item => {
-            const fullName = `${item.firstName} ${item.lastName}`;
-            return fullName.toLowerCase().includes(query.toLowerCase()) && item.role === role;
-        })
-            .map(item => (
-                <Nav.Link as="div" key={item.id} eventKey={item.id} onClick={() => onUserSelect(item.id)}>
-                    <User user={user} data={item} onUserSelect={onUserSelect} setModal={setModal}/>
-                </Nav.Link>
-            ));
-        return list.length ? list : <NoDataPlaceholder/>;
-    }
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const data = await DoctorService.getAllDoctors();
+                setDoctors(data);
+            } catch (error) {
+                console.error('Failed to fetch Doctors', error);
+            }
+        };
+        fetchDoctors();
+    }, []);
+
+    const drawList = (arr) => {
+        const filtered = arr.filter(item => {
+            const fullName = `${item.user.firstName} ${item.user.lastName}`;
+            return fullName.toLowerCase().includes(query.toLowerCase());
+        }).map(item => (
+            <Nav.Link as="div" key={item._id} eventKey={item._id} onClick={() => onUserSelect(item._id)}>
+            <User user={user} data={item} onUserSelect={onUserSelect} setModal={setModal} />
+        </Nav.Link>
+        
+        ));
+        return filtered.length ? filtered : <NoDataPlaceholder/>;
+    };
 
     return (
         <Widget name="MessengerUserList">
-            {
-                variant === 'doctor' && (
-                    <>
-                        <Header ref={headerRef}>
-                            <Container>
-                                <Button className={activeList === 'patients' ? 'active' : ''} onClick={() => setActiveList('patients')}>
-                                    Patients
-                                </Button>
-                                <Button className={activeList === 'doctors' ? 'active' : ''} onClick={() => setActiveList('doctors')}>
-                                    Doctors
-                                </Button>
-                            </Container>
-                        </Header>
-                        <ScrollContainer height={height}>
-                            <List className="track">
-                                <div style={{margin: '2px 0'}}>
-                                    {
-                                        activeList === 'patients' ?
-                                            drawList(doctor, 'patient') : drawList(doctor, 'doctor')
-                                    }
-                                </div>
-                            </List>
-                        </ScrollContainer>
-                    </>
-                )
-            }
-            {
-                variant === 'patient' &&
-                <ScrollContainer height={height}>
-                    <List className="track">
-                        {drawList(patient, 'doctor')}
-                    </List>
-                </ScrollContainer>
-            }
+            <ScrollContainer height={height}>
+                <List className="track">
+                    {drawList(doctors)}
+                </List>
+            </ScrollContainer>
             <Footer ref={footerRef}>
                 <div className="search">
-                    <Field type="search" placeholder={placeholder} value={query}
+                    <Field type="search" value={query}
                            handler={e => setQuery(e.target.value)}/>
                     <button className={query !== '' ? 'visible' : ''} onClick={() => setQuery('')}>
                         <i className="icon icon-close"/>
@@ -88,12 +61,15 @@ const UserList = ({variant, user, onUserSelect, setModal, activeList, setActiveL
             </Footer>
         </Widget>
     );
-}
+};
 
 UserList.propTypes = {
-    variant: PropTypes.oneOf(['doctor', 'patient']).isRequired,
     onUserSelect: PropTypes.func.isRequired,
-    user: PropTypes.any.isRequired
-}
+    user: PropTypes.any.isRequired,
+    setModal: PropTypes.func,
+    variant: PropTypes.string,
+    activeList: PropTypes.string,
+    setActiveList: PropTypes.func
+};
 
 export default UserList;

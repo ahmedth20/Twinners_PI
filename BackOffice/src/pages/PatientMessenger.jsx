@@ -28,16 +28,16 @@ const PatientMessenger = () => {
         <Tab.Container transition={true} activeKey={selectedTab} onSelect={setSelectedTab}>
             <Page title="Messages">
                 <div key="contacts-list">
-                    <UserList variant="patient" user={selectedTab} onUserSelect={setSelectedTab} setModal={setOpenModal} />
+                    <UserList  user={selectedTab} onUserSelect={setSelectedTab} setModal={setOpenModal} />
                 </div>
                 <div key="messenger">
                     {
                         smallScreen ?
                             <ModalWindow isVisible={openModal} visibilityHandler={handleModalClose}>
-                                <Messenger variant="patient" user={selectedTab}/>
+                                <Messenger user={selectedTab}/>
                             </ModalWindow>
                             :
-                            <Messenger variant="patient" user={selectedTab}/>
+                            <Messenger  user={selectedTab}/>
                     }
                 </div>
             </Page>

@@ -30,6 +30,10 @@ weight: z.preprocess((val) => Number(val),
   age: z.preprocess((val) => Number(val), z.number().min(1, { message: "Age must be at least 1" }).max(120, { message: "Invalid age" })),
   phone: z.string().min(8, { message: "Phone number must be at least 8 digits" }),
   address: z.string().min(5, { message: "Address is required" }),
+  allergies: z.string().optional(),
+  medicalHistory: z.string().optional(), // Historique médical (optionnel)
+  bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], { message: "Invalid blood group" }), // Groupe sanguin
+  mainSymptom: z.string().min(3, { message: "Main symptom must be at least 3 characters" }), 
 });
 
 const TestiData = [
@@ -59,7 +63,7 @@ const TestiData = [
   },
 ];
 
-const Appoinment = () => {
+const Appoinment = ({ id }) => {
   const {
     register,
     handleSubmit,
@@ -73,13 +77,14 @@ const Appoinment = () => {
   
   const onSubmit = async (data) => {
     try {
+      console.log("Données soumises :", data);
+      console.log("Données soumises :", user);
      const patientData = { ...data, user: user }; 
          await PatientService.createSimplePatientFront(patientData); 
             alert("✅ Patient ajouté avec succès !");
       onClose();
     } catch (error) {
       alert("❌ Erreur lors de l'ajout du patient.");
-      console.error("Détails de l'erreur :", error.response?.data);
     }
   };
   
@@ -118,8 +123,8 @@ const Appoinment = () => {
     },
   };
   return (
-    <section className='px-5 2xl:px-20 bg-BodyBg-0 pt-[106px] pb-[120px] relative z-10 overflow-hidden'>
-      <div className='absolute -z-10 -top-1/2 left-1/2 -translate-x-1/2'>
+    <section  className='px-5 2xl:px-20 bg-BodyBg-0 pt-[106px] pb-[120px] relative z-10 overflow-hidden'>
+      <div className='absolute -z-10 -top-1/2 left-1/2 -translate-x-1/2' id={id}>
         <img
           src={circleShape}
           draggable='false'
@@ -290,7 +295,70 @@ const Appoinment = () => {
                        <error>{errors.weight?.message}</error>
 
                   </div>
+                </div><div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      name="allergies"
+                      id="allergies"
+                      placeholder="Allergies (if any)"
+                      className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                      {...register("allergies")}
+                    />
+                    <error>{errors.allergies?.message}</error>
+                  </div>
+
+                  <div className="relative w-full">
+                    <textarea
+                      name="medicalHistory"
+                      id="medicalHistory"
+                      placeholder="Medical History (if any)"
+                      rows="3"
+                      className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 w-full focus:outline-PrimaryColor-0 text-lg resize-none"
+                      {...register("medicalHistory")}
+                    />
+                    <error>{errors.medicalHistory?.message}</error>
+                  </div>
+
+                  </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="mainSymptom"
+                    id="mainSymptom"
+                    placeholder="Main Symptom (e.g., Chest Pain, Breathing Difficulty)*"
+                    required
+                    className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                    {...register("mainSymptom")}
+                  />
+                  <error>{errors.mainSymptom?.message}</error>
                 </div>
+
+                <div className="relative w-full">
+                  <select
+                    name="bloodGroup"
+                    id="bloodGroup"
+                    required
+                    className="font-AlbertSans text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                    {...register("bloodGroup")}
+                  >
+                    <option value="">Select Blood Group*</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                  <error>{errors.bloodGroup?.message}</error>
+                </div>
+
+              </div>
                  <div className="flex justify-end mt-8">
                 <button
                   type="submit"
