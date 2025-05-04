@@ -1,5 +1,5 @@
 const PatientFile = require('../models/patientFile');
-const { io, connectedUsers } = require('../socket');
+
 // ➔ Créer un patient file
 exports.createPatientFile = async (req, res) => {
   try {
@@ -15,17 +15,7 @@ exports.createPatientFile = async (req, res) => {
     });
 
     const savedFile = await patientFile.save();
-    // 🎯 Notification Socket.IO au médecin concerné
-    const populatedFile = await PatientFile.findById(savedFile._id).populate('medicalRecord');
-    const doctorId = populatedFile.medicalRecord.doctor;
-
-    const doctorSocketId = connectedUsers[doctorId];
-    if (doctorSocketId) {
-      io.to(doctorSocketId).emit('new_patient_file', {
-        message: `Un nouveau dossier patient a été soumis par un paramédic.`,
-        patientFile: savedFile,
-      });
-    }
+    
     res.status(201).json(savedFile);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -8,7 +8,6 @@ import {
   ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle, TextArea
 } from "../styles/PopUpAddPatientFile";
 import PatientFileService from "../services/PatientFileService";
-import { useSocket } from "../contexts/SocketContext";
 
 // ✅ Nouveau schéma de validation
 const patientFileSchema = z.object({
@@ -27,7 +26,6 @@ const steps = [
 
 const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
-  const socket = useSocket();
 
   const {
     register,
@@ -43,14 +41,6 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const onSubmit = async (data) => {
     try {
       await PatientFileService.createSimplePatientFile(data);
-      
-      // Émettre une notification via socket
-      socket.emit("new_patient_file", {
-        message: "Un nouveau patient file a été ajouté",
-        data: data, // Envoi de plus de détails si nécessaire
-      });
-
-      console.log("✅ Notification envoyée : Un nouveau patient file a été ajouté");
 
       alert("✅ Fichier patient ajouté avec succès !");
       onClose();

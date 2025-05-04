@@ -22,6 +22,8 @@ const appointments = require('./src/routes/appointments');
 const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const PatientFile = require("./src/models/patientFile");
 const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
+const medicalRoutes = require('./src/routes/medicalRoutes');
+
 
 
 
@@ -45,39 +47,14 @@ const io = new Server(server, {
   },
 });
 
-// 🔸 Suivi des utilisateurs connectés
-let connectedUsers = {};
+io.on('connection', (socket) => {
+  console.log(`Utilisateur connecté: ${socket.id}`);
 
-// 🔸 Socket.IO - Événements
-io.on("connection", (socket) => {
-  console.log("✅ Utilisateur connecté :", socket.id);
-
-  // Enregistrement de l'utilisateur avec son userId
-  socket.on("register", (userId) => {
-    connectedUsers[userId] = socket.id;
-    console.log(`Utilisateur ${userId} enregistré avec le socket ${socket.id}`);
-  });
-
- // 🔔 Notification : ajout d’un patient file
- socket.on("new_patient_file", ({ doctorId, message }) => {
-  if (!doctorId || !message) {
-    console.warn("⚠️ Données invalides pour new_patient_file :", { doctorId, message });
-    return;
-  }
-
-  // Vérifiez si le médecin est le bon
-  if (doctorId === "medecin74@gmail.com") {
-    // Logique pour envoyer le fichier patient au médecin
-    console.log("Nouveau fichier patient pour le médecin :", doctorId);
-    // Ajoutez ici le code pour traiter le fichier et l'envoyer au médecin
-  } else {
-    console.log("Ce fichier patient n'est pas destiné à ce médecin.");
-  }
-});
-
-  // 🔁 Appel ambulance
+  // Quand un patient appelle une ambulance
   socket.on('call_ambulance', async (data) => {
     console.log('Demande d\'ambulance reçue:', data);
+    
+    // Enregistre dans la base
     try {
       await AmbulanceRequest.create({
         from: data.from,
@@ -86,26 +63,22 @@ io.on("connection", (socket) => {
     } catch (err) {
       console.error("Erreur enregistrement demande :", err);
     }
+
+    // Émet l'événement aux paramédics
     socket.broadcast.emit('ambulance_request', data);
   });
 
-  // Réponse du paramedic
+  // Quand un paramédic répond
   socket.on('ambulance_response', (data) => {
+    console.log('Réponse du paramedic:', data);
+    // Envoie la réponse au patient spécifique
     socket.to(data.to).emit('ambulance_response_result', { status: data.status });
   });
 
-  // Déconnexion
-  socket.on("disconnect", () => {
-    for (let userId in connectedUsers) {
-      if (connectedUsers[userId] === socket.id) {
-        delete connectedUsers[userId];
-        break;
-      }
-    }
-    console.log("❌ Utilisateur déconnecté :", socket.id);
+  socket.on('disconnect', () => {
+    console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
 });
-
 // Middleware
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:3000"],
@@ -128,6 +101,11 @@ app.use(session({
     ttl: 60
   })
 }));
+// Middleware pour servir les fichiers téléchargés (images)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Routes
+app.use('/api', medicalRoutes);
 
 // Routes
 app.use("/users", userRoutes);

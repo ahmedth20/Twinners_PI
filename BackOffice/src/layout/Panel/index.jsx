@@ -1,7 +1,6 @@
 // styled components
 import { Actions, Header, Input, Label, Search } from './style';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify'; // Importer le toast
 
 // components
 import Logo from 'UI/Logo';
@@ -16,9 +15,6 @@ import usePanelScroll from 'hooks/usePanelScroll';
 import { useSidebarContext } from 'contexts/sidebarContext';
 import { useRef, useEffect, useState } from 'react';
 
-// socket
-import socket from 'socket';
-
 const Panel = () => {
     const { width } = useWindowSize();
     const isMobile = width < 768;
@@ -27,7 +23,6 @@ const Panel = () => {
     const { isSidebarOpen } = useSidebarContext();
     const headerRef = useRef(null);
 
-    // 👇 Notification state
     const [showNotificationBox, setShowNotificationBox] = useState(false);
     const notificationRef = useRef(null);
 
@@ -35,23 +30,6 @@ const Panel = () => {
         document.documentElement.style.setProperty('--header-height', `${headerRef.current.offsetHeight}px`);
     }, [width]);
 
-    useEffect(() => {
-        socket.on('connect', () => {
-            console.log('✅ Connecté à Socket.IO');
-        });
-
-        socket.on('new_patient_file', (data) => {
-            console.log('📥 Nouveau dossier patient reçu:', data);
-            toast.success(`Nouveau dossier patient : ${data.message}`); // Utilisation de toast
-        });
-
-        return () => {
-            socket.off('new_patient_file');
-            socket.off('connect');
-        };
-    }, []);
-
-    // Fermer la boîte si on clique en dehors
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -73,7 +51,7 @@ const Panel = () => {
                 transition={{ duration: .3, ease: 'linear', type: 'tween' }}
                 className={classname}
                 ref={headerRef}
-                style={{ position: 'relative' }} // important pour positionner la boîte de notification
+                style={{ position: 'relative' }}
             >
                 {!isDesktop && (
                     <div className="logo-wrapper">
@@ -106,8 +84,7 @@ const Panel = () => {
                         />
                         {isDesktop ? <CurrentUser /> : <ShapeButton shape="square" label="Profile" icon="user" />}
                         {width < 1366 && <MenuButton />}
-                        
-                        {/* Notification box affichée ici */}
+
                         {showNotificationBox && (
                             <div
                                 ref={notificationRef}
@@ -125,14 +102,12 @@ const Panel = () => {
                                 }}
                             >
                                 <p style={{ margin: 0, fontWeight: 'bold' }}>🔔 Notification</p>
-                                {/* Afficher un message par défaut si aucune notification */}
                                 <p style={{ marginTop: '5px' }}>Aucune notification.</p>
                             </div>
                         )}
                     </Actions>
                 )}
             </Header>
-            <ToastContainer /> {/* Ajouter le ToastContainer ici */}
         </>
     );
 };
