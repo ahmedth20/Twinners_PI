@@ -8,11 +8,11 @@ import { GoArrowRight } from 'react-icons/go';
 import {  FaClock, FaRoad } from 'react-icons/fa';
 import CalculDistance  from './CalculDistance';
 import CallAmbulance from '../Notifications/CallAmbulance';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const Map = () => {
+const Map = ({ id }) => {
   const [userLocation, setUserLocation] = useState(null);
   const [ambulances, setAmbulances] = useState([]);
   const [activeAmbulance, setActiveAmbulance] = useState(null);
@@ -472,7 +472,7 @@ const handleAmbulancePopUp = (ambulance) => {
   });
 };
   return (
-    <div>
+    <div id={id}>
     <div className='bg-BodyBg-0 px-2 lg:px-[30px]'>
     <section className="bg-blue-900 bg-cover bg-center bg-no-repeat h-[600px] sm:h-[700px] md:h-[700px] lg:h-[700px] xl:h-[790px] 2xl:h-[790px] flex items-center relative z-10 overflow-hidden rounded-t-2xl md:rounded-t-[30px]">
       <div id="map" style={{
