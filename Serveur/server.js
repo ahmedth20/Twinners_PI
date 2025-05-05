@@ -39,6 +39,7 @@ const server = http.createServer(app);
 
 // Initialiser Socket.IO
 const { Server } = require("socket.io");
+const DoctorsRequest = require("./src/models/DoctorsRequest.js");
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "http://localhost:3000"],
@@ -68,6 +69,29 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('ambulance_request', data);
   });
 
+  /*socket.on('call_doctors', async (data) => {
+    console.log('patient file reçue:', data);
+    
+    // Enregistre dans la base
+    try {
+      await DoctorsRequest.create({
+        from: data.from,
+        doctorsId: data.doctorsId
+      });
+    } catch (err) {
+      console.error("Erreur enregistrement demande :", err);
+    }
+
+    // Émet l'événement aux paramédics
+    socket.broadcast.emit('ambulance_request', data);
+  });*/
+  socket.on('call_doctors', (data) => {
+    console.log("Demande reçue de : ", data);  // Affiche la demande du client
+    // Réponse (simulez une réponse après un certain délai ou selon votre logique métier)
+    setTimeout(() => {
+        io.to(data.from).emit('doctors_request', { doctorsId: data.doctorId });  // Envoie la notification
+    }, 2000);
+});
   // Quand un paramédic répond
   socket.on('ambulance_response', (data) => {
     console.log('Réponse du paramedic:', data);

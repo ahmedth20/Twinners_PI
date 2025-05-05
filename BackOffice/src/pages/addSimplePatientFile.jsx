@@ -9,6 +9,14 @@ import {
 } from "../styles/PopUpAddPatientFile";
 import PatientFileService from "../services/PatientFileService";
 
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000', {
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+});
 // ✅ Nouveau schéma de validation
 const patientFileSchema = z.object({
   dateIssued: z.string().min(1, { message: "La date d'émission est requise" }),
@@ -26,6 +34,7 @@ const steps = [
 
 const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
+  const [waitingForResponse, setWaitingForResponse] = useState(false);
 
   const {
     register,
@@ -37,12 +46,29 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+  
+  const calldoctor = (doctor) => {
+    const payload = {
+        doctorId: "68078b941a7b42ecb972fa89",
+        from: socket.id,
+    };
+
+    console.log("Envoi de la demande au médecin avec les données: ", payload); // Vérifie l'objet envoyé
+
+    socket.emit('call_doctors', payload);
+    console.log("Demande envoyée :", payload); // Affiche dans la console la demande envoyée
+    localStorage.setItem('doctorId', "68078b941a7b42ecb972fa89");
+    localStorage.setItem('waitingForResponse', 'true');
+    setWaitingForResponse(true); // Changement d'état pour bloquer le bouton
+};
+
 
   const onSubmit = async (data) => {
     try {
       await PatientFileService.createSimplePatientFile(data);
-
+  
       alert("✅ Fichier patient ajouté avec succès !");
+      calldoctor(data);
       onClose();
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || "Erreur inconnue";
@@ -50,7 +76,7 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
       console.error("Détails de l'erreur:", errorMessage);
     }
   };
-
+  
   if (!isOpen) return null;
 
   return (
