@@ -440,8 +440,8 @@ const ProfileSettings = () => {
                   <p className="text-gray-600 italic">No consultations found.</p>
                 )}
                 </div>
-                <div ref={medicalRecordRef} id="operations" className={`tab-section ${activeTab === 'operations' ? 'block' : 'hidden'}`}>
-                  <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
+                <div ref={medicalRecordRef} id="medicalRecord" className={`tab-section ${activeTab === 'medicalRecord' ? 'block' : 'hidden'}`}>
+                <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
                   Medical Record
                   {/* Contenu pour l'onglet Operations */}
                  </h4>
