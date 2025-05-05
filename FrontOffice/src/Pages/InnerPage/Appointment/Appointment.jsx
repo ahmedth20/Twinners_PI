@@ -73,7 +73,7 @@ const Appoinment = ({ id }) => {
     resolver: zodResolver(patientSchema),
   });
   
-  const user = useSelector(state => state.auth.user.user1.id); 
+  const user = useSelector(state => state.auth.user.user.id); 
   
   const onSubmit = async (data) => {
     try {

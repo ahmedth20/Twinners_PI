@@ -114,6 +114,7 @@ export const menudoctors = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
+            { name: "Patient File", link: '/patientFile' },
         
         ]
     },
@@ -227,6 +228,7 @@ export const menuparamedic = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
+            { name: "Patient File", link: '/patientFile' },
         
         ]
     },
