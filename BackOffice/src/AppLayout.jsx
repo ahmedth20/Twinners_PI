@@ -5,6 +5,7 @@ import { Route, Routes} from 'react-router-dom';
 
 import Forgotpassword from 'pages/screens/forgotpassword'
 import Resetpassword1 from 'pages/screens/restpasswordslouma'
+import MedicalFormUpdate from '@pages/MedicalFormUpdate';
 
 // pages
 const DashboardA = lazy(() => import('pages/DashboardA'));
@@ -82,6 +83,7 @@ const AppLayout = () => {
       <Route path="/finances" element={ <Finances /> } />
       <Route path="/settings" element={ <Settings /> } />
       <Route path="/medical_form" element={ <MedicalForm/> } />
+      <Route path="/medical_form_update/:id" element={ <MedicalFormUpdate/> } />
       <Route path="/forgotpassword" element={ <Forgotpassword/> } />
       <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
 

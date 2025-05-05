@@ -64,30 +64,6 @@ const TestiData = [
 ];
 
 const Appoinment = ({ id }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = 
-  useForm({
-    resolver: zodResolver(patientSchema),
-  });
-  
-  const user = useSelector(state => state.auth.user.user1.id); 
-  
-  const onSubmit = async (data) => {
-    try {
-      console.log("Données soumises :", data);
-      console.log("Données soumises :", user);
-     const patientData = { ...data, user: user }; 
-         await PatientService.createSimplePatientFront(patientData); 
-            alert("✅ Patient ajouté avec succès !");
-      onClose();
-    } catch (error) {
-      alert("❌ Erreur lors de l'ajout du patient.");
-    }
-  };
-  
   const settings = {
     loop: true,
     initialSlide: 1,
@@ -122,6 +98,31 @@ const Appoinment = ({ id }) => {
       },
     },
   };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = 
+  useForm({
+    resolver: zodResolver(patientSchema),
+  });
+  
+  const user = useSelector(state => state.auth.user.user1.id); 
+  
+
+const onSubmit = async (data) => {
+  try {
+    console.log(data);
+    const patientData = { ...data, user: user };
+    await PatientService.createSimplePatientFront(patientData);
+    alert("✅ Patient ajouté avec succès !");
+  } catch (error) {
+    alert("❌ Erreur lors de l'ajout du patient.");
+  }
+};
+
+  
+  
   return (
     <section  className='px-5 2xl:px-20 bg-BodyBg-0 pt-[106px] pb-[120px] relative z-10 overflow-hidden'>
       <div className='absolute -z-10 -top-1/2 left-1/2 -translate-x-1/2' id={id}>

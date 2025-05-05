@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";  // <-- Ajout de l'import
 import { z } from "zod";
 import { CloseButton, ModalContent, ModalOverlay, Title } from "styles/PopUpAddPatient";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router";
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required").optional(),
   lastName: z.string().min(1, "Last Name is required").optional(),
@@ -70,7 +71,10 @@ const FormSection = ({ title, children }) => (
     {children}
   </div>
 );
-const MedicalFormUpdate = ({ isOpen, onClose, data }) => {
+const MedicalFormUpdate = () => {
+  const { state } = useLocation();  // Récupère les données envoyées via navigate
+  const data = state?.patientData; // Accède aux données du patient
+  console.log(data);
   const [symptoms, setSymptoms] = useState([""]);
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
 
@@ -121,12 +125,15 @@ useEffect(() => {
       if (data.user) {
         setValue("firstName", data.user.firstName || "");
         setValue("lastName", data.user.lastName || "");
+        setValue("email", data.user.email || ""); // Ajouté ici
       }
   
       setValue("sex", data.sex || "");
       setValue("age", data.age || "");
       setValue("phone", data.phone || "");
       setValue("address", data.address || "");
+      setValue("height", data.height || ""); // Ajouté ici
+      setValue("weight", data.weight || ""); // Ajouté ici
   
       if (data.medicalRecord) {
         Object.entries(data.medicalRecord).forEach(([sectionKey, sectionValue]) => {
@@ -144,6 +151,7 @@ useEffect(() => {
     }
   }, [data, setValue]);
   
+  
   const onSubmit = async () => {
     try {
       const formValues = getValues();
@@ -156,9 +164,11 @@ useEffect(() => {
       if (formValues.lastName !== data.user?.lastName) {
         updatedData.lastName = formValues.lastName;
       }
-  
+      if (formValues.email !== data.user?.email) {
+        updatedData.email = formValues.email;
+      }
       // Comparaison des champs principaux
-      ["sex", "age", "phone", "address"].forEach((key) => {
+      ["sex", "age", "phone", "address","weight","height"].forEach((key) => {
         if (formValues[key] !== data[key]) {
           updatedData[key] = formValues[key];
         }
@@ -181,22 +191,15 @@ useEffect(() => {
         alert("Aucune modification détectée.");
       }
   
-      onClose();
     } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);
       alert("Erreur lors de la mise à jour du patient.");
     }
   };
   
-  if (!isOpen) return null;
   
   return (
-     <ModalOverlay>
-          <ModalContent as={motion.div} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
-            <CloseButton onClick={onClose}>✖</CloseButton>
-       <Title>Update Patient</Title>
-       
-    
+       <Page title="Medical Record">
       <Container>
         <Title>Medical Record Form</Title>
 
@@ -535,10 +538,9 @@ useEffect(() => {
 
         <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
-   
+   </Page>
     
-          </ModalContent>
-        </ModalOverlay>
+        
   );
 };
 
