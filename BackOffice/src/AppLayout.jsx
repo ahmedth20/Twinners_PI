@@ -19,6 +19,7 @@ const DashboardI = lazy(() => import('pages/DashboardI'));
 const DashboardJ = lazy(() => import('pages/DashboardJ'));
 const DashboardK = lazy(() => import('pages/DashboardK'));
 const DoctorAppointments = lazy(() => import('pages/DoctorAppointments'));
+const StaffAppointments = lazy(() => import('pages/StaffAppointments'));
 const PatientAppointments = lazy(() => import('pages/PatientAppointments'));
 const Patients = lazy(() => import('pages/Patients'));
 const Paramedics = lazy(() => import('pages/paramedics'));
@@ -28,6 +29,8 @@ const StaffList = lazy(() => import('pages/Staff'));
 const DoctorMessenger = lazy(() => import('pages/DoctorMessenger'));
 const PatientMessenger = lazy(() => import('pages/PatientMessenger'));
 const AmbulanceGettingMessage= lazy(() => import('Notifications/ParamedicResponseAmbulance'));
+const DoctorsChat= lazy(() => import('Notifications/DoctorsChat'));
+const ParamedicChat= lazy(() => import('Notifications/ParamedicChat'));
 const DoctorsReviews = lazy(() => import('pages/DoctorsReviews'));
 const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
@@ -60,6 +63,7 @@ const AppLayout = () => {
       <Route path="/dashboard_j" element={ <DashboardJ /> } />
       <Route path="/dashboard_k" element={ <DashboardK /> } />
       <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
+      <Route path="/staff_appointments" element={ <StaffAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
       <Route path="/Paramedic" element={ <Paramedics /> } />
@@ -71,6 +75,8 @@ const AppLayout = () => {
       <Route path="/patient_messenger" element={ <PatientMessenger /> } />
       <Route path="/ParamedicResponseAmbulance" element={ <AmbulanceGettingMessage /> } />
       <Route path="/chat" element={ <GeminiChatbot/> } />
+      <Route path="/doctorchat" element={ <DoctorsChat/> } />
+      <Route path="/paramedicchat" element={ <ParamedicChat/> } />
       
       <Route path="/patientFile" element={ <PatientFile/> } />
       

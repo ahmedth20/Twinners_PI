@@ -1,5 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
+@keyframes dashBorder {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.animate-border-dash {
+  border-style: dashed;
+  background-image: linear-gradient(to right, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+  background-size: 200% 100%;
+  background-position: 0 center;
+  animation: dashBorder 1.5s linear infinite;
+}
 
 
 @tailwind base;

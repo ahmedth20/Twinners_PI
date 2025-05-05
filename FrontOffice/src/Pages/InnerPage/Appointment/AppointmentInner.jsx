@@ -8,18 +8,25 @@ import Map from '../Map/Map';
 //import { LuSlash } from "react-icons/lu";
 
 const AppointmentInner = () => {
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <BreadCrumb
-        breadCrumbTitle={'Emergency Getting '}
+        breadCrumbTitle={<span>Emergency Getting</span>}
         breadCrumbIcon={<FaArrowRightLong />}
-        breadCrumbLink={'Ambulance'}
+        breadCrumbLink={<span onClick={() => scrollToSection('map-section')} style={{ cursor: 'pointer' }}>Ambulance</span>}
         breadCrumbIcon2={<LiaSlashSolid />}
-        breadCrumbLink2={'Registration'}
+        breadCrumbLink2={<span onClick={() => scrollToSection('appointment-section')} style={{ cursor: 'pointer' }}>Registration</span>}
       />
-      <ContactBox />
-      <Appointment /> 
-      <Map />
+      <Appointment id="appointment-section" />
+      <Map id="map-section" />
     </>
   );
 };

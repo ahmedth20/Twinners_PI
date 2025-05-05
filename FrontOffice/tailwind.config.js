@@ -7,6 +7,9 @@ export default {
         AlbertSans: ['Albert Sans', 'sans-serif'],
         DMSans: ['DM Sans', 'sans-serif'],
       },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+      },
       colors: {
         PrimaryColor: ['#007eff'],
         Secondarycolor: ['#002570'],
@@ -31,7 +34,13 @@ export default {
         '4xl': '1700px',
         // 1400-1600, 1300-1399,1200-1299,992-1199(1170),768-991,600-767,480-599,320-479
       },
+      
+
       keyframes: {
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
         movebtn: {
           '0%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(20px)' },

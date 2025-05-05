@@ -21,12 +21,11 @@ import useContentHeight from 'hooks/useContentHeight';
 // assets
 import typing from 'assets/typing.json';
 
-const Main = ({user, variant}) => {
-    const doctor = useSelector(state => state['messenger']['doctor']);
-    const patient = useSelector(state => state['messenger']['patient']);
-    const db = variant === 'patient' ? patient : doctor;
-    const currentUser = user && db.find(item => item.id === user);
-
+const Main = ({user}) => {
+    //const doctor = useSelector(state => state['messenger']['doctor']);
+    //const patient = useSelector(state => state['messenger']['patient']);
+   // const currentUser = user && db.find(item => item.id === user);
+   const currentUser = useSelector(state => state.auth.user.user.id);
     const headerRef = useRef(null);
     const footerRef = useRef(null);
     const height = useContentHeight(headerRef, footerRef);
@@ -37,7 +36,7 @@ const Main = ({user, variant}) => {
         if (trackRef.current) {
             trackRef.current.scrollTop = trackRef.current.scrollHeight;
         }
-    }, [db]);
+    });
 
     useEffect(() => {
         if (trackRef.current) {
@@ -48,12 +47,12 @@ const Main = ({user, variant}) => {
     return (
         <Container>
             {
-                currentUser && <Header variant={variant} user={currentUser} elRef={headerRef}/>
+                currentUser && <Header user={currentUser} elRef={headerRef}/>
             }
             <ScrollContainer height={height}>
                 <div className="track" ref={trackRef} style={{padding: '20px 0'}}>
                     {
-                        db.map(item => {
+                       /* db.map(item => {
                             const uniqueDates = [...new Set(item.chatHistory.map(message => moment(message.date).format('DD.MM.YYYY')))];
                             return (
                                 <Tab.Pane eventKey={item.id} key={item.id}>
@@ -86,11 +85,11 @@ const Main = ({user, variant}) => {
                                     }
                                 </Tab.Pane>
                             )
-                        })
+                        })*/
                     }
                 </div>
             </ScrollContainer>
-            <Input db={variant} id={user} elRef={footerRef}/>
+            <Input  id={user} elRef={footerRef}/>
         </Container>
     )
 }
