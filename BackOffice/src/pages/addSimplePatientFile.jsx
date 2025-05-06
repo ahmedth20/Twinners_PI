@@ -17,14 +17,21 @@ const socket = io('http://localhost:5000', {
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
 });
+
 // ✅ Nouveau schéma de validation
 const patientFileSchema = z.object({
-  dateIssued: z.string().min(1, { message: "La date d'émission est requise" }),
-  description: z.string().min(5, { message: "La description est requise (min 5 caractères)" }),
-  symptoms: z.string().min(5, { message: "Les symptômes sont requis (min 5 caractères)" }),
-  emergencyLevel: z.enum(["low", "moderate", "critical"], { message: "Veuillez sélectionner un niveau d'urgence" }),
-  paramedic: z.string().min(1, { message: "L'ID du paramédical est requis" }),
-  medicalRecord: z.string().min(1, { message: "L'ID du dossier médical est requis" }),
+  phoneNumber: z.string().min(8, { message: "Numéro de téléphone requis" }),
+  age: z.coerce.number().min(0, { message: "Âge requis" }),
+  gender: z.enum(["Male", "Female", "Other"], { message: "Genre requis" }),
+  address: z.string().min(5, { message: "Adresse requise" }),
+  height: z.coerce.number().min(1, { message: "Taille requise" }),
+  weight: z.coerce.number().min(1, { message: "Poids requis" }),
+  allergies: z.string().min(2, { message: "Allergies requises" }),
+  medicalHistory: z.string().min(2, { message: "Antécédents requis" }),
+  symptom: z.string().min(2, { message: "Symptôme requis" }),
+  bloodGroup: z.string().min(1, { message: "Groupe sanguin requis" }),
+  paramedic: z.string().min(1, { message: "ID du paramédical requis" }),
+  medicalRecord: z.string().min(1, { message: "ID du dossier médical requis" }),
 });
 
 const steps = [
@@ -45,18 +52,16 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
-  
-  
 
-    const sendNotification = async (consultationData) => {
-      console.log("Envoi des données de la consultation :", consultationData);  // Vérifiez ici
-      socket.emit('notif', consultationData);
-    };
+  const sendNotification = async (consultationData) => {
+    console.log("Envoi des données de la consultation :", consultationData);  // Vérifiez ici
+    socket.emit('notif', consultationData);
+  };
 
   const onSubmit = async (data) => {
     try {
       await PatientFileService.createSimplePatientFile(data);
-  
+
       alert("✅ Fichier patient ajouté avec succès !");
       sendNotification(data);
       onClose();
@@ -66,7 +71,7 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
       console.error("Détails de l'erreur:", errorMessage);
     }
   };
-  
+
   if (!isOpen) return null;
 
   return (
@@ -90,35 +95,63 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           {step === 1 && (
             <>
-              <FormTitle>Informations Patient File</FormTitle>
+              <FormTitle>Informations Générales</FormTitle>
               <InputRow>
                 <div>
-                  <Input type="date" {...register("dateIssued")} placeholder="Date d'émission" />
-                  <Error>{errors.dateIssued?.message}</Error>
+                  <Input type="text" {...register("phoneNumber")} placeholder="Numéro de téléphone" />
+                  <Error>{errors.phoneNumber?.message}</Error>
+                </div>
+                <div>
+                  <Input type="number" {...register("age")} placeholder="Âge" />
+                  <Error>{errors.age?.message}</Error>
                 </div>
               </InputRow>
-              <div>
-                <TextArea {...register("description")} placeholder="Description" />
-                <Error>{errors.description?.message}</Error>
-              </div>
-              <div>
-                <TextArea {...register("symptoms")} placeholder="Symptômes" />
-                <Error>{errors.symptoms?.message}</Error>
-              </div>
+              <InputRow>
+                <div>
+                  <Select {...register("gender")}>
+                    <option value="">Genre</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Autre</option>
+                  </Select>
+                  <Error>{errors.gender?.message}</Error>
+                </div>
+                <div>
+                  <Input type="text" {...register("address")} placeholder="Adresse" />
+                  <Error>{errors.address?.message}</Error>
+                </div>
+              </InputRow>
+              <InputRow>
+                <div>
+                  <Input type="number" {...register("height")} placeholder="Taille (cm)" />
+                  <Error>{errors.height?.message}</Error>
+                </div>
+                <div>
+                  <Input type="number" {...register("weight")} placeholder="Poids (kg)" />
+                  <Error>{errors.weight?.message}</Error>
+                </div>
+              </InputRow>
             </>
           )}
 
           {step === 2 && (
             <>
-              <FormTitle>Détails Supplémentaires</FormTitle>
+              <FormTitle>Détails Médicaux</FormTitle>
               <div>
-                <Select {...register("emergencyLevel")}>
-                  <option value="">Sélectionner le niveau d'urgence</option>
-                  <option value="low">Faible</option>
-                  <option value="moderate">Modéré</option>
-                  <option value="critical">Critique</option>
-                </Select>
-                <Error>{errors.emergencyLevel?.message}</Error>
+                <Input type="text" {...register("allergies")} placeholder="Allergies" />
+                <Error>{errors.allergies?.message}</Error>
+              </div>
+              <div>
+                <TextArea {...register("medicalHistory")} placeholder="Antécédents médicaux" />
+                <Error>{errors.medicalHistory?.message}</Error>
+              </div>
+              <div>
+                <TextArea {...register("symptom")} placeholder="Symptômes actuels" />
+                <Error>{errors.symptom?.message}</Error>
+              </div>
+              <div>
+                <Input type="text" {...register("bloodGroup")} placeholder="Groupe sanguin" />
+                <Error>{errors.bloodGroup?.message}</Error>
               </div>
               <InputRow>
                 <div>

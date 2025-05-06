@@ -3,19 +3,37 @@ const PatientFile = require('../models/patientFile');
 // ➔ Créer un patient file
 exports.createPatientFile = async (req, res) => {
   try {
-    const { dateIssued, description, symptoms, emergencyLevel, paramedic, medicalRecord } = req.body;
+    const {
+      phoneNumber,
+      age,
+      gender,
+      address,
+      height,
+      weight,
+      allergies,
+      medicalHistory,
+      symptom,
+      bloodGroup,
+      paramedic,
+      medicalRecord
+    } = req.body;
 
     const patientFile = new PatientFile({
-      dateIssued,
-      description,
-      symptoms,
-      emergencyLevel,
+      phoneNumber,
+      age,
+      gender,
+      address,
+      height,
+      weight,
+      allergies,
+      medicalHistory,
+      symptom,
+      bloodGroup,
       paramedic,
-      medicalRecord,
+      medicalRecord
     });
 
     const savedFile = await patientFile.save();
-    
     res.status(201).json(savedFile);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,8 +44,8 @@ exports.createPatientFile = async (req, res) => {
 exports.getAllPatientFiles = async (req, res) => {
   try {
     const files = await PatientFile.find()
-      .populate('paramedic', 'name') // Affiche le nom du paramedic
-      .populate('medicalRecord');    // Ajoute tout le medicalRecord
+      .populate('paramedic', 'name')
+      .populate('medicalRecord');
 
     res.json(files);
   } catch (error) {

@@ -14,8 +14,8 @@ import CurrentUser from "layout/Panel/CurrentUser";
 import useWindowSize from "hooks/useWindowSize";
 import usePanelScroll from "hooks/usePanelScroll";
 import { useSidebarContext } from "contexts/sidebarContext";
-const socket = io('http://localhost:5000');
 
+const socket = io('http://localhost:5000');
 
 const Panel = () => {
   const { width } = useWindowSize();
@@ -29,7 +29,6 @@ const Panel = () => {
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [notification, setNotification] = useState(null);
 
-
   // Header height for CSS variable
   useEffect(() => {
     if (headerRef.current) {
@@ -37,7 +36,32 @@ const Panel = () => {
     }
   }, [width]);
 
-  // Close notification box when clicking outside
+  // Charger notification depuis localStorage au démarrage
+  useEffect(() => {
+    const storedNotification = localStorage.getItem('notification');
+    if (storedNotification) {
+      setNotification(JSON.parse(storedNotification));
+    }
+  }, []);
+
+  // Écoute les notifications reçues via socket.io
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('notif', (consultationData) => {
+      console.log('Notification reçue:', consultationData);
+      setNotification(consultationData);
+      localStorage.setItem('notification', JSON.stringify(consultationData)); // Enregistrement
+    });
+
+    return () => {
+      socket.off('notif');
+    };
+  }, []);
+
+  // Fermer la notification en cliquant à l’extérieur
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -50,27 +74,11 @@ const Panel = () => {
     };
   }, []);
 
-
-  useEffect(() => {
-    // Assurez-vous que le socket est bien connecté
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-  
-    // Écoute l'événement 'notif' envoyé depuis le côté Appointment
-    socket.on('notif', (consultationData) => {
-      console.log('Notification reçue:', consultationData);  // Vérifiez ici
-      setNotification(consultationData);  // Met à jour l'état avec les données de la consultation
-    });
-  
-    // Nettoyage de l'écouteur lors du démontage du composant
-    return () => {
-      socket.off('notif');
-    };
-  }, []);
-
-
-  
+  // Marquer comme lue (supprime la notif)
+  const clearNotification = () => {
+    setNotification(null);
+    localStorage.removeItem('notification');
+  };
 
   return (
     <Header
@@ -127,13 +135,15 @@ const Panel = () => {
                 minWidth: '250px'
               }}
             >
-             <div>
+              <div>
                 <h2>Consultation Notification</h2>
                 {notification ? (
                   <div>
                     <h3>Nouvelle Consultation</h3>
                     <p><strong>Patient:</strong> {notification.Description}</p>
-
+                    <button onClick={clearNotification} style={{ marginTop: '10px', color: 'red' }}>
+                      Marquer comme lue
+                    </button>
                   </div>
                 ) : (
                   <p>Aucune nouvelle consultation.</p>
