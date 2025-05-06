@@ -20,6 +20,7 @@ import createCache from '@emotion/cache';
 
 // contexts
 import {SidebarContextAPI} from 'contexts/sidebarContext';
+import { SocketProvider } from "./contexts/SocketContext";
 
 // hooks
 import {useEffect} from 'react';
@@ -51,9 +52,7 @@ const App = () => {
         key: 'css-rtl',
         stylisPlugins: [rtlPlugin],
     });
-
     useDispatch()(saveToLocalStorage());
-
     useEffect(() => {
         page.setAttribute('dir', direction);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +65,6 @@ const App = () => {
     }, []);
     const appRef = useRef(null);
     const isOverflow = usePageIsOverflow();
-   
     useEffect(() => {
         if (appRef.current) {
             appRef.current.scrollTo(0, 0);
@@ -74,47 +72,37 @@ const App = () => {
     }, []);
     const user = useSelector(state => state.auth.user);
 
-    return (
-<>
+    return (<>
         {location.pathname === "/forgotpassword" && <ForgotPassword />}
         {location.pathname.startsWith("/ResetPassword/") && <Resetpassword1 />}
-
         {location.pathname === "/loginPage" && user ==null && <Login/> }
         {location.pathname === "/" && user ==null && <Login/> }
         {user !=null && 
+        <SocketProvider>
         <CacheProvider value ={cacheRtl}>
             <MuiThemeProvider theme={theme}>
                 <ThemeProvider theme={{theme: isDarkMode ? 'dark' : 'light'}}>
                     <SnackbarProvider maxSnack={3}
-                                      anchorOrigin={{
-                                          vertical: 'top',
-                                          horizontal: direction === 'ltr' ? 'right' : 'left',
-                                      }}
-                                      autoHideDuration={3000}
-                    >
+                                      anchorOrigin={{ vertical: 'top',horizontal: direction === 'ltr' ? 'right' : 'left', }}
+                                          autoHideDuration={3000}>
                         <SidebarContextAPI>
                             <GlobalStyles/>
                             <StyleSheetManager stylisPlugins={direction === 'rtl' ? [rtlPlugin] : []}>
                             <div className="app" ref={appRef}>
-            {isOverflow ? <ScrollProgress/> : null}
-             <Sidebar/>
-            <div className="app_content">
-            <Panel/>     <Suspense fallback={<WidgetsLoader />}>
-            <AppLayout />
-       
-                                </Suspense>   
-                               
-             
-       
-                                  
-            </div>
-            </div>
+            {                       isOverflow ? <ScrollProgress/> : null}
+                                    <Sidebar/>
+                                    <div className="app_content">
+                                    <Panel/>     <Suspense fallback={<WidgetsLoader />}>
+                                    <AppLayout />
+                                     </Suspense>                  
+                                     </div></div>
                             </StyleSheetManager>
                         </SidebarContextAPI>
                     </SnackbarProvider>
                 </ThemeProvider>
             </MuiThemeProvider>
-        </CacheProvider>}
+        </CacheProvider>
+        </SocketProvider>}
     </>);
 }
 

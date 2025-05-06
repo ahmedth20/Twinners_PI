@@ -80,6 +80,11 @@ const router = createBrowserRouter([
       { path: 'notif', element: <PrivateRoute><CallAmbulance/></PrivateRoute> },
       { path: 'map', element: <PrivateRoute><Map /></PrivateRoute> },
       { path: 'profile', element: <PrivateRoute><ProfileSettings /></PrivateRoute> },
+
+      /*{
+        path: '/chatbot',
+        element: <EmergencyChatbot />,
+      }*/
     ],
   },
   { path: '*', errorElement: <ErrorPage /> },

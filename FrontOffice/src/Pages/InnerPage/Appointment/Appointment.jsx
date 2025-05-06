@@ -24,6 +24,8 @@ import io from 'socket.io-client';
 import { useEffect, useRef, useState } from 'react';
 const socket = io('http://localhost:5000');
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const patientSchema = z.object({
   height: z.preprocess((val) => Number(val), 
   z.number()
@@ -135,7 +137,15 @@ const Appoinment = ({ id }) => {
    
       alert("✅ Patient ajouté avec succès !");
       sendNotification(createdConsultation.data);
-
+      toast.success(
+        <div>
+          <p><strong>🚑 Médecin:</strong> {createdConsultation.data.doctor}</p>
+          <p><strong>Salle d'urgence:</strong> {createdConsultation.data.emergencyRoom}</p>
+          <p><strong>Durée:</strong> {createdConsultation.data.duration} minutes</p>
+          <p><strong>Date:</strong> {new Date(createdConsultation.data.date).toLocaleString()}</p>
+        </div>,
+        { position: "top-center", autoClose: false }
+      );
     } catch (error) {
       alert("❌ Erreur lors de l'ajout du patient.");
     }
