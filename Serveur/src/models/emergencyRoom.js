@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const emergencyRoomSchema = new mongoose.Schema({
   reference: { type: Number, unique: true },
   capacity: { type: Number, required: true },
-  departement: { type: String, required: true }
+  departement: { type: String, required: true },
+  availability: { type: Boolean, required: true },
+
 }, { timestamps: false, versionKey: false });
 
 // Auto-incrémentation de `reference` avant l'enregistrement

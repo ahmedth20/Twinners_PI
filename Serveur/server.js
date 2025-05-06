@@ -29,6 +29,8 @@ const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
 const medicalRoutes = require('./src/routes/medicalRoutes');
 
 
+const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
+const specialtyRoutes= require("./src/routes/openAi.js");
 
 
 dotenv.config();
@@ -113,6 +115,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('notif', consultationData);
   });
 
+  
+  socket.on('send_notification',(consultationData) => {
+      console.log('Message reçu côté serveur:', consultationData);
+      // Émettre l'événement à tous les clients connectés
+      socket.broadcast.emit('send_notification', consultationData);
+    });
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
@@ -160,6 +168,8 @@ app.use("/appointments", appointments);
 app.use("/medicalrecord", medicalRecordRoutes);
 app.use("/consultation", consultationRoutes);
 app.use("/operation",operationRoutes);
+app.use("/api/llm-specialty", specialtyRoutes);
+app.use("/emergencyrooms", emergencyRoomRoutes);
 
 // Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
