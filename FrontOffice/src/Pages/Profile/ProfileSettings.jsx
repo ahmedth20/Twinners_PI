@@ -440,6 +440,126 @@ const ProfileSettings = () => {
                   <p className="text-gray-600 italic">No consultations found.</p>
                 )}
                 </div>
+                <div ref={medicalRecordRef} id="medicalRecord" className={`tab-section ${activeTab === 'medicalRecord' ? 'block' : 'hidden'}`}>
+                <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
+                  Medical Record
+                  {/* Contenu pour l'onglet Operations */}
+                 </h4>
+
+                            {medicalRecord ? (
+              <div className="min-h-screen bg-gray-100 p-6 md:p-10 font-AlbertSans">
+                <h1 className="text-4xl font-bold text-gray-800 mb-8">Medical Dashboard</h1>
+
+                {/* Patient Status Block */}
+                <div
+                  className={`relative p-6 rounded-xl mb-8 text-lg font-medium shadow-xl border-4 transition
+                    ${
+                      getPatientStatus(medicalRecord) === 'ok'
+                        ? 'bg-green-100 border-green-400'
+                        : getPatientStatus(medicalRecord) === 'warning'
+                        ? 'bg-yellow-100 border-yellow-400'
+                        : 'bg-red-100 border-red-400'
+                    }`}
+                >
+                  <p className="text-2xl font-semibold mb-2">
+                    {getPatientStatus(medicalRecord) === 'ok' && '🟢 Stable'}
+                    {getPatientStatus(medicalRecord) === 'warning' && '🟠 Needs Attention'}
+                    {getPatientStatus(medicalRecord) === 'danger' && '🔴 Emergency'}
+                  </p>
+                  <p>
+                    {getPatientStatus(medicalRecord) === 'ok' && 'All health indicators are within safe range.'}
+                    {getPatientStatus(medicalRecord) === 'warning' && 'Some health values need follow-up.'}
+                    {getPatientStatus(medicalRecord) === 'danger' && 'Critical indicators detected. Act immediately.'}
+                  </p>
+                </div>
+
+                {/* Group: Diagnosis + Treatment */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
+                    <h3 className="text-xl font-semibold mb-4">🩺 Diagnosis</h3>
+                    <p><strong>Condition:</strong> {medicalRecord.diagnostic?.condition || '—'}</p>
+                    <p><strong>Symptoms:</strong> {medicalRecord.diagnostic?.symptoms?.join(', ') || '—'}</p>
+                    <p><strong>Severity:</strong> {medicalRecord.diagnostic?.severity || '—'}</p>
+                    <p><strong>Notes:</strong> {medicalRecord.diagnostic?.notes || '—'}</p>
+                  </div>
+
+                  <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
+                    <h3 className="text-xl font-semibold mb-4">💊 Treatment</h3>
+                    <p className="mb-2 font-medium">Medications:</p>
+                    {medicalRecord.treatment?.medications?.length ? (
+                      <ul className="list-disc list-inside">
+                        {medicalRecord.treatment.medications.map((med, i) => (
+                          <li key={i}>
+                            {med.name || '—'} — {med.dosage || '—'}, {med.frequency || '—'}, {med.duration || '—'}
+                            {med.notes && ` (${med.notes})`}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : <p>—</p>}
+                    <div className="mt-3">
+                      <p><strong>Procedures:</strong> {medicalRecord.treatment?.procedures?.name || '—'} - {medicalRecord.treatment?.procedures?.duration || '—'}</p>
+                    </div>
+                    <div className="mt-3">
+                      <p className="font-medium">Lifestyle Recommendations:</p>
+                      {medicalRecord.treatment?.lifestyleRecommendations?.length ? (
+                        <ul className="list-disc list-inside">
+                          {medicalRecord.treatment.lifestyleRecommendations.map((rec, i) => <li key={i}>{rec}</li>)}
+                        </ul>
+                      ) : <p>—</p>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Group: Additional Info + Medical History */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
+                    <h3 className="text-xl font-semibold mb-4">📋 Additional Info</h3>
+                    <p><strong>Allergies:</strong> {medicalRecord.allergies?.join(', ') || '—'}</p>
+                    <p><strong>Blood Group:</strong> {medicalRecord.bloodGroup || '—'}</p>
+                    <div className="mt-3">
+                      <p className="font-medium">Test Results:</p>
+                      <ul className="list-disc list-inside ml-4">
+                        <li><strong>Chest X-Ray:</strong> {medicalRecord.testResults?.chestXray || '—'}</li>
+                        <li><strong>Blood Test:</strong> {medicalRecord.testResults?.bloodTest || '—'}</li>
+                        <li><strong>Oxygen Saturation:</strong> {medicalRecord.testResults?.oxygenSaturation || '—'}</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
+                    <h3 className="text-xl font-semibold mb-4">📜 Medical History</h3>
+                    {medicalRecord.MedicalHistory?.length ? (
+                      <ul className="list-disc list-inside">
+                        {medicalRecord.MedicalHistory.map((item, i) => <li key={i}>{item}</li>)}
+                      </ul>
+                    ) : <p>—</p>}
+                  </div>
+                </div>
+
+                {/* Patient File: full width */}
+                <div className="w-full bg-white text-gray-800 p-6 rounded-xl shadow-md">
+                  <h3 className="text-xl font-semibold mb-4">📎 Patient File</h3>
+                  {medicalRecord.patientFiles?.length ? (
+                    <div className="space-y-4">
+                      {medicalRecord.patientFiles.map((file, i) => (
+                        <div key={i} className="bg-gray-50 p-4 border rounded-md shadow-sm">
+                          <p><strong>Reference:</strong> {file.reference || '—'}</p>
+                          <p><strong>Date Issued:</strong> {file.dateIssued ? new Date(file.dateIssued).toLocaleDateString() : '—'}</p>
+                          <p><strong>Description:</strong> {file.description || '—'}</p>
+                          <p><strong>Symptoms:</strong> {file.symptoms || '—'}</p>
+                          <p><strong>Emergency Level:</strong> {file.emergencyLevel || '—'}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : <p>—</p>}
+                </div>
+              </div>
+                        ) : (
+                          <p className="text-gray-600 italic">Loading medical record...</p>
+                        )}
+
+              </div>
+
 
                 <div ref={operationsRef} id="operations" className={`tab-section ${activeTab === 'operations' ? 'block' : 'hidden'}`}>
                   <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">

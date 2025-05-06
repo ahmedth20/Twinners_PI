@@ -13,4 +13,7 @@ router.put("/:id", doctorController.updateDoctor);
 
 router.delete("/:id", doctorController.deleteDoctor);
 
+//router.get('/specialty/:specialty', doctorController.getDoctorsBySpecialty);
+router.get('/specialty/:specialty', doctorController.getAvailableDoctorsBySpecialty);
+
 module.exports = router;

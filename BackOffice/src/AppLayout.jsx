@@ -5,6 +5,7 @@ import { Route, Routes} from 'react-router-dom';
 
 import Forgotpassword from 'pages/screens/forgotpassword'
 import Resetpassword1 from 'pages/screens/restpasswordslouma'
+import MedicalFormUpdate from '@pages/MedicalFormUpdate';
 
 // pages
 const DashboardA = lazy(() => import('pages/DashboardA'));
@@ -31,6 +32,7 @@ const PatientMessenger = lazy(() => import('pages/PatientMessenger'));
 const AmbulanceGettingMessage= lazy(() => import('Notifications/ParamedicResponseAmbulance'));
 const DoctorsChat= lazy(() => import('Notifications/DoctorsChat'));
 const ParamedicChat= lazy(() => import('Notifications/ParamedicChat'));
+const DoctorsConsultaion= lazy(() => import('Notifications/DoctorsConsultaion'));
 const DoctorsReviews = lazy(() => import('pages/DoctorsReviews'));
 const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
@@ -77,6 +79,7 @@ const AppLayout = () => {
       <Route path="/chat" element={ <GeminiChatbot/> } />
       <Route path="/doctorchat" element={ <DoctorsChat/> } />
       <Route path="/paramedicchat" element={ <ParamedicChat/> } />
+      <Route path="/consultations" element={ <DoctorsConsultaion/> } />
       
       <Route path="/patientFile" element={ <PatientFile/> } />
       
@@ -85,6 +88,7 @@ const AppLayout = () => {
       <Route path="/finances" element={ <Finances /> } />
       <Route path="/settings" element={ <Settings /> } />
       <Route path="/medical_form" element={ <MedicalForm/> } />
+      <Route path="/medical_form_update/:id" element={ <MedicalFormUpdate/> } />
       <Route path="/forgotpassword" element={ <Forgotpassword/> } />
       <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
 
