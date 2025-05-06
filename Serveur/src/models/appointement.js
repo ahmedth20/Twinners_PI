@@ -7,4 +7,6 @@ const appointmentSchema = new Schema({
   end: { type: Date, required: true },
 });
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+//module.exports = mongoose.model('Appointment', appointmentSchema);
+//module.exports = mongoose.models.Appointment || mongoose.model('Appointment', appointmentSchema);
+

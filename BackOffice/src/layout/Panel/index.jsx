@@ -15,13 +15,7 @@ import useWindowSize from "hooks/useWindowSize";
 import usePanelScroll from "hooks/usePanelScroll";
 import { useSidebarContext } from "contexts/sidebarContext";
 
-// Socket.io connection
-const socket = io('http://localhost:5000', {
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax: 5000
-});
+const socket = io('http://localhost:5000');
 
 const Panel = () => {
   const { width } = useWindowSize();
@@ -42,7 +36,32 @@ const Panel = () => {
     }
   }, [width]);
 
-  // Close notification box when clicking outside
+  // Charger notification depuis localStorage au démarrage
+  useEffect(() => {
+    const storedNotification = localStorage.getItem('notification');
+    if (storedNotification) {
+      setNotification(JSON.parse(storedNotification));
+    }
+  }, []);
+
+  // Écoute les notifications reçues via socket.io
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('notif', (consultationData) => {
+      console.log('Notification reçue:', consultationData);
+      setNotification(consultationData);
+      localStorage.setItem('notification', JSON.stringify(consultationData)); // Enregistrement
+    });
+
+    return () => {
+      socket.off('notif');
+    };
+  }, []);
+
+  // Fermer la notification en cliquant à l’extérieur
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -55,22 +74,11 @@ const Panel = () => {
     };
   }, []);
 
-  // Socket.io listener
-  useEffect(() => {
-    const handleDoctorRequest = (data) => {
-      console.log('📥 Notification reçue :', data); // 🔍 Debug
-      const message = `🔔 Un paramedic a demandé un doc avec l'ID ${data.doctorsId}`;
-      setNotification(message);
-      setShowNotificationBox(true);
-    };
-  
-    socket.on('doctors_request', handleDoctorRequest);
-  
-    return () => {
-      socket.off('doctors_request', handleDoctorRequest);
-    };
-  }, []);
-  
+  // Marquer comme lue (supprime la notif)
+  const clearNotification = () => {
+    setNotification(null);
+    localStorage.removeItem('notification');
+  };
 
   return (
     <Header
@@ -127,10 +135,20 @@ const Panel = () => {
                 minWidth: '250px'
               }}
             >
-              <p style={{ margin: 0, fontWeight: 'bold' }}>🔔 Notification</p>
-              <p style={{ marginTop: '5px' }}>
-                {notification ? notification : "Aucune notification reçue pour le moment."}
-              </p>
+              <div>
+                <h2>Consultation Notification</h2>
+                {notification ? (
+                  <div>
+                    <h3>Nouvelle Consultation</h3>
+                    <p><strong>Patient:</strong> {notification.Description}</p>
+                    <button onClick={clearNotification} style={{ marginTop: '10px', color: 'red' }}>
+                      Marquer comme lue
+                    </button>
+                  </div>
+                ) : (
+                  <p>Aucune nouvelle consultation.</p>
+                )}
+              </div>
             </div>
           )}
         </Actions>

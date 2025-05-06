@@ -1,5 +1,10 @@
 import { Header } from 'components/Widget/style';
-import { LetterNav, LetterNavWrapper, LetterNavItem, NavWrapper } from './style';
+import {
+  LetterNav,
+  LetterNavWrapper,
+  LetterNavItem,
+  NavWrapper
+} from './style';
 
 // components
 import Widget from 'components/Widget';
@@ -11,68 +16,69 @@ import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
 import { generateAlphabet } from 'utils/helpers';
-import { nanoid } from 'nanoid';
 
 // hooks
 import { useState, useRef, useEffect } from 'react';
 import useGenderFilter from 'hooks/useGenderFilter';
 
 // services
-import PatientService from 'services/PatientService';
 import axios from 'axios';
 
 const PatientsList = () => {
   const contentRef = useRef(null);
-  const [patientFile, setPatientFile] = useState([]); // Liste des fichiers patients
+  const [patientFile, setPatientFile] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState(null);
 
   const handleLetterClick = (char) => {
     setSelectedLetter((prevLetter) => (prevLetter === char ? null : char));
   };
 
-  // Récupération des fichiers patients depuis l'API
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/patientFiles/${id}`, {
+        withCredentials: true
+      });
+      setPatientFile((prev) => prev.filter((file) => file._id !== id));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du fichier patient', error);
+    }
+  };
+
   useEffect(() => {
     const fetchPatientFiles = async () => {
       try {
         const response = await axios.get('http://localhost:5000/patientFiles', {
           withCredentials: true,
         });
-        setPatientFile(response.data); // Mettre à jour l'état avec les fichiers patients récupérés
+        setPatientFile(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des fichiers patients', error);
       }
     };
 
     fetchPatientFiles();
-  }, []); // L'API est appelée une seule fois au chargement du composant
+  }, []);
 
-  // Filtrage actuel par mois
   const [month, setMonth] = useState({ label: 'This month', number: new Date().getMonth() });
-  const dateFilteredArr = patientFile; // Utilisation des fichiers patients récupérés
+  const dateFilteredArr = patientFile;
 
-  // Filtrage actuel par genre
   const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
-
   const filteredPatients = genderArr(gender);
 
   const displayedPatients = selectedLetter
     ? filteredPatients.filter((patient) =>
-        patient.user?.lastName?.[0]?.toLowerCase() === selectedLetter
+        patient.reference?.toString()?.[0]?.toUpperCase() === selectedLetter
       )
     : filteredPatients;
 
-  // Génération de l'alphabet
   const alphabet = generateAlphabet();
 
   const isCharInPatients = (char, arr) => {
-    return arr.some((patient) => patient.user?.lastName[0].toLowerCase() === char);
+    return arr.some((patient) => patient.reference?.toString()?.[0]?.toUpperCase() === char);
   };
 
   useEffect(() => {
-    contentRef.current?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [month, gender]);
 
   return (
@@ -85,7 +91,7 @@ const PatientsList = () => {
         <LetterNavWrapper>
           <LetterNav>
             {alphabet.map((char) => (
-              <li key={nanoid(3)}>
+              <li key={char}>
                 <LetterNavItem
                   className={`${isCharInPatients(char, filteredPatients) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
                   href={`#${char}`}
@@ -98,6 +104,7 @@ const PatientsList = () => {
           </LetterNav>
         </LetterNavWrapper>
       </Header>
+
       <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
         {dateFilteredArr.length !== 0 ? (
           <>
@@ -116,7 +123,9 @@ const PatientsList = () => {
                   gender={gender.value}
                   char={char}
                   type={'patient'}
-                  arr={filteredPatients.filter((patient) => patient.user?.lastName?.[0]?.toLowerCase() === char)}
+                  arr={filteredPatients.filter(
+                    (patient) => patient.reference?.toString()?.[0]?.toUpperCase() === char
+                  )}
                 />
               ))
             )}
@@ -126,40 +135,64 @@ const PatientsList = () => {
         )}
       </WidgetBody>
 
-      {/* Affichage des fichiers patients récupérés de l'API */}
+      {/* Tableau des fichiers patients */}
       <div style={{ marginTop: '2rem', padding: '1rem' }}>
-    
-        <table style={{ width: '100%', borderCollapse: 'collapse', borderRadius: '8px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
           <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Date d'émission</th>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Description</th>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Symptômes</th>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Niveau d'urgence</th>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Paramedic</th>
-              <th style={{ padding: '12px', borderBottom: '2px solid #ddd', textAlign: 'left' }}>Medical Record</th>
+            <tr style={{ backgroundColor: '#f7f7f7', fontWeight: 'bold', textAlign: 'center' }}>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Téléphone</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Âge</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Sexe</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Adresse</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Poids (kg)</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Taille (cm)</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Groupe sanguin</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Antécédents</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Allergies</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Symptômes</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Paramédic</th>
+              <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {patientFile.map((file) => (
-              <tr key={file._id} style={{ backgroundColor: '#fff', transition: 'background-color 0.3s' }}>
-                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.dateIssued}</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.description}</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.symptoms}</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.emergencyLevel}</td>
+              <tr key={file._id} style={{ backgroundColor: '#fff', transition: 'background-color 0.3s', textAlign: 'center' }}>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.phoneNumber || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.age || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.gender || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.address || 'Non spécifiée'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.weight || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.height || 'Non spécifiée'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.bloodGroup || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.medicalHistory || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.allergies || 'Non spécifiées'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.symptom || 'Non spécifié'}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>{file.paramedic?.name || 'Non spécifié'}</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>
-                  {file.paramedic ? file.paramedic.name : 'Non spécifié'}
-                </td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #ddd' }}>
-                  {file.medicalRecord ? file.medicalRecord.recordDetails : 'Non spécifié'}
+                  <button
+                    onClick={() => handleDelete(file._id)}
+                    style={{
+                      backgroundColor: '#e74c3c',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderRadius: '4px',
+                      transition: 'background-color 0.3s',
+                    }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = '#c0392b')}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = '#e74c3c')}
+                  >
+                    Supprimer
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      
-      {/* Effet de survol pour les lignes du tableau */}
+
+      {/* Hover effect */}
       <style>
         {`
           table tbody tr:hover {
