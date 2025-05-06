@@ -12,13 +12,10 @@ const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
-const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
-const http = require('http');
-const { Server } = require('socket.io');
+
 const staffRoutes = require("./src/routes/staff.js");
-const doctorRoutes = require("./src/routes/doctor.js")
 const consultationRoutes = require("./src/routes/consultation.js")
 const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
@@ -108,6 +105,12 @@ io.on('connection', (socket) => {
   socket.on('send_message', (data) => {
     console.log('Message received:', data);
     socket.broadcast.emit('receive_message', data); // Diffuser à tous les autres clients
+  });
+
+  socket.on('notif',(consultationData) => {
+    console.log('Message reçu côté serveur:', consultationData);
+    // Émettre l'événement à tous les clients connectés
+    socket.broadcast.emit('notif', consultationData);
   });
 
   socket.on('disconnect', () => {

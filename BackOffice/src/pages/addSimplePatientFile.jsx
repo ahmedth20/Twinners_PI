@@ -34,7 +34,6 @@ const steps = [
 
 const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
-  const [waitingForResponse, setWaitingForResponse] = useState(false);
 
   const {
     register,
@@ -47,28 +46,19 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const nextStep = () => setStep((prev) => Math.min(prev + 1, steps.length));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
   
-  const calldoctor = (doctor) => {
-    const payload = {
-        doctorId: "68078b941a7b42ecb972fa89",
-        from: socket.id,
+  
+
+    const sendNotification = async (consultationData) => {
+      console.log("Envoi des données de la consultation :", consultationData);  // Vérifiez ici
+      socket.emit('notif', consultationData);
     };
-
-    console.log("Envoi de la demande au médecin avec les données: ", payload); // Vérifie l'objet envoyé
-
-    socket.emit('call_doctors', payload);
-    console.log("Demande envoyée :", payload); // Affiche dans la console la demande envoyée
-    localStorage.setItem('doctorId', "68078b941a7b42ecb972fa89");
-    localStorage.setItem('waitingForResponse', 'true');
-    setWaitingForResponse(true); // Changement d'état pour bloquer le bouton
-};
-
 
   const onSubmit = async (data) => {
     try {
       await PatientFileService.createSimplePatientFile(data);
   
       alert("✅ Fichier patient ajouté avec succès !");
-      calldoctor(data);
+      sendNotification(data);
       onClose();
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || "Erreur inconnue";

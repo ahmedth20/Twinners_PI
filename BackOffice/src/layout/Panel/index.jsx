@@ -14,14 +14,8 @@ import CurrentUser from "layout/Panel/CurrentUser";
 import useWindowSize from "hooks/useWindowSize";
 import usePanelScroll from "hooks/usePanelScroll";
 import { useSidebarContext } from "contexts/sidebarContext";
+const socket = io('http://localhost:5000');
 
-// Socket.io connection
-const socket = io('http://localhost:5000', {
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax: 5000
-});
 
 const Panel = () => {
   const { width } = useWindowSize();
@@ -34,6 +28,7 @@ const Panel = () => {
 
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [notification, setNotification] = useState(null);
+
 
   // Header height for CSS variable
   useEffect(() => {
@@ -55,21 +50,26 @@ const Panel = () => {
     };
   }, []);
 
-  // Socket.io listener
+
   useEffect(() => {
-    const handleDoctorRequest = (data) => {
-      console.log('📥 Notification reçue :', data); // 🔍 Debug
-      const message = `🔔 Un paramedic a demandé un doc avec l'ID ${data.doctorsId}`;
-      setNotification(message);
-      setShowNotificationBox(true);
-    };
+    // Assurez-vous que le socket est bien connecté
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
   
-    socket.on('doctors_request', handleDoctorRequest);
+    // Écoute l'événement 'notif' envoyé depuis le côté Appointment
+    socket.on('notif', (consultationData) => {
+      console.log('Notification reçue:', consultationData);  // Vérifiez ici
+      setNotification(consultationData);  // Met à jour l'état avec les données de la consultation
+    });
   
+    // Nettoyage de l'écouteur lors du démontage du composant
     return () => {
-      socket.off('doctors_request', handleDoctorRequest);
+      socket.off('notif');
     };
   }, []);
+
+
   
 
   return (
@@ -127,10 +127,18 @@ const Panel = () => {
                 minWidth: '250px'
               }}
             >
-              <p style={{ margin: 0, fontWeight: 'bold' }}>🔔 Notification</p>
-              <p style={{ marginTop: '5px' }}>
-                {notification ? notification : "Aucune notification reçue pour le moment."}
-              </p>
+             <div>
+                <h2>Consultation Notification</h2>
+                {notification ? (
+                  <div>
+                    <h3>Nouvelle Consultation</h3>
+                    <p><strong>Patient:</strong> {notification.Description}</p>
+
+                  </div>
+                ) : (
+                  <p>Aucune nouvelle consultation.</p>
+                )}
+              </div>
             </div>
           )}
         </Actions>
