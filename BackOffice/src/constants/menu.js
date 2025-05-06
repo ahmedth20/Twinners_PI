@@ -117,7 +117,14 @@ export const menudoctors = [
         
         ]
     },
-  
+    {
+        cat: 'consultaions',
+        icon: 'users',
+        links: [
+            { name: "Liste Of consultaions", link: '/consultations' },
+        
+        ]
+    },
     {
         cat: 'messages',
         icon: 'comment',

@@ -15,6 +15,14 @@ import * as z from "zod";
 import PatientService from '../../../services/PatientService';
 import { useForm } from 'react-hook-form';
 import { useSelector } from "react-redux";
+import openaiService from '../../../services/openaiServices';
+import DoctorService from '../../../services/DoctorService';
+import emergencyRoomService from '../../../services/emergencyRoomService';
+import axios from 'axios';
+import ConsultationService from '../../../services/consultationService';
+import io from 'socket.io-client';
+import { useEffect, useRef, useState } from 'react';
+const socket = io('http://localhost:5000');
 
 const patientSchema = z.object({
   height: z.preprocess((val) => Number(val), 
@@ -64,6 +72,74 @@ const TestiData = [
 ];
 
 const Appoinment = ({ id }) => {
+   const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = 
+  useForm({
+    resolver: zodResolver(patientSchema),
+  });
+  const user = useSelector(state => state.auth.user.user1.id); 
+  const sendNotification = async (consultationData) => {
+    console.log("Envoi des données de la consultation :", consultationData);  // Vérifiez ici
+    socket.emit('send_notification', consultationData);
+  };
+  
+  
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+  
+      const patientData = { ...data, user: user };
+     const SavedPatient= await PatientService.createSimplePatientFront(patientData);
+     console.log("SavedPatient :", SavedPatient);
+     
+  
+      // Appel à l'IA pour deviner la spécialité
+      const specialty = await openaiService.getSpeciality(data);
+      const specialtyCleaned = specialty.specialty.split(" ")[0];
+      console.log("Spécialité devinée (nettoyée) :", specialtyCleaned);
+
+      // Appel pour trouver un médecin disponible avec cette spécialité
+      const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialty/${specialtyCleaned}`);
+      const doctor = doctorResponse.data; // On prend le premier disponible
+      console.log("Médecin trouvé :", doctor);
+
+      // Récupération d'une salle d'urgence aléatoire dans le même département
+      console.log(doctor.departement);
+      const roomResponse = await axios.get(`http://localhost:5000/emergencyrooms/random/${doctor.departement}`);
+      const room = roomResponse.data; // On prend le premier disponible
+     
+      //const room = await emergencyRoomService.getRandomEmergencyRoomByDepartement(doctor.departement);
+      console.log("Salle d'urgence trouvée :", room);
+       
+      const consultationData = {
+        duration: 30,  // Exemple de durée, tu peux la personnaliser
+        date: new Date(),
+        status: "Planned",  // Statut initial
+        diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+        patient: SavedPatient.patient._id,  // Assure-toi que l'ID patient est bien récupéré
+        doctor: doctor._id,  // ID du médecin
+        emergencyRoom: room._id  // ID de la salle d'urgence
+      };
+  
+      console.log("Données de la consultation :", consultationData);
+  
+      // Appel à la méthode createConsultation de ConsultationService
+     // const createdConsultation = await ConsultationService.createConsultation(consultationData);
+     const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
+  
+      console.log("Consultation créée avec succès :", createdConsultation.data);
+      
+   
+      alert("✅ Patient ajouté avec succès !");
+      sendNotification(createdConsultation.data);
+
+    } catch (error) {
+      alert("❌ Erreur lors de l'ajout du patient.");
+    }
+  };
   const settings = {
     loop: true,
     initialSlide: 1,
@@ -98,28 +174,6 @@ const Appoinment = ({ id }) => {
       },
     },
   };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = 
-  useForm({
-    resolver: zodResolver(patientSchema),
-  });
-  
-  const user = useSelector(state => state.auth.user.user1.id); 
-  
-
-const onSubmit = async (data) => {
-  try {
-    console.log(data);
-    const patientData = { ...data, user: user };
-    await PatientService.createSimplePatientFront(patientData);
-    alert("✅ Patient ajouté avec succès !");
-  } catch (error) {
-    alert("❌ Erreur lors de l'ajout du patient.");
-  }
-};
 
   
   
@@ -371,7 +425,7 @@ const onSubmit = async (data) => {
               </div>
 
               </form>
-
+          
               </div>
 
           </div>

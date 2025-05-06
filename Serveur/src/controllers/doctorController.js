@@ -2,6 +2,7 @@ const Doctor = require("../models/doctors");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const appointement = require("../models/appointement");
 
 const doctorController = {
   // 📌 Récupérer tous les médecins
@@ -25,6 +26,61 @@ const doctorController = {
     }
   },
 
+ /* async getDoctorsBySpecialty(req, res) {
+    try {
+      const { specialty } = req.params;
+      const doctors = await Doctor.find({ speciality: specialty }).populate("user", "firstName lastName email");
+  
+      if (doctors.length === 0) {
+        return res.status(404).json({ message: "Aucun médecin trouvé pour cette spécialité" });
+      }
+  
+      res.json(doctors);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la récupération des médecins", error });
+    }
+  }*/
+    async getAvailableDoctorsBySpecialty(req, res) {
+      try {
+        const { specialty } = req.params;
+        const now = new Date();
+    
+        const doctors = await Doctor.find({ speciality: specialty })
+          .populate("user", "firstName lastName email");
+    
+        if (doctors.length === 0) {
+          return res.status(404).json({ message: "Aucun médecin trouvé pour cette spécialité" });
+        }
+    
+        const availableDoctors = [];
+    
+        for (const doctor of doctors) {
+          const hasAvailability = await appointement.findOne({
+            doctorId: doctor._id,
+            start: { $lte: now },
+            end: { $gte: now }
+          });
+    
+          if (hasAvailability) {
+            availableDoctors.push(doctor);
+          }
+        }
+    
+        if (availableDoctors.length === 0) {
+          return res.status(404).json({ message: "Aucun médecin disponible actuellement pour cette spécialité" });
+        }
+    
+        // ✅ Choisir un médecin aléatoire parmi les disponibles
+        const randomDoctor = availableDoctors[Math.floor(Math.random() * availableDoctors.length)];
+    
+        res.json(randomDoctor);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération des médecins disponibles", error });
+      }
+    }
+    
+,  
  // 📌 Ajouter un nouveau médecin
 // doctorController.js
 

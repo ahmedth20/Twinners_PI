@@ -21,6 +21,8 @@ const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
 const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 
+const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
+const specialtyRoutes= require("./src/routes/openAi.js");
 
 
 // Config
@@ -82,7 +84,12 @@ io.on('connection', (socket) => {
     console.log('Message received:', data);
     socket.broadcast.emit('receive_message', data); // Diffuser à tous les autres clients
   });
-
+  
+  socket.on('send_notification',(consultationData) => {
+      console.log('Message reçu côté serveur:', consultationData);
+      // Émettre l'événement à tous les clients connectés
+      socket.broadcast.emit('send_notification', consultationData);
+    });
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
@@ -121,6 +128,8 @@ app.use("/ambulance", ambulanceRoutes);
 app.use("/medicalrecord", medicalRecordRoutes);
 app.use("/consultation", consultationRoutes);
 app.use("/operation",operationRoutes);
+app.use("/api/llm-specialty", specialtyRoutes);
+app.use("/emergencyrooms", emergencyRoomRoutes);
 
 // Frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));

@@ -3,15 +3,26 @@ const Patient = require("../models/patient");
 
 const consultationController = {
   // 🔹 Create a new consultation
-  async createConsultation(req, res) {
-    try {
-      const consultation = new Consultation(req.body);
-      const savedConsultation = await consultation.save();
-      res.status(201).json(savedConsultation);
-    } catch (error) {
-      res.status(500).json({ message: "Error creating consultation", error });
+// 🔹 Create a new consultation
+async createConsultation(req, res) {
+  try {
+    const { patient, doctor, emergencyRoom, duration, date } = req.body;
+
+    // Validation de base
+    if (!patient || !doctor || !emergencyRoom || !duration || !date) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
-  },
+
+    const consultation = new Consultation(req.body);
+    const savedConsultation = await consultation.save();
+    res.status(201).json(savedConsultation);
+  } catch (error) {
+    console.error("Error creating consultation:", error);
+    res.status(500).json({ message: "Error creating consultation", error });
+  }
+}
+
+,
 
   // 🔹 Get all consultations
   async getAllConsultations(req, res) {
