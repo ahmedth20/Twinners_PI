@@ -3,11 +3,16 @@ const mongoose = require("mongoose");
 const patientFileSchema = new mongoose.Schema({
   reference: { type: Number, unique: true },
   dateIssued: { type: String, required: true },
-  description: { type: String},
+  description: { type: String },
   symptoms: { type: String, required: true },
-  emergencyLevel: { type: String, enum: ["low", "moderate", "critical"], required: true },
+  emergencyLevel: { type: String, enum: ["low", "moderate", "critical"] },
   paramedic: { type: mongoose.Schema.Types.ObjectId, ref: "Paramedic" },
-  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true }
+  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true },
+  testResults: {
+    chestXray: { type: String },
+    bloodTest: { type: String },
+    oxygenSaturation: { type: String }
+  }
 }, { timestamps: false, versionKey: false });
 
 // Auto-incrémentation de reference avant l'enregistrement

@@ -38,8 +38,10 @@ const PatientReviews = lazy(() => import('pages/PatientReviews'));
 const Finances = lazy(() => import('pages/Finances'));
 const Settings = lazy(() => import('pages/Settings'));
 const MedicalForm = lazy(() => import('pages/MedicalForm'));
+const MedicalFormWithUserAndPatient = lazy(() => import('pages/MedicalFormWithUserAndPatient'));
 const GeminiChatbot = lazy(() => import('pages/GeminiChatbot'));
 const PatientFile = lazy(() => import('pages/PatientFile'));
+const Equipements = lazy(() => import('pages/Equipements'));
 
 //const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
@@ -64,7 +66,8 @@ const AppLayout = () => {
       <Route path="/dashboard_i" element={ <DashboardI /> } />
       <Route path="/dashboard_j" element={ <DashboardJ /> } />
       <Route path="/dashboard_k" element={ <DashboardK /> } />
-      <Route path="/doctor_appointments" element={ <DoctorAppointments /> } />
+      <Route path="/ressources" element={ <DashboardK /> } />
+      <Route path="/Equipements" element={ <Equipements /> } />
       <Route path="/staff_appointments" element={ <StaffAppointments /> } />
       <Route path="/patient_appointments" element={ <PatientAppointments /> } />
       <Route path="/patients" element={ <Patients /> } />
@@ -80,6 +83,7 @@ const AppLayout = () => {
       <Route path="/doctorchat" element={ <DoctorsChat/> } />
       <Route path="/paramedicchat" element={ <ParamedicChat/> } />
       <Route path="/consultations" element={ <DoctorsConsultaion/> } />
+      <Route path="/MedicalFormWithUserAndPatient" element={ <MedicalFormWithUserAndPatient/> } />
       
       <Route path="/patientFile" element={ <PatientFile/> } />
       

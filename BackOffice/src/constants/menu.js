@@ -30,7 +30,7 @@ export const menuchefservice = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },

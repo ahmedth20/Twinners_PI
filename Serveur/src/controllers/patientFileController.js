@@ -3,7 +3,7 @@ const PatientFile = require('../models/patientFile');
 // ➔ Créer un patient file
 exports.createPatientFile = async (req, res) => {
   try {
-    const { dateIssued, description, symptoms, emergencyLevel, paramedic, medicalRecord } = req.body;
+    const { dateIssued, description, symptoms, emergencyLevel, paramedic, medicalRecord,testResults } = req.body;
 
     const patientFile = new PatientFile({
       dateIssued,
@@ -12,6 +12,7 @@ exports.createPatientFile = async (req, res) => {
       emergencyLevel,
       paramedic,
       medicalRecord,
+      testResults // <- ajout ici
     });
 
     const savedFile = await patientFile.save();

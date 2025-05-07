@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -7,5 +8,7 @@ const appointmentSchema = new Schema({
   end: { type: Date, required: true },
 });
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+// ✅ Empêche la redéclaration du modèle
+module.exports = mongoose.models.Appointment || mongoose.model('Appointment', appointmentSchema);
+
 

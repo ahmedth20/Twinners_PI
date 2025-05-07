@@ -15,10 +15,10 @@ const ambulanceRoutes = require('./src/routes/ambulance.js');
 const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
+const ressourcesRoutes = require("./src/routes/ressources.js");
 const http = require('http');
-const { Server } = require('socket.io');
-const staffRoutes = require("./src/routes/staff.js");
-const doctorRoutes = require("./src/routes/doctor.js")
+
+
 const consultationRoutes = require("./src/routes/consultation.js")
 const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
@@ -42,8 +42,7 @@ connectDB();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Créer un serveur HTTP
-const http = require("http");
+
 const server = http.createServer(app);
 
 // Initialiser Socket.IO
@@ -166,7 +165,7 @@ app.use("/consultation", consultationRoutes);
 app.use("/operation",operationRoutes);
 app.use("/api/llm-specialty", specialtyRoutes);
 app.use("/emergencyrooms", emergencyRoomRoutes);
-
+app.use("/ressources", ressourcesRoutes);
 // Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
