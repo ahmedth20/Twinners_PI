@@ -107,9 +107,13 @@ const CurrentUser = () => {
                             <button onClick={() => setShowPopup(true)}>
                                 <i className="icon icon-circle-user" /> Update profile
                             </button>
-                            <button onClick={handleLogout}>
-                                <i className="icon icon-logout" /> Logout
-                            </button>
+                            <button onClick={() => {
+                            dispatch(logout());
+  window.location.href = "http://localhost:3000/";
+}}>
+  <i className="icon icon-logout" /> Logout
+</button>
+
                         </Menu>
                     </div>
                     <button className="trigger" onClick={() => setOpen(!open)} aria-label="Show menu">

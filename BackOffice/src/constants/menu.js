@@ -249,8 +249,6 @@ export const menuparamedic = [
 
         ]
     },
-   
-    
     {
         cat: 'reviews',
         icon: 'star',
