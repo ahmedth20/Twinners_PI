@@ -172,7 +172,7 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
 
  
     
-      setTimeout(() => {
+      /*setTimeout(() => {
       fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" })
         .then(() => {
           dispatch(logout());
@@ -182,7 +182,7 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
         })
         .catch(err => console.error("Erreur lors de la déconnexion :", err));
     }, 24 * 60 * 60 * 1000);
-    
+    */
    
   
 
@@ -222,13 +222,13 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
 
       dispatch(login({ user: data }));
 
-      setTimeout(() => {
+     /* setTimeout(() => {
         fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" });
         dispatch(logout());
         localStorage.removeItem("user");
         alert("Votre session a expiré. Veuillez vous reconnecter.");
-      }, 60 * 10 * 1000);
-
+      }, 60 * 60 * 1000);
+*/
     } catch (error) {
       console.error("Erreur de connexion Facebook :", error);
       alert("Échec de connexion avec Facebook. Veuillez réessayer.");
@@ -274,12 +274,12 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
       
       
 
-      setTimeout(() => {
+     /* setTimeout(() => {
         fetch("http://localhost:5000/users/logout", { method: "POST", credentials: "include" });
         dispatch(logout());
         localStorage.removeItem("user");
         alert("Votre session a expiré. Veuillez vous reconnecter.");
-      }, 60 * 10 * 1000);
+      }, 60 * 10 * 1000);*/
       // Sauvegarde dans le localStorage
     } catch (error) {
       console.error("Erreur de connexion Google :", error);

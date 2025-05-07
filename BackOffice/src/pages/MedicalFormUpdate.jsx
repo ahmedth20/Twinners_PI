@@ -9,6 +9,8 @@ import { CloseButton, ModalContent, ModalOverlay, Title } from "styles/PopUpAddP
 import { motion } from "framer-motion";
 import { useLocation } from "react-router";
 import MedicalRecordService from "services/medicalRecordService";
+import ConsultationService from "services/consultationService";
+import axios from "axios";
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required").optional(),
   lastName: z.string().min(1, "Last Name is required").optional(),
@@ -206,10 +208,25 @@ useEffect(() => {
     // Exécuter la fonction
     fetchMedicalData();
   
-    // Consultations
-    if (data.consultations) {
-      setValue("consultations", data.consultations);
-    }
+    // Consultationsf
+    const fetchConsultations = async () => {
+      try {
+        if (data.consultations) {
+          const consultationsData = await Promise.all(
+            data.consultations.map(async (consultationId) => {
+              const response = await axios.get(`http://localhost:5000/consultation/${consultationId}`);
+              return response.data;
+            })
+          );
+          console.log("Consultations récupérées :", consultationsData);
+          setValue("consultations", consultationsData);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des consultations :", error);
+      }
+    };
+  
+    fetchConsultations();
   }, [data, setValue]);
   
   const onSubmit = async () => {
@@ -335,37 +352,37 @@ useEffect(() => {
         </FormSection>
 
         <FormSection title="Consultation">
-          <Row>
-          <Select {...register("doctor", { required: "Veuillez sélectionner un docteur" })}>
-                <option value="">Sélectionner un docteur</option>
-                {doctors.map((doctor) => (
-                    <option key={doctor._id} value={doctor._id}>
-                        {doctor.user.firstName} {doctor.user.lastName}
-                    </option>
-                ))}
-            </Select>
-            
-          </Row>
-          <Row>
-            <Column>
-              <Input {...register("duration")} placeholder="Duration (minutes)" type="number" />
-            </Column>
-            <Column>
-              <Input {...register("date")} placeholder="Date" type="date" />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Select {...register("status")}>
-                <option value="">Select Status</option>
-                <option value="Planned">Planned</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </Select>
-            </Column>
-          </Row>
-        </FormSection>
+  <Row>
+    <Select {...register("doctor", { required: "Veuillez sélectionner un docteur" })}>
+      <option value="">Sélectionner un docteur</option>
+      {doctors.map((doctor) => (
+        <option key={doctor._id} value={doctor._id}>
+          {doctor.user.firstName} {doctor.user.lastName}
+        </option>
+      ))}
+    </Select>
+  </Row>
+  <Row>
+    <Column>
+      <Input {...register("duration")} placeholder="Duration (minutes)" type="number" />
+    </Column>
+    <Column>
+      <Input {...register("date")} placeholder="Date" type="date" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Select {...register("status")}>
+        <option value="">Select Status</option>
+        <option value="Planned">Planned</option>
+        <option value="Ongoing">Ongoing</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </Select>
+    </Column>
+  </Row>
+</FormSection>
+
 
           <FormSection title="Medical Record">
           <SectionSecondTitle>Diagnostics</SectionSecondTitle>

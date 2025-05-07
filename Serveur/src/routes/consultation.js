@@ -6,11 +6,8 @@ const consultationController = require("../controllers/consultationController");
 router.post("/", consultationController.createConsultation);
 router.get("/", consultationController.getAllConsultations);
 router.get("/:id", consultationController.getConsultationById);
-router.get("/ByUser/:userId", consultationController.getConsultationsByUserId);
+router.get("/ByUser/:id", consultationController.getConsultationsByPatient);
 router.put("/:id", consultationController.updateConsultation);
 router.delete("/:id", consultationController.deleteConsultation);
-
-// Get consultations by user ID
-router.get("/byUser/:userId", consultationController.getConsultationsByUserId);
 
 module.exports = router;
