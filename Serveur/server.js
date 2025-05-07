@@ -85,10 +85,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('receive_message', data); // Diffuser à tous les autres clients
   });
   
-  socket.on('send_notification',(consultationData) => {
-      console.log('Message reçu côté serveur:', consultationData);
+  socket.on('send_notification',(consultationDataDetails) => {
+      console.log('Message reçu côté serveur:', consultationDataDetails);
       // Émettre l'événement à tous les clients connectés
-      socket.broadcast.emit('send_notification', consultationData);
+      socket.broadcast.emit('send_notification', consultationDataDetails);
     });
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);

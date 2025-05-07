@@ -36,19 +36,30 @@ async createConsultation(req, res) {
     }
   },
 
-  // 🔹 Get consultation by ID
-  async getConsultationById(req, res) {
-    try {
-      const consultation = await Consultation.findById(req.params.id)
-        .populate("patient", "firstName lastName")
-        .populate("doctor", "firstName lastName specialty");
+// 🔹 Get consultation by ID
+async getConsultationById(req, res) {
+  try {
+    const consultation = await Consultation.findById(req.params.id)
+      .populate({
+        path: "patient",
+        populate: { path: "user", select: "firstName lastName" }
+      })
+      .populate({
+        path: "doctor",
+        populate: { path: "user", select: "firstName lastName" }
+      })
+      .populate("emergencyRoom", "reference"); // Affiche juste le numéro de salle
 
-      if (!consultation) return res.status(404).json({ message: "Consultation not found" });
-      res.status(200).json(consultation);
-    } catch (error) {
-      res.status(500).json({ message: "Error retrieving consultation", error });
+    if (!consultation) {
+      return res.status(404).json({ message: "Consultation not found" });
     }
-  },
+
+    res.status(200).json(consultation);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving consultation", error });
+  }
+}
+,
 
   // 🔹 Update consultation
   async updateConsultation(req, res) {
@@ -77,16 +88,10 @@ async createConsultation(req, res) {
   },
 
   // 🔹 Get consultations by patient user ID
-  async getConsultationsByUserId(req, res) {
+  async getConsultationsByPatient(req, res) {
     try {
-      const { userId } = req.params;
 
-      const patient = await Patient.findOne({ user: userId });
-      if (!patient) {
-        return res.status(404).json({ message: "Patient not found for this user." });
-      }
-
-      const consultations = await Consultation.find({ patient: patient._id })
+      const consultations = await Consultation.find({ patient: req.params.id })
         .populate("patient", "firstName lastName user")
         .populate("doctor", "firstName lastName specialty");
 

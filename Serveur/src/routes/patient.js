@@ -16,4 +16,6 @@ router.put("/updatePatientProfile/:user", patientController.updatePatientProfile
 router.put("/updateSimplePatient/:id", patientController.updateSimplePatient);
 router.delete("/:id", patientController.deletePatient);
 router.put("/toggle-status/:id", patientController.toggleUserStatus);
+router.put("/add-consultation/:id", patientController.addConsultationToPatient);
+
 module.exports = router;
