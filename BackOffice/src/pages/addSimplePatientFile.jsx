@@ -41,6 +41,7 @@ const steps = [
 
 const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
+  const [waitingForResponse, setWaitingForResponse] = useState(false);
 
   const {
     register,
@@ -71,7 +72,7 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
       console.error("Détails de l'erreur:", errorMessage);
     }
   };
-
+  
   if (!isOpen) return null;
 
   return (

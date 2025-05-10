@@ -16,12 +16,14 @@ import NoDataPlaceholder from 'components/NoDataPlaceholder';
 
 // utils
 import { generateAlphabet } from 'utils/helpers';
+import { nanoid } from 'nanoid';
 
 // hooks
 import { useState, useRef, useEffect } from 'react';
 import useGenderFilter from 'hooks/useGenderFilter';
 
 // services
+import PatientService from 'services/PatientService';
 import axios from 'axios';
 
 const PatientsList = () => {
@@ -104,7 +106,6 @@ const PatientsList = () => {
           </LetterNav>
         </LetterNavWrapper>
       </Header>
-
       <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
         {dateFilteredArr.length !== 0 ? (
           <>

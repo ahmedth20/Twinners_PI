@@ -12,10 +12,11 @@ const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
+const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
+const ressourcesRoutes = require("./src/routes/ressources.js");
 
-const staffRoutes = require("./src/routes/staff.js");
 const consultationRoutes = require("./src/routes/consultation.js")
 const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
@@ -170,7 +171,7 @@ app.use("/consultation", consultationRoutes);
 app.use("/operation",operationRoutes);
 app.use("/api/llm-specialty", specialtyRoutes);
 app.use("/emergencyrooms", emergencyRoomRoutes);
-
+app.use("/ressources", ressourcesRoutes);
 // Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
