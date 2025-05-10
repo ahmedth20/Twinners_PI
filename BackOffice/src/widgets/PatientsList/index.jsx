@@ -20,6 +20,8 @@ import useGenderFilter from 'hooks/useGenderFilter';
 // import corrected
 import PatientService from 'services/PatientService';
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
 const PatientsList = () => {
     const contentRef = useRef(null);
     const [patients, setPatients] = useState([]);
