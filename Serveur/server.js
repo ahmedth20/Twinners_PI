@@ -176,7 +176,9 @@ app.use("/ressources", ressourcesRoutes);
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 
+
+// Démarrer serveur AVEC WebSocket support
+server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
+
 app.use('/api', imagePredictionRoute);
 
-// Lancer le serveur
-server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
