@@ -18,7 +18,7 @@ const Patients = () => {
 
   const handleMedicalPatient = () => {
     setIsTypePopupOpen(false);
-    navigate("/medical_form"); // Redirection vers la page avec le formulaire médical
+    navigate("/MedicalFormWithUserAndPatient"); // Redirection vers la page avec le formulaire médical
   };
 
   return (
@@ -36,7 +36,12 @@ const Patients = () => {
             <h2>Choose Patient Type</h2>
             <ButtonGroup>
               <ModalButton variant="simple" onClick={handleSimplePatient}>Simple Patient</ModalButton>
-              <ModalButton variant="medical" onClick={handleMedicalPatient}>Patient with Medical Record</ModalButton>
+             <ModalButton variant="medical" onClick={handleMedicalPatient}>Patient with Medical Record</ModalButton> 
+              {/*
+<ModalButton variant="medical" onClick={handleMedicalPatient}>
+  Patient with Medical Record
+</ModalButton>
+*/}
             </ButtonGroup>
           </ModalContent>
         </ModalOverlay>

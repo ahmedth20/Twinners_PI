@@ -20,14 +20,15 @@ const CurrentUser = () => {
     const [lastName, setLastName] = useState("");   
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
-   const [loading, setLoading] = useState(false);
+   const [,setLoading] = useState(false);
    const navigate = useNavigate();
    
    const handleLogout = () => {
     dispatch(logout());
     navigate("/"); // 👈 redirection vers la home
 };
-    const user = useSelector(state => state.auth.user.user.id);
+
+    const user = useSelector((state) => state.auth?.user?.user?.id);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -106,9 +107,13 @@ const CurrentUser = () => {
                             <button onClick={() => setShowPopup(true)}>
                                 <i className="icon icon-circle-user" /> Update profile
                             </button>
-                            <button onClick={handleLogout}>
-                                <i className="icon icon-logout" /> Logout
-                            </button>
+                            <button onClick={() => {
+                            dispatch(logout());
+  window.location.href = "http://localhost:3000/";
+}}>
+  <i className="icon icon-logout" /> Logout
+</button>
+
                         </Menu>
                     </div>
                     <button className="trigger" onClick={() => setOpen(!open)} aria-label="Show menu">

@@ -44,7 +44,14 @@ export const Container = styled.div`
 `
 
 export const StyledForm = styled.form`
+max-width: 1800px;
+margin: 0 auto;
+padding: 0 24px;
+
   .dropzone {
+  margin-left: auto;
+margin-right: auto;
+
     border-radius: 50%;
     aspect-ratio: 1 / 1;
     width: 120px;
@@ -83,6 +90,9 @@ export const StyledForm = styled.form`
     }
 
     .dropzone {
+    margin-left: auto;
+margin-right: auto;
+
       width: 200px;
     }
   }
@@ -90,8 +100,10 @@ export const StyledForm = styled.form`
   ${breakpoints.laptopL} {
     .wrapper {
       display: grid;
-      grid-gap: 24px;
-      grid-template-columns: 350px minmax(0, calc(100% - 350px));
+  grid-gap: 24px;
+  grid-template-columns: 1fr 2fr;
+  align-items: start;
+
     }
 
     button[type='submit'] {
@@ -99,6 +111,9 @@ export const StyledForm = styled.form`
     }
 
     .dropzone {
+    margin-left: auto;
+margin-right: auto;
+
       width: 350px;
       padding: 20px;
       margin-bottom: 0;

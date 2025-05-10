@@ -24,23 +24,10 @@ const PatientsList = () => {
     const contentRef = useRef(null);
     const [patients, setPatients] = useState([]);
     const [selectedLetter, setSelectedLetter] = useState(null);
-  //  const [lastGender, setLastGender] = useState(null);
 
     const handleLetterClick = (char) => {
         setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
     };
-    
-  /*  const handleGenderClick = (newGender) => {
-        if (lastGender === newGender.value) {
-            // Double-clic : Réinitialiser la sélection de lettre
-            setSelectedLetter(null);
-        }
-        setLastGender(newGender.value);
-        setGender(newGender);
-    };
-    */
-    
-    
     useEffect(() => {
         const fetchPatients = async () => {
             try {
@@ -55,31 +42,28 @@ const PatientsList = () => {
         fetchPatients();
     }, []);
 
-    // current filter by month
     const [month, setMonth] = useState({ label: 'This month', number: new Date().getMonth() });
     const dateFilteredArr = patients;
-    // current filter by gender
+
     const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
-  
     const filteredPatients = genderArr(gender);
 
     const displayedPatients = selectedLetter
-    ? filteredPatients.filter(patient => 
-        patient.user?.lastName?.[0]?.toLowerCase() === selectedLetter
-    ) 
-    : filteredPatients;
+        ? filteredPatients.filter(patient =>
+            typeof patient.user?.lastName === 'string' &&
+            patient.user.lastName.length > 0 &&
+            patient.user.lastName[0].toLowerCase() === selectedLetter
+        )
+        : filteredPatients;
 
 
-    // generate an array containing alphabet
-    const alphabet = generateAlphabet();
-const isCharInPatients = (char, arr) => {
-    return Array.isArray(arr) && arr.some(patient =>
-        typeof patient?.user?.lastName === 'string' &&
-        patient.user.lastName.length > 0 &&
-        patient.user.lastName[0].toLowerCase() === char
-    );
-};
-
+    const isCharInPatients = (char, arr) => {
+        return arr.some(patient =>
+            typeof patient.user?.lastName === 'string' &&
+            patient.user.lastName.length > 0 &&
+            patient.user.lastName[0].toLowerCase() === char
+        );
+    };
 
     useEffect(() => {
         contentRef.current?.scrollTo({
@@ -99,15 +83,13 @@ const isCharInPatients = (char, arr) => {
                     <LetterNav>
                         {alphabet.map(char => (
                             <li key={nanoid(3)}>
-                             <LetterNavItem
-                                className={`${isCharInPatients(char, filteredPatients) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
-                                href={`#${char}`}
-                                onClick={() => handleLetterClick(char)}
-                            >
-                                {char}
-                            </LetterNavItem>
-
-
+                                <LetterNavItem
+                                    className={`${isCharInPatients(char, filteredPatients) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
+                                    href={`#${char}`}
+                                    onClick={() => handleLetterClick(char)}
+                                >
+                                    {char}
+                                </LetterNavItem>
                             </li>
                         ))}
                     </LetterNav>
@@ -116,31 +98,29 @@ const isCharInPatients = (char, arr) => {
             <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
                 {dateFilteredArr.length !== 0 ? (
                     <>
-                    {selectedLetter ? (
-    // Si une lettre est sélectionnée, afficher uniquement ce groupe
-    <Group
-        key={`patients-${selectedLetter}`}
-        gender={gender.value}
-        char={selectedLetter}
-        type={'patient'}
-        arr={displayedPatients} // Patients filtrés par lettre
-    />
-) : (
-    // Sinon, afficher tous les groupes classés par lettre
-    alphabet.map(char => (
-        <Group
-            key={`patients-${char}`}
-            gender={gender.value}
-            char={char}
-            type={'patient'}
-            arr={filteredPatients.filter(patient => 
-                patient.user?.lastName?.[0]?.toLowerCase() === char
-            )}
-        />
-    ))
-)}
-
-
+                        {selectedLetter ? (
+                            <Group
+                                key={`patients-${selectedLetter}`}
+                                gender={gender.value}
+                                char={selectedLetter}
+                                type={'patient'}
+                                arr={displayedPatients}
+                            />
+                        ) : (
+                            alphabet.map(char => (
+                                <Group
+                                    key={`patients-${char}`}
+                                    gender={gender.value}
+                                    char={char}
+                                    type={'patient'}
+                                    arr={filteredPatients.filter(patient =>
+                                        typeof patient.user?.lastName === 'string' &&
+                                        patient.user.lastName.length > 0 &&
+                                        patient.user.lastName[0].toLowerCase() === char
+                                    )}
+                                />
+                            ))
+                        )}
                     </>
                 ) : (
                     <NoDataPlaceholder />

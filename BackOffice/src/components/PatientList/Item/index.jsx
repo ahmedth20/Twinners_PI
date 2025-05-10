@@ -22,6 +22,7 @@ import axios from "axios";
 import ConfirmActionModal from 'UI/ConfirmActionModal'
 import UpdateSimplePatientPopup from 'pages/UpdateSimplePatientPopup';
 import DetailsPopUp from 'pages/DetailsPopUp';
+import MedicalFormUpdate from '@pages/MedicalFormUpdate';
 
 const StyledClipboardIcon = styled(CiMedicalClipboard)`
   color: rgb(129, 135, 139);
@@ -111,8 +112,12 @@ const Item = ({ type, data }) => {
     navigate("/dashboard_f", { state: { data } })
   };
   const handleUpdate = async () => {
-    setIsUpdateModalOpen(true);
+   
+  //  setIsUpdateModalOpen(true);
+  navigate(`/medical_form_update/${data._id}`, { state: { patientData: data } });
+
   };
+
   const handleConfirmDelete = async () => {
     try {
       await PatientService.deletePatient(data._id);
@@ -131,6 +136,7 @@ const Item = ({ type, data }) => {
   const handleCancelUpdate = () => {
     setIsUpdateModalOpen(false);
   };
+  
   const handleToggleStatus = async () => {
     setIsStatusModalOpen(true); // Afficher le modal de confirmation avant de basculer l'état
   };
@@ -247,13 +253,18 @@ const Item = ({ type, data }) => {
           iconColor={isActive ? "#e53e3e" : "#38B2AC"}
         />
       )}
+{/*{isUpdateModalOpen &&
+       <MedicalFormUpdate 
+       isOpen={isUpdateModalOpen} 
+       onClose={handleCancelUpdate} 
+       data={data} />}*/}
 
-      {isUpdateModalOpen &&
+   {/* {isUpdateModalOpen &&
        <UpdateSimplePatientPopup 
        isOpen={isUpdateModalOpen} 
        onClose={handleCancelUpdate} 
        data={data} />}
-      
+      */ }
       {isDetailsModalOpen &&
        <DetailsPopUp 
        isOpen={isDetailsModalOpen} 

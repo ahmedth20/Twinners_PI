@@ -13,10 +13,10 @@ const socket = io('http://localhost:5000', {
 const ParamedicResponseAmbulance = () => {
   const [notification, setNotification] = useState('');
   const [patientSocketId, setPatientSocketId] = useState('');
-  const [isAssigned, setIsAssigned] = useState(false);
+  const [setIsAssigned] = useState(false);
   const [history, setHistory] = useState([]);
   const user = useSelector(state => state.auth.user.user.id);
-  const [paramedics, setParamedics] = useState([]);
+  const [setParamedics] = useState([]);
 
   // Charger l'historique depuis localStorage au démarrage
   useEffect(() => {

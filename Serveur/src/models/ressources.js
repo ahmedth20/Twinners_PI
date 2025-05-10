@@ -11,11 +11,12 @@ const ressourceSchema = new mongoose.Schema({
     maintenance: { type: Number, required: true }
   },
   serviceManager: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceManager", required: true }
-}, { timestamps: false, versionKey: false });
+}, { timestamps: true, versionKey: false }); // Ajout des timestamps
 
 // Auto-incrémentation de `reference` avant l'enregistrement
 ressourceSchema.pre("save", async function (next) {
   if (!this.reference) {
+    // Récupérer la ressource avec la référence la plus élevée
     const lastRessource = await mongoose.model("Ressource").findOne().sort({ reference: -1 });
     this.reference = lastRessource ? lastRessource.reference + 1 : 1;
   }

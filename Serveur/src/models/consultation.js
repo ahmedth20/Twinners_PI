@@ -7,7 +7,9 @@ const consultationSchema = new mongoose.Schema({
   status: { type: String, required: true, enum: ["Planned", "Ongoing", "Completed", "Cancelled"] },
   diagnostic: { type: Map, of: String },
   patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
-  doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true }
+  doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
+  emergencyRoom: { type: mongoose.Schema.Types.ObjectId, ref: "emergencyRoom", required: true }
+
 }, { timestamps: false, versionKey: false });
 
 // Auto-incrémentation manuelle
