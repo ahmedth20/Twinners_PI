@@ -28,7 +28,7 @@ export const menuchefservice = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },
@@ -103,7 +103,7 @@ export const menudoctors = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },
@@ -112,10 +112,18 @@ export const menudoctors = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
+            { name: "Patient File", link: '/patientFile' },
         
         ]
     },
-  
+    {
+        cat: 'consultaions',
+        icon: 'users',
+        links: [
+            { name: "Liste Of consultaions", link: '/consultations' },
+        
+        ]
+    },
     {
         cat: 'messages',
         icon: 'comment',
@@ -162,7 +170,7 @@ export const menustaff = [
         cat: 'Schedules',
         icon: 'calendar',
         links: [
-            { name: "Doctor Schedules", link: '/doctor_appointments' }
+            { name: "Staff Schedules", link: '/staff_appointments' }
         ]
     },
   
@@ -174,17 +182,16 @@ export const menustaff = [
         
         ]
     },
-   
     {
-        cat: 'reviews',
-        icon: 'star',
+        cat: 'messages',
+        icon: 'comment',
         links: [
-            { name: "Doctor Reviews", link: '/doctor_reviews' },
-            { name: "Patient Reviews", link: '/patient_reviews' },
-
+            { name: "Doctor Messenger", link: '/doctor_messenger' },
+  
+        
         ]
     },
-   
+
     {
         icon: 'settings',
         name: 'Settings',
@@ -226,6 +233,7 @@ export const menuparamedic = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
+            { name: "Patient File", link: '/patientFile' },
         
         ]
     },
@@ -239,8 +247,6 @@ export const menuparamedic = [
 
         ]
     },
-   
-    
     {
         cat: 'reviews',
         icon: 'star',
@@ -282,7 +288,7 @@ export const menuadmin = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },

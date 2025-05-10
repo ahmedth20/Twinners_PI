@@ -47,7 +47,7 @@ const Navbar = () => {
   const bodyOverlay2Ref = useRef(null);
   const closeBtn2Ref = useRef(null);
   const [user1, setUser1] = useState({});
-  const user = useSelector(state => state.auth.user.user1.id);
+  const user = useSelector(state => state.auth.user.user?.id);
 
   useEffect(() => {
     const fetchUser = async () => {

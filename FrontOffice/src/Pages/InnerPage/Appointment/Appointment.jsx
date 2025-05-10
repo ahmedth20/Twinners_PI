@@ -15,7 +15,17 @@ import * as z from "zod";
 import PatientService from '../../../services/PatientService';
 import { useForm } from 'react-hook-form';
 import { useSelector } from "react-redux";
+import openaiService from '../../../services/openaiServices';
+import DoctorService from '../../../services/DoctorService';
+import emergencyRoomService from '../../../services/emergencyRoomService';
+import axios from 'axios';
+import ConsultationService from '../../../services/consultationService';
+import { useEffect, useRef, useState } from 'react';
+import io from 'socket.io-client';
+const socket = io('http://localhost:5000');
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const patientSchema = z.object({
   height: z.preprocess((val) => Number(val), 
   z.number()
@@ -64,7 +74,7 @@ const TestiData = [
 ];
 
 const Appoinment = ({ id }) => {
-  const {
+   const {
     register,
     handleSubmit,
     formState: { errors },
@@ -72,22 +82,120 @@ const Appoinment = ({ id }) => {
   useForm({
     resolver: zodResolver(patientSchema),
   });
-  
   const user = useSelector(state => state.auth.user.user1.id); 
+  const sendNotification = async (consultationDataDetails) => {
+    console.log("Envoi des données de la consultation :", consultationDataDetails);  // Vérifiez ici
+    socket.emit('send_notification', consultationDataDetails);
+  };
+  
   
   const onSubmit = async (data) => {
     try {
-      console.log("Données soumises :", data);
-      console.log("Données soumises :", user);
-     const patientData = { ...data, user: user }; 
-         await PatientService.createSimplePatientFront(patientData); 
-            alert("✅ Patient ajouté avec succès !");
-      onClose();
+      console.log(data);
+  
+      const patientData = { ...data, user: user };
+     const SavedPatient= await PatientService.createSimplePatientFront(patientData);
+     console.log("SavedPatient :", SavedPatient);
+     
+  
+      // Appel à l'IA pour deviner la spécialité
+      const specialty = await openaiService.getSpeciality(data);
+      const specialtyCleaned = specialty.specialty.split(" ")[0];
+      console.log("Spécialité devinée (nettoyée) :", specialtyCleaned);
+
+      // Appel pour trouver un médecin disponible avec cette spécialité
+      const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialty/${specialtyCleaned}`);
+      const doctor = doctorResponse.data; // On prend le premier disponible
+      console.log("Médecin trouvé :", doctor);
+
+      // Récupération d'une salle d'urgence aléatoire dans le même département
+      console.log(doctor.departement);
+      const roomResponse = await axios.get(`http://localhost:5000/emergencyrooms/random/${doctor.departement}`);
+      const room = roomResponse.data; // On prend le premier disponible
+     
+      //const room = await emergencyRoomService.getRandomEmergencyRoomByDepartement(doctor.departement);
+      console.log("Salle d'urgence trouvée :", room);
+       
+      const consultationData = {
+        duration: 30,  // Exemple de durée, tu peux la personnaliser
+        date: new Date(),
+        status: "Planned",  // Statut initial
+        diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+        patient: SavedPatient.patient._id,  // Assure-toi que l'ID patient est bien récupéré
+        doctor: doctor._id,  // ID du médecin
+        emergencyRoom: room._id  // ID de la salle d'urgence
+      };
+  
+      console.log("Données de la consultation :", consultationData);
+       const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
+      console.log("Consultation créée avec succès :", createdConsultation.data);
+  
+      alert("✅ Patient ajouté avec succès !");
+
+      await axios.put(`http://localhost:5000/doctors/${doctor._id}`, { availability: false });
+      console.log(`Médecin ${doctor._id} mis à jour à disponibilité: false`);
+
+      const newCapacity = room.capacity - 1;
+      const emergencyRoomUpdate = {
+        capacity: newCapacity,
+        availability: newCapacity > 0 // dispo seulement s'il reste de la place
+      };
+
+      await axios.put(`http://localhost:5000/emergencyrooms/${room._id}`, emergencyRoomUpdate);
+      
+      console.log(`Salle d'urgence ${room._id} mise à jour avec capacité: ${newCapacity} et disponibilité: ${emergencyRoomUpdate.availability}`);
+            const consultation = createdConsultation.data;
+            const doctorResponses = await axios.get(`http://localhost:5000/doctors/${createdConsultation.data.doctor}`);
+            const patientResponse = await axios.get(`http://localhost:5000/patient/details/${createdConsultation.data.patient}`);
+            const roomResponses = await axios.get(`http://localhost:5000/emergencyrooms/${createdConsultation.data.emergencyRoom}`);
+
+            const doctorName = `${doctorResponses.data.user.firstName} ${doctorResponses.data.user.lastName}`;
+            const patientName = `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`;
+            const roomNumber = roomResponses.data.reference;
+            console.log(SavedPatient.patient._id);
+            console.log(createdConsultation.data._id);
+            try {
+              const response = await axios.put(`http://localhost:5000/patient/add-consultation/${SavedPatient.patient._id}`, {
+                consultationId: createdConsultation.data._id // Passe l'ID de la consultation
+              });
+            
+              if (response.status === 200) {
+                console.log("🟢 Consultation ajoutée avec succès :", response.data);
+              } else {
+                console.log("⚠️ Mise à jour partielle :", response.status);
+              }
+            } catch (error) {
+              console.error("❌ Erreur lors de l'ajout de la consultation :", error.response ? error.response.data : error.message);
+            }
+            
+            
+            const consultationDataDetails = {
+              duration: 30,  // Exemple de durée, tu peux la personnaliser
+              date: new Date(),
+              status: "Planned",  // Statut initial
+              diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+              patient: `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`,  // Assure-toi que l'ID patient est bien récupéré
+              emergencyRoom: roomResponses.data.reference  // ID de la salle d'urgence
+            };
+            sendNotification(consultationDataDetails);
+      
+       toast.success(
+              <div>
+                <p><strong>👤 Patient:</strong> {patientName}</p>
+                <p><strong>🚑 Doctor:</strong> {doctorName}</p>
+                <p><strong>🏥 Emergency Room:</strong> Room #{roomNumber}</p>
+                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
+                <p><strong>📅 Date:</strong> {new Date(consultation.date).toLocaleString()}</p>
+              </div>,
+              { position: "top-center", autoClose: false }
+            );
+
     } catch (error) {
       alert("❌ Erreur lors de l'ajout du patient.");
     }
   };
-  
+
+
   const settings = {
     loop: true,
     initialSlide: 1,
@@ -122,6 +230,7 @@ const Appoinment = ({ id }) => {
       },
     },
   };
+
   return (
     <section  className='px-5 2xl:px-20 bg-BodyBg-0 pt-[106px] pb-[120px] relative z-10 overflow-hidden'>
       <div className='absolute -z-10 -top-1/2 left-1/2 -translate-x-1/2' id={id}>
@@ -370,7 +479,7 @@ const Appoinment = ({ id }) => {
               </div>
 
               </form>
-
+          
               </div>
 
           </div>

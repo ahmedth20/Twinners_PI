@@ -1,0 +1,267 @@
+import React, { useEffect, useState } from 'react';
+import RessourceService from '../services/Equipements';
+import { useSelector } from 'react-redux';
+import { jwtDecode } from "jwt-decode";
+import styles from "../styles/styles"; // Importer les styles
+import { FaEdit, FaTrash } from 'react-icons/fa';
+
+const Ressources = () => {
+  const token = useSelector(state => state.auth.user.token);
+  const decoded = jwtDecode(token);
+
+  const [ressources, setRessources] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    type: '',
+    quantity: '',
+    usage: {
+      inUse: '',
+      available: '',
+      maintenance: ''
+    },
+    serviceManager: decoded.userId || ''
+  });
+
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchRessources();
+  }, []);
+
+  const fetchRessources = async () => {
+    try {
+      const data = await RessourceService.getAllResources();
+      setRessources(data);
+    } catch (err) {
+      setError('Erreur lors du chargement des ressources.');
+    }
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    // Convertir les champs en nombre uniquement au moment de l'envoi
+    const dataToSubmit = {
+      ...formData,
+      quantity: formData.quantity ? parseInt(formData.quantity) : 0,
+      usage: {
+        inUse: formData.usage.inUse ? parseInt(formData.usage.inUse) : 0,
+        available: formData.usage.available ? parseInt(formData.usage.available) : 0,
+        maintenance: formData.usage.maintenance ? parseInt(formData.usage.maintenance) : 0
+      }
+    };
+
+    if (
+      !formData.name || !formData.type || formData.quantity === "" ||
+      !formData.usage || formData.usage.inUse === "" ||
+      formData.usage.available === "" || formData.usage.maintenance === "" ||
+      !formData.serviceManager
+    ) {
+      setError("Tous les champs doivent être remplis");
+      return;
+    }
+
+    try {
+      if (isEditing) {
+        await RessourceService.updateResource(editId, dataToSubmit);
+      } else {
+        await RessourceService.createResource(dataToSubmit);
+      }
+
+      setFormData({
+        name: '',
+        type: '',
+        quantity: '',
+        usage: { inUse: '', available: '', maintenance: '' },
+        serviceManager: decoded.userId || ''
+      });
+
+      setIsEditing(false);
+      setEditId(null);
+      setError('');
+      fetchRessources();
+      setShowForm(false);
+    } catch (err) {
+      setError(err.response?.data?.message || "Erreur lors de la création/mise à jour.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await RessourceService.deleteResource(id);
+      fetchRessources();
+    } catch (err) {
+      setError('Erreur lors de la suppression.');
+    }
+  };
+
+  const handleEdit = (resource) => {
+    setFormData({
+      name: resource.name,
+      type: resource.type,
+      quantity: resource.quantity,
+      usage: {
+        inUse: resource.usage.inUse,
+        available: resource.usage.available,
+        maintenance: resource.usage.maintenance
+      },
+      serviceManager: decoded.userId || ''
+    });
+    setEditId(resource._id);
+    setIsEditing(true);
+    setShowForm(true);
+  };
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h2 style={styles.title}>Gestion des Ressources</h2>
+        <button onClick={() => {
+          setShowForm(!showForm);
+          setFormData({
+            name: '',
+            type: '',
+            quantity: '',
+            usage: { inUse: '', available: '', maintenance: '' },
+            serviceManager: decoded.userId || ''
+          });
+          setIsEditing(false);
+          setEditId(null);
+        }} style={styles.createButton}>
+          {showForm ? "Annuler" : "Créer une ressource"}
+        </button>
+      </div>
+
+      {error && <p style={styles.error}>{error}</p>}
+
+      {showForm && (
+        <form onSubmit={handleCreate} style={styles.form}>
+          <div style={styles.formGroup}>
+            <input
+              type="text"
+              placeholder="Nom"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <input
+              type="text"
+              placeholder="Type"
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <input
+              type="number"
+              placeholder="Quantité"
+              value={formData.quantity}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <input
+              type="number"
+              placeholder="En usage"
+              value={formData.usage.inUse}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  usage: { ...formData.usage, inUse: e.target.value }
+                })
+              }
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <input
+              type="number"
+              placeholder="Disponible"
+              value={formData.usage.available}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  usage: { ...formData.usage, available: e.target.value }
+                })
+              }
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <input
+              type="number"
+              placeholder="Maintenance"
+              value={formData.usage.maintenance}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  usage: { ...formData.usage, maintenance: e.target.value }
+                })
+              }
+              required
+              style={styles.input}
+            />
+          </div>
+
+          <button type="submit" style={styles.submitButton}>
+            {isEditing ? 'Mettre à jour' : 'Créer'}
+          </button>
+        </form>
+      )}
+
+      <h3>Liste des Ressources</h3>
+      <table style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.tableHeader}>Nom</th>
+            <th style={styles.tableHeader}>Type</th>
+            <th style={styles.tableHeader}>Quantité</th>
+            <th style={styles.tableHeader}>En Usage</th>
+            <th style={styles.tableHeader}>Disponible</th>
+            <th style={styles.tableHeader}>Maintenance</th>
+            <th style={styles.tableHeader}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ressources.map((res) => (
+            <tr key={res._id} style={styles.tableRow}>
+              <td style={styles.tableCell}>{res.name}</td>
+              <td style={styles.tableCell}>{res.type}</td>
+              <td style={styles.tableCell}>{res.quantity}</td>
+              <td style={styles.tableCell}>{res.usage.inUse}</td>
+              <td style={styles.tableCell}>{res.usage.available}</td>
+              <td style={styles.tableCell}>{res.usage.maintenance}</td>
+              <td style={styles.tableCell}>
+                <button onClick={() => handleEdit(res)} style={styles.iconButton}>
+                  <FaEdit />
+                </button>
+                <button onClick={() => handleDelete(res._id)} style={styles.iconButton}>
+                  <FaTrash />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default Ressources;

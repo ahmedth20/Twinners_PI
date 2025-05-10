@@ -17,8 +17,8 @@ const UserSettings = () => {
                     <div className="wrapper">
                         <h2 className="title">Your account</h2>
                         <TabNav>
-                            <TabNavItem eventKey="patient" title="Patient" />
-                            <TabNavItem eventKey="doctor" title="Doctor" />
+                            <TabNavItem eventKey="patient" title="Staff" />
+
                         </TabNav>
                     </div>
                     <Divider />
