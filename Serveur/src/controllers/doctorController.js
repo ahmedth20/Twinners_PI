@@ -45,7 +45,7 @@ const doctorController = {
         const { specialty } = req.params;
         const now = new Date();
     
-        const doctors = await Doctor.find({ speciality: specialty })
+        const doctors = await Doctor.find({ speciality: specialty, availability: true })
           .populate("user", "firstName lastName email");
     
         if (doctors.length === 0) {
@@ -70,7 +70,6 @@ const doctorController = {
           return res.status(404).json({ message: "Aucun médecin disponible actuellement pour cette spécialité" });
         }
     
-        // ✅ Choisir un médecin aléatoire parmi les disponibles
         const randomDoctor = availableDoctors[Math.floor(Math.random() * availableDoctors.length)];
     
         res.json(randomDoctor);
@@ -79,6 +78,7 @@ const doctorController = {
         res.status(500).json({ message: "Erreur lors de la récupération des médecins disponibles", error });
       }
     }
+    
     
 ,  
  // 📌 Ajouter un nouveau médecin

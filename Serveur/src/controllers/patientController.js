@@ -159,7 +159,7 @@ const patientController = {
         res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
     }
 },
-async createSimplePatientFront(req, res) {
+/*async createSimplePatientFront(req, res) {
     const session = await mongoose.startSession();
     session.startTransaction(); // Il manquait aussi ça pour la transaction
 
@@ -238,7 +238,158 @@ async createSimplePatientFront(req, res) {
     } finally {
         session.endSession();
     }
+}*/
+
+async createSimplePatientFront(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+      const {
+          user,
+          sex,
+          age,
+          phone,
+          address,
+          height,
+          weight,
+          allergies,
+          medicalHistory,
+          bloodGroup,
+          mainSymptom
+      } = req.body;
+
+      const existingPatient = await Patient.findOne({ user }).session(session);
+
+      let patientToReturn = null;  // Déclare une variable pour stocker le patient à renvoyer.
+
+      if (existingPatient) {
+          console.log("🟢 Patient trouvé, mise à jour en cours...");
+
+          existingPatient.sex = sex;
+          existingPatient.age = age;
+          existingPatient.phone = phone;
+          existingPatient.address = address;
+          existingPatient.height = height;
+          existingPatient.weight = weight;
+       
+          await existingPatient.save({ session });
+
+          if (existingPatient.medicalRecord) {
+              console.log("🟢 Dossier médical existant, mise à jour...");
+              const medicalRecord = await MedicalRecord.findById(existingPatient.medicalRecord).session(session);
+              medicalRecord.allergies.push(allergies);
+              medicalRecord.MedicalHistory.push(medicalHistory);
+              medicalRecord.bloodGroup = bloodGroup;
+              medicalRecord.diagnostic.symptoms.push(mainSymptom);
+              await medicalRecord.save({ session });
+
+              const newPatientFile = new PatientFile({
+                  reference: Math.floor(Math.random() * 10000),
+                  dateIssued: new Date().toISOString().split('T')[0],
+                  symptoms: mainSymptom,
+                  medicalRecord: medicalRecord._id,
+                  patient: existingPatient._id,
+              });
+
+              await newPatientFile.save({ session });
+              medicalRecord.patientFiles.push(newPatientFile._id);
+              await medicalRecord.save({ session });
+
+          } else {
+              console.log("🟢 Pas de dossier médical, création en cours...");
+              const newMedicalRecord = new MedicalRecord({
+                  reference: Math.floor(Math.random() * 10000),
+                  bloodGroup,
+                  allergies: allergies ? [allergies] : [],
+                  MedicalHistory: medicalHistory ? [medicalHistory] : [],
+                  diagnostic: { symptoms: [mainSymptom] },
+                  patient: existingPatient._id,
+              });
+
+              const savedMedicalRecord = await newMedicalRecord.save({ session });
+              existingPatient.medicalRecord = savedMedicalRecord._id;
+              await existingPatient.save({ session });
+
+              const newPatientFile = new PatientFile({
+                  reference: Math.floor(Math.random() * 10000),
+                  dateIssued: new Date().toISOString().split('T')[0],
+                  symptoms: mainSymptom,
+                  medicalRecord: savedMedicalRecord._id,
+                  patient: existingPatient._id,
+              });
+
+              await newPatientFile.save({ session });
+              savedMedicalRecord.patientFiles.push(newPatientFile._id);
+              await savedMedicalRecord.save({ session });
+          }
+
+          patientToReturn = existingPatient;  // Assigner le patient existant à la variable `patientToReturn`
+          console.log("✅ Mise à jour réussie.");
+
+      } else {
+          console.log("🟢 Création d'un nouveau patient...");
+          const newPatient = new Patient({
+              reference: Math.floor(Math.random() * 10000),
+              sex,
+              age,
+              phone,
+              address,
+              height,
+              weight,
+              user,
+              consultations: [],
+              medicalRecord: null,
+          });
+
+          const savedPatient = await newPatient.save({ session });
+
+          const newMedicalRecord = new MedicalRecord({
+              reference: Math.floor(Math.random() * 10000),
+              bloodGroup,
+              allergies: allergies ? [allergies] : [],
+              MedicalHistory: medicalHistory ? [medicalHistory] : [],
+              diagnostic: { symptoms: [mainSymptom] },
+              patient: savedPatient._id,
+          });
+
+          const savedMedicalRecord = await newMedicalRecord.save({ session });
+          savedPatient.medicalRecord = savedMedicalRecord._id;
+          await savedPatient.save({ session });
+
+          const newPatientFile = new PatientFile({
+              reference: Math.floor(Math.random() * 10000),
+              dateIssued: new Date().toISOString().split('T')[0],
+              symptoms: mainSymptom,
+              medicalRecord: savedMedicalRecord._id,
+              patient: savedPatient._id,
+          });
+
+          await newPatientFile.save({ session });
+          savedMedicalRecord.patientFiles.push(newPatientFile._id);
+          await savedMedicalRecord.save({ session });
+
+          patientToReturn = savedPatient;  // Assigner le nouveau patient à la variable `patientToReturn`
+          console.log("✅ Nouveau patient créé avec succès.");
+      }
+
+      await session.commitTransaction();
+
+      // Retourne le patient trouvé ou créé dans la réponse
+      res.status(201).json({
+          message: "Opération réussie.",
+          patient: patientToReturn,  // Renvoyer le patient à la fin
+      });
+
+  } catch (error) {
+      console.error("❌ Erreur :", error);
+      await session.abortTransaction();
+      res.status(500).json({ message: "Erreur lors de l'opération", error: error.message });
+  } finally {
+      session.endSession();
+  }
 }
+
 ,
 async createPatient(req, res) {
   const session = await mongoose.startSession();
@@ -556,8 +707,51 @@ async updatePatientProfile(req, res) {
       // Gestion des erreurs en cas d'échec de la mise à jour
       res.status(500).json({ message: 'Server error', error: error.message });
     }
-  }
-  
+  },
+  async addConsultationToPatient(req, res) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { consultationId } = req.body; // Consultation ID passé dans le body
+
+        const patientId = req.params.id; // Patient ID passé dans l'URL
+
+        // Vérifier si les IDs sont valides
+        if (!mongoose.Types.ObjectId.isValid(patientId)) {
+            return res.status(400).json({ message: "Patient ID invalide" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(consultationId)) {
+            return res.status(400).json({ message: "Consultation ID invalide" });
+        }
+
+        // Vérifier si le patient existe
+        const patient = await Patient.findById(patientId).session(session);
+        if (!patient) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Patient non trouvé" });
+        }
+
+        // Ajouter la consultation au tableau `consultations`
+        patient.consultations.push(consultationId);
+
+        await patient.save({ session });
+        await session.commitTransaction();
+        session.endSession();
+
+        console.log(`🟢 Consultation ${consultationId} ajoutée avec succès au patient ${patientId}`);
+        res.status(200).json({ message: "Consultation ajoutée avec succès" });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error("❌ Erreur lors de l'ajout de la consultation :", error);
+        res.status(500).json({ message: "Erreur lors de l'ajout de la consultation", error: error.message });
+    }
+}
+
+
 };
 
 

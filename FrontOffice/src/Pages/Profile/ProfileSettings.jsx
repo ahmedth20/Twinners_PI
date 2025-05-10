@@ -41,6 +41,7 @@ const ProfileSettings = () => {
   const [userData, setUserData] = useState({});
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [patientId, setPatientId] = useState("");
   const [phone, setPhone] = useState("");
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("");
@@ -64,6 +65,7 @@ const ProfileSettings = () => {
               setAge(data.age || "");
               setSex(data.sex || "");
               setAddress(data.address || "");
+              setPatientId(data._id|| "");
               console.log(data);
               
           } catch (error) {
@@ -96,15 +98,29 @@ const ProfileSettings = () => {
   useEffect(() => {
     const fetchConsultations = async () => {
       try {
-        const data = await ConsultationService.getConsultationsByUserId(user);
-        setConsultations(data);
+        const data = await ConsultationService.getConsultationsByPatient(patientId);
+
+        // Fetch des détails pour chaque docteur
+        const consultationsWithDoctor = await Promise.all(
+          data.map(async (consultation) => {
+            if (consultation.doctor) {
+              const doctorResponse = await axios.get(`http://localhost:5000/doctors/${consultation.doctor._id}`);
+              consultation.doctorName = `${doctorResponse.data.user.firstName} ${doctorResponse.data.user.lastName}`;
+            }
+            return consultation;
+          })
+        );
+  
+        setConsultations(consultationsWithDoctor);
+        console.log("consultations");
+        console.log(consultations);
       } catch (error) {
         console.error("Erreur lors de la récupération des consultations:", error);
       }
     };
 
     fetchConsultations();
-  }, [user]);
+  });
 
   const [operations, setOperations] = useState([]);
 
@@ -413,32 +429,33 @@ const ProfileSettings = () => {
                  {/* Contenu pour l'onglet Consultations */}
                  </h4>
                  {consultations.length ? (
-                <div className="space-y-6">
-                  {consultations.map((c, i) => (
-                    <div key={i} className="bg-white p-6 rounded-xl shadow-md text-gray-800">
-                      <p><strong>Reference:</strong> {c.reference || '—'}</p>
-                      <p><strong>Date:</strong> {c.date ? new Date(c.date).toLocaleDateString() : '—'}</p>
-                      <p><strong>Duration:</strong> {c.duration || '—'} min</p>
-                      <p><strong>Status:</strong> {c.status || '—'}</p>
-                      <div className="mt-3">
-                        <p className="font-medium">🧪 Diagnostic:</p>
-                        <ul className="list-disc list-inside ml-4">
-                          {c.diagnostic ? (
-                            Object.entries(c.diagnostic).map(([key, value], i) => (
-                              <li key={i}><strong>{key}:</strong> {value || '—'}</li>
-                            ))
-                          ) : (
-                            <li>—</li>
-                          )}
-                        </ul>
-                      </div>
-                      <p className="mt-2"><strong>Patient ID:</strong> {c.patient || '—'}</p>
-                      <p><strong>Doctor ID:</strong> {c.doctor || '—'}</p>
-                    </div>
-                  ))}    </div>
-                ) : (
-                  <p className="text-gray-600 italic">No consultations found.</p>
-                )}
+  <div className="space-y-6">
+    {consultations.map((c, i) => (
+      <div key={i} className="bg-white p-6 rounded-xl shadow-md text-gray-800">
+        <p><strong>Reference:</strong> {c.reference || '—'}</p>
+        <p><strong>Date:</strong> {c.date ? new Date(c.date).toLocaleDateString() : '—'}</p>
+        <p><strong>Duration:</strong> {c.duration || '—'} min</p>
+        <p><strong>Status:</strong> {c.status || '—'}</p>
+        <div className="mt-3">
+          <p className="font-medium">🧪 Diagnostic:</p>
+          <ul className="list-disc list-inside ml-4">
+            {c.diagnostic ? (
+              Object.entries(c.diagnostic).map(([key, value], i) => (
+                <li key={i}><strong>{key}:</strong> {value || '—'}</li>
+              ))
+            ) : (
+              <li>—</li>
+            )}
+          </ul>
+        </div>
+        <p><strong>With Doctor:</strong> {c.doctorName || '—'}</p> 
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-gray-600 italic">No consultations found.</p>
+)}
+
                 </div>
                 <div ref={medicalRecordRef} id="medicalRecord" className={`tab-section ${activeTab === 'medicalRecord' ? 'block' : 'hidden'}`}>
                 <h4 className="font-AlbertSans font-semibold text-2xl text-HeadingColor-0 pb-2 mb-8 relative before:absolute before:bottom-0 before:left-0 before:w-7 before:h-[2px] before:bg-PrimaryColor-0">
@@ -446,11 +463,10 @@ const ProfileSettings = () => {
                   {/* Contenu pour l'onglet Operations */}
                  </h4>
 
-                            {medicalRecord ? (
+                        {medicalRecord ? (
               <div className="min-h-screen bg-gray-100 p-6 md:p-10 font-AlbertSans">
                 <h1 className="text-4xl font-bold text-gray-800 mb-8">Medical Dashboard</h1>
 
-                {/* Patient Status Block */}
                 <div
                   className={`relative p-6 rounded-xl mb-8 text-lg font-medium shadow-xl border-4 transition
                     ${
@@ -473,7 +489,6 @@ const ProfileSettings = () => {
                   </p>
                 </div>
 
-                {/* Group: Diagnosis + Treatment */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
                     <h3 className="text-xl font-semibold mb-4">🩺 Diagnosis</h3>
@@ -510,7 +525,6 @@ const ProfileSettings = () => {
                   </div>
                 </div>
 
-                {/* Group: Additional Info + Medical History */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="bg-white text-gray-800 p-6 rounded-xl shadow-md">
                     <h3 className="text-xl font-semibold mb-4">📋 Additional Info</h3>
@@ -536,7 +550,6 @@ const ProfileSettings = () => {
                   </div>
                 </div>
 
-                {/* Patient File: full width */}
                 <div className="w-full bg-white text-gray-800 p-6 rounded-xl shadow-md">
                   <h3 className="text-xl font-semibold mb-4">📎 Patient File</h3>
                   {medicalRecord.patientFiles?.length ? (
@@ -557,7 +570,7 @@ const ProfileSettings = () => {
                         ) : (
                           <p className="text-gray-600 italic">Loading medical record...</p>
                         )}
-
+                          
               </div>
 
 
@@ -566,7 +579,7 @@ const ProfileSettings = () => {
                   Operations
                   {/* Contenu pour l'onglet Operations */}
                  </h4>
-                 {operations.length ? (
+               {operations.length ? (
                   <div className="space-y-6">
                     {operations.map((op, i) => (
                       <div key={i} className="bg-white p-6 rounded-xl shadow-md text-gray-800">
@@ -590,7 +603,7 @@ const ProfileSettings = () => {
                 Test Result
                   {/* Contenu pour l'onglet Test Result */}
                   </h4>
-                  {medicalRecord ? (
+                {medicalRecord ? (
                     <div className="bg-white p-6 rounded-xl shadow-md font-AlbertSans text-gray-800">
                       <ul className="list-disc list-inside space-y-2">
                         <li>
