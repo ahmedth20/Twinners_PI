@@ -72,10 +72,14 @@ const PatientsList = () => {
 
     // generate an array containing alphabet
     const alphabet = generateAlphabet();
+const isCharInPatients = (char, arr) => {
+    return Array.isArray(arr) && arr.some(patient =>
+        typeof patient?.user?.lastName === 'string' &&
+        patient.user.lastName.length > 0 &&
+        patient.user.lastName[0].toLowerCase() === char
+    );
+};
 
-    const isCharInPatients = (char, arr) => {
-        return arr.some(patient => patient.user?.lastName[0].toLowerCase() === char);
-    };
 
     useEffect(() => {
         contentRef.current?.scrollTo({
