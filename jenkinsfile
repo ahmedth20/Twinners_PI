@@ -59,7 +59,7 @@ pipeline {
 
 
 
-        stage('Build application') {
+        /*stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -74,9 +74,9 @@ pipeline {
                     }
                 }
             }
-        } 
+        }*/ 
 
-    /*  stage('Build application') {
+      stage('Build application') {
         steps {
             script {
                 def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -93,7 +93,6 @@ pipeline {
                             cd BackOffice
                             rm -rf node_modules package-lock.json
                             npm install --legacy-peer-deps --force
-                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
                             npm run build-dev
                         '''
                     } else if (dir == 'Serveur') {
@@ -107,7 +106,7 @@ pipeline {
                 }
             }
         }
-    }*/
+    }
 
           stage('Building images (node and mongo)') {
             steps {
