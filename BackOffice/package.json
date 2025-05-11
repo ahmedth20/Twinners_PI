@@ -35,6 +35,8 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@south-paw/react-vector-maps": "^3.1.0",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.0",
     "@testing-library/user-event": "^13.2.1",
     "axios": "^1.8.1",
     "chart.js": "^3.9.1",

@@ -105,7 +105,7 @@ export const menudoctors = [
         cat: 'Ressources',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },
@@ -193,7 +193,19 @@ export const menustaff = [
         
         ]
     },
-
+       {
+        cat: 'Finances',
+        icon: 'wallet',
+        links: [
+            { name: "Add transaction", link: '/PaymentPage' },
+            { name: "List of transactions", link: '/TransactionList' }
+        ]
+    },
+    /*{
+        icon: 'wallet',
+        name: 'Finances',
+        link: '/PaymentPage'
+    },*/
     {
         icon: 'settings',
         name: 'Settings',
@@ -289,10 +301,10 @@ export const menuadmin = [
         ]
     },
     {
-        cat: 'Ressources',
+        cat: '',
         icon: 'calendar',
         links: [
-            { name: "Equipements", link: '/TODO' }
+            { name: "Equipements", link: '/Equipements' }
             
         ]
     },

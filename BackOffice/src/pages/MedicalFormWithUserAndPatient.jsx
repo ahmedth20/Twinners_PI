@@ -1,29 +1,20 @@
 import React from "react";
 import Page from "layout/Page";
 import {
-  Container, Title, SectionTitle, Row, Column, Input, Select, TextArea
+  Container, Title, SectionTitle, Row, Column, Input, Select, TextArea,Button
 } from "../styles/medicalForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-// Validation Zod
 const formSchema = z.object({
-  // User Info
-  user: z.object({
-    username: z.string().min(1, "Username is required"),
-    email: z.string().email("Invalid email").min(1, "Email is required"),
-    phoneNumber: z.string().min(1, "Phone number is required"),
-  }),
-
-  // Patient Info
-  patient: z.object({
-    dateOfBirth: z.string().min(1, "Date of Birth is required"),
-    gender: z.enum(["Male", "Female", "Other"]),
-    address: z.string().min(1, "Address is required"),
-  }),
-
-  // Patient File Info
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  dateOfBirth: z.string().min(1, "Date of Birth is required"),
+  gender: z.enum(["Male", "Female", "Other"]),
+  address: z.string().min(1, "Address is required"),
   dateIssued: z.string().min(1, "Date is required"),
   description: z.string().optional(),
   symptoms: z.string().min(1, "Symptoms are required"),
@@ -32,7 +23,7 @@ const formSchema = z.object({
     chestXray: z.string().optional(),
     bloodTest: z.string().optional(),
     oxygenSaturation: z.string().optional(),
-  })
+  }).optional(),
 });
 
 const MedicalFormWithUserAndPatient = () => {
@@ -40,36 +31,30 @@ const MedicalFormWithUserAndPatient = () => {
     resolver: zodResolver(formSchema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
-    console.log("🧾 Données envoyées :", data);
+    const formattedData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      sex: data.gender,
+      age: new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear(),
+      phone: data.phone,
+      address: data.address,
+      dateIssued: data.dateIssued,
+      symptoms: data.symptoms,
+      emergencyLevel: data.emergencyLevel,
+      description: data.description,
+      testResults: {
+        chestXray: data.testResults?.chestXray,
+        bloodTest: data.testResults?.bloodTest,
+        oxygenSaturation: data.testResults?.oxygenSaturation,
+      },
+    };
 
     try {
-      const generatedMedicalRecord = "Record-" + Math.floor(Math.random() * 10000);
-      const generatedReference = Math.floor(Math.random() * 1000000);
-
-      const formattedData = {
-        user: {
-          username: data.user.username,
-          email: data.user.email,
-          phoneNumber: data.user.phoneNumber,
-        },
-        patient: {
-          dateOfBirth: data.patient.dateOfBirth,
-          gender: data.patient.gender,
-          address: data.patient.address,
-        },
-        reference: generatedReference,
-        dateIssued: data.dateIssued,
-        description: data.description,
-        symptoms: data.symptoms,
-        emergencyLevel: data.emergencyLevel,
-        medicalRecord: generatedMedicalRecord,
-        testResults: data.testResults
-      };
-
-      console.log("Données formatées pour l'API :", formattedData);
-
-      const response = await fetch("http://localhost:5000/patient", {
+      const response = await fetch("http://localhost:5000/patient/createSimplePatient1", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
@@ -77,6 +62,7 @@ const MedicalFormWithUserAndPatient = () => {
 
       if (response.ok) {
         const result = await response.json();
+        navigate("/patients");
         console.log("✅ Patient with file created:", result);
       } else {
         const errorText = await response.text();
@@ -99,52 +85,49 @@ const MedicalFormWithUserAndPatient = () => {
       <Container>
         <Title>Medical Form</Title>
 
-        {/* User Information */}
         <FormSection title="User Information">
           <Row>
             <Column>
-              <Input {...register("user.username")} placeholder="Username" />
-              {errors.user?.username && <p>{errors.user.username.message}</p>}
+              <Input {...register("firstName")} placeholder="First Name" />
+              {errors.firstName && <p>{errors.firstName.message}</p>}
             </Column>
             <Column>
-              <Input {...register("user.email")} placeholder="Email" type="email" />
-              {errors.user?.email && <p>{errors.user.email.message}</p>}
+              <Input {...register("lastName")} placeholder="Last Name" />
+              {errors.lastName && <p>{errors.lastName.message}</p>}
             </Column>
           </Row>
           <Row>
             <Column>
-              <Input {...register("user.phoneNumber")} placeholder="Phone Number" />
-              {errors.user?.phoneNumber && <p>{errors.user.phoneNumber.message}</p>}
+              <Input {...register("email")} placeholder="Email" type="email" />
+              {errors.email && <p>{errors.email.message}</p>}
             </Column>
           </Row>
         </FormSection>
 
-        {/* Patient Information */}
         <FormSection title="Patient Information">
           <Row>
             <Column>
-              <Input {...register("patient.dateOfBirth")} placeholder="Date of Birth" type="date" />
-              {errors.patient?.dateOfBirth && <p>{errors.patient.dateOfBirth.message}</p>}
+              <Input {...register("dateOfBirth")} placeholder="Date of Birth" type="date" />
+              {errors.dateOfBirth && <p>{errors.dateOfBirth.message}</p>}
             </Column>
             <Column>
-              <Select {...register("patient.gender")}>
+              <Select {...register("gender")}>
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </Select>
-              {errors.patient?.gender && <p>{errors.patient.gender.message}</p>}
+              {errors.gender && <p>{errors.gender.message}</p>}
             </Column>
           </Row>
           <Row>
             <Column>
-              <Input {...register("patient.address")} placeholder="Address" />
-              {errors.patient?.address && <p>{errors.patient.address.message}</p>}
+              <Input {...register("address")} placeholder="Address" />
+              {errors.address && <p>{errors.address.message}</p>}
             </Column>
           </Row>
         </FormSection>
 
-        {/* Patient File Information */}
         <FormSection title="Patient File Information">
           <Row>
             <Column>
@@ -173,7 +156,6 @@ const MedicalFormWithUserAndPatient = () => {
           </Row>
         </FormSection>
 
-        {/* Test Results */}
         <FormSection title="Test Results">
           <Row>
             <Column>
@@ -190,10 +172,11 @@ const MedicalFormWithUserAndPatient = () => {
           </Row>
         </FormSection>
 
-        <button type="submit" onClick={handleSubmit(onSubmit)}>Submit</button>
+        <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
     </Page>
   );
 };
 
 export default MedicalFormWithUserAndPatient;
+

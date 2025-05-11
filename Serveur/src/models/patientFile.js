@@ -7,7 +7,7 @@ const patientFileSchema = new mongoose.Schema({
   symptoms: { type: String, required: true },
   emergencyLevel: { type: String, enum: ["low", "moderate", "critical"] },
   paramedic: { type: mongoose.Schema.Types.ObjectId, ref: "Paramedic" },
-  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true },
+  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: false },
   testResults: {
     chestXray: { type: String },
     bloodTest: { type: String },
