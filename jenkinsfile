@@ -62,11 +62,9 @@ pipeline {
             steps {
                 script {
                     def projects = ['Serveur', 'BackOffice', 'FrontOffice']
-                    projects.each { dir ->
-                        steps {
-                            dir(dir) {
-                                sh 'npm run build --loglevel=error || true'
-                            }
+                    projects.each { project ->
+                        dir(project) {
+                            sh 'npm run build --loglevel=error || true'
                         }
                     }
                 }
