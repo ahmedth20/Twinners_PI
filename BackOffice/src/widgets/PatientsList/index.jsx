@@ -20,6 +20,8 @@ import useGenderFilter from 'hooks/useGenderFilter';
 // import corrected
 import PatientService from 'services/PatientService';
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
 const PatientsList = () => {
     const contentRef = useRef(null);
     const [patients, setPatients] = useState([]);
@@ -56,7 +58,6 @@ const PatientsList = () => {
         )
         : filteredPatients;
 
-    const alphabet = generateAlphabet();
 
     const isCharInPatients = (char, arr) => {
         return arr.some(patient =>

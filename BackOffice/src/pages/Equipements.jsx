@@ -3,7 +3,10 @@ import RessourceService from '../services/Equipements';
 import { useSelector } from 'react-redux';
 import { jwtDecode } from "jwt-decode";
 import styles from "../styles/styles"; // Importer les styles
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import io from 'socket.io-client';
 
 const Ressources = () => {
   const token = useSelector(state => state.auth.user.token);
@@ -26,6 +29,48 @@ const Ressources = () => {
   });
 
   const [error, setError] = useState('');
+  const [socket, setSocket] = useState(null);
+
+  // Initialiser la connexion socket une seule fois
+  useEffect(() => {
+    const newSocket = io('http://localhost:5000'); // Remplacez par votre URL de serveur
+    setSocket(newSocket);
+
+    // Nettoyage lors du démontage du composant
+    return () => {
+      if (newSocket) newSocket.disconnect();
+    };
+  }, []);
+
+  // Écouter les événements de stock bas
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('low-stock', (data) => {
+      // Notification avec react-toastify
+      toast.warning(
+        <div>
+          <FaExclamationTriangle style={{ marginRight: '8px' }} />
+          Stock bas: {data.name} ({data.quantity} unités disponibles)
+        </div>, 
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
+        }
+      );
+      
+      // Mettre à jour la liste des ressources si celle concernée est présente
+      fetchRessources();
+    });
+
+    return () => {
+      socket.off('low-stock');
+    };
+  }, [socket]);
 
   useEffect(() => {
     fetchRessources();
@@ -83,7 +128,7 @@ const Ressources = () => {
       setEditId(null);
       setError('');
       fetchRessources();
-      setShowForm(false);
+      setShowForm(false); // Fermer le formulaire après la création ou modification
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de la création/mise à jour.");
     }
@@ -112,11 +157,19 @@ const Ressources = () => {
     });
     setEditId(resource._id);
     setIsEditing(true);
-    setShowForm(true);
+    setShowForm(true); // Afficher le formulaire en mode édition
+  };
+
+  // Style pour les ressources avec stock bas
+  const getLowStockStyle = (quantity) => {
+    return quantity < 10 ? { ...styles.tableCell, color: 'red', fontWeight: 'bold' } : styles.tableCell;
   };
 
   return (
     <div style={styles.container}>
+      {/* Conteneur pour les notifications */}
+      <ToastContainer />
+      
       <div style={styles.header}>
         <h2 style={styles.title}>Gestion des Ressources</h2>
         <button onClick={() => {
@@ -244,7 +297,16 @@ const Ressources = () => {
             <tr key={res._id} style={styles.tableRow}>
               <td style={styles.tableCell}>{res.name}</td>
               <td style={styles.tableCell}>{res.type}</td>
-              <td style={styles.tableCell}>{res.quantity}</td>
+              <td style={getLowStockStyle(res.quantity)}>
+                {res.quantity} 
+                {res.quantity < 10 && (
+                  <FaExclamationTriangle 
+                    color="orange" 
+                    style={{ marginLeft: '5px' }} 
+                    title="Stock bas!" 
+                  />
+                )}
+              </td>
               <td style={styles.tableCell}>{res.usage.inUse}</td>
               <td style={styles.tableCell}>{res.usage.available}</td>
               <td style={styles.tableCell}>{res.usage.maintenance}</td>
