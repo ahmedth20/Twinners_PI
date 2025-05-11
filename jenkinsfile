@@ -22,7 +22,26 @@ pipeline {
                 }
             }
         }
-         stage('Unit Test') {
+
+        stage('Unit Test') {
+            steps {
+                script {
+                    // FrontOffice : Nettoyer et réinstaller avant test
+                    sh '''
+                        cd FrontOffice
+                        rm -rf node_modules package-lock.json
+                        npm install --legacy-peer-deps
+                        npm test
+                    '''
+                    // BackOffice et Serveur : Tests inchangés
+                    def legacyProjects = ['BackOffice', 'Serveur']
+                    legacyProjects.each { dir ->
+                        sh "cd ${dir} && npm test -- --passWithNoTests"
+                    }
+                }
+            }
+        }
+        /* stage('Unit Test') {
             steps {
                 script {
                     sh 'cd FrontOffice && npm  test '
@@ -32,7 +51,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
             stage('SonarQube Analysis') {
                 steps {
