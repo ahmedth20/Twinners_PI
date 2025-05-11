@@ -83,7 +83,7 @@ pipeline {
                     }
                 }
             }*/
-            stage('Build application') {
+            /*stage('Build application') {
                 steps {
                     script {
                         def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -108,7 +108,20 @@ pipeline {
                         }
                     }
                 }
-            }
+            }*/
+
+                    stage('Build Application') {
+                        steps {
+                            script {
+                                def projects = ['Serveur', 'BackOffice', 'FrontOffice']
+                                projects.each { dir ->
+                                    dir(dir) {
+                                        sh 'npm run build --loglevel=error || true'
+                                    }
+                                }
+                            }
+                        }
+                    }
 
           stage('Building images (node and mongo)') {
             steps {
