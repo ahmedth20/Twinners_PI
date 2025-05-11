@@ -92,7 +92,7 @@ stage('Quality Gate') {
     }
 }*/
 
-    /*    stage('Build application') {
+        stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -107,16 +107,16 @@ stage('Quality Gate') {
                     }
                 }
             }
-        } */
+        } 
 
-        /*  stage('Building images (node and mongo)') {
+          stage('Building images (node and mongo)') {
             steps {
                     script {
                         sh 'cd Serveur docker-compose build'
                     }
             }
            }
-*/
+
 
         /*stage('Run application') {
             steps {
