@@ -57,6 +57,32 @@ pipeline {
                 }
             }*/
 
+            stage('Build Application') {
+                parallel {
+                    stage('Build Server') {
+                        steps {
+                            dir('Serveur') {
+                                sh 'npm run build --loglevel=error || true'
+                            }
+                        }
+                    }
+                    stage('Build Client') {
+                        steps {
+                            dir('BackOffice') {
+                                sh 'npm run build --loglevel=error || true'
+                            }
+                        }
+                    }
+                    stage('Build FrontOffice') {
+                        steps {
+                            dir('FrontOffice') {
+                                sh 'npm run build --loglevel=error || true'
+                            }
+                        }
+                    }
+                }
+            }
+
 
 
         /*stage('Build application') {
@@ -76,7 +102,7 @@ pipeline {
             }
         }*/ 
 
-      stage('Build application') {
+      /*stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -107,7 +133,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
           stage('Building images (node and mongo)') {
             steps {
