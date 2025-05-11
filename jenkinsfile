@@ -8,8 +8,8 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_REPOSITORY = "pi"
         NEXUS_CREDENTIAL_ID = "nexus"
-        DOCKER_USERNAME = 'yosrcharek'  // Nom d'utilisateur Docker
-        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'  // Token d'accès personnel Docker
+        DOCKER_USERNAME = 'yosrcharek'
+        DOCKER_PASSWORD = 'dckr_pat_GXTrRdyKoarWGjufHGPrnkywoxA'
     }
     stages {
         stage('Install dependencies') {
@@ -17,7 +17,13 @@ pipeline {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
                     projects.each { dir ->
-                        sh "cd ${dir} && npm install --legacy-peer-deps"
+                        sh """
+                            if [ -d "${dir}" ]; then
+                                cd ${dir} && npm install --legacy-peer-deps
+                            else
+                                echo "Répertoire ${dir} non trouvé, étape ignorée pour ce projet."
+                            fi
+                        """
                     }
                 }
             }
@@ -26,14 +32,12 @@ pipeline {
         /*stage('Unit Test') {
             steps {
                 script {
-                    // FrontOffice : Nettoyer et réinstaller avant test
                     sh '''
                         cd FrontOffice
                         rm -rf node_modules package-lock.json
                         npm install --legacy-peer-deps
                         npm test
                     '''
-                    // BackOffice et Serveur : Tests inchangés
                     def legacyProjects = ['BackOffice', 'Serveur']
                     legacyProjects.each { dir ->
                         sh "cd ${dir} && npm test -- --passWithNoTests"
@@ -42,94 +46,42 @@ pipeline {
             }
         }
 
-            stage('SonarQube Analysis') {
-                steps {
-                    script {
-                        def scannerHome = tool 'jenkinsSonar'
-                        withSonarQubeEnv('SonarQube') {
-                            // Ajouter cette ligne
-                            sh 'export SONAR_SCANNER_OPTS="-Xmx1024m -Dsonar.javascript.bridge.server.timeout=60000 -Dsonar.exclusions=src/controllers/ambulanceController.js"'
-            
-                            // Ensuite lancer le scanner
-                            sh "${scannerHome}/bin/sonar-scanner -X"
-                        }
-                    }
-                }
-            }*/
-            
-
-            /*stage('Build Application') {
-                parallel {
-                    stage('Build Server') {
-                        steps {
-                            dir('Serveur') {
-                                sh 'npm run build --loglevel=error || true'
-                            }
-                        }
-                    }
-                    stage('Build Client') {
-                        steps {
-                            dir('BackOffice') {
-                                sh 'npm run build --loglevel=error || true'
-                            }
-                        }
-                    }
-                    stage('Build FrontOffice') {
-                        steps {
-                            dir('FrontOffice') {
-                                sh 'npm run build --loglevel=error || true'
-                            }
-                        }
-                    }
-                }
-            }*/
-            /*stage('Build application') {
-                steps {
-                    script {
-                        def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                        // Préparation globale pour tous les projets
-                        projects.each { dir ->
-                            sh '''
-                                cd ${dir}
-                                rm -rf node_modules package-lock.json
-                                npm install --legacy-peer-deps --force
-                                npm install ajv@8.12.0 --save --legacy-peer-deps --force
-                            '''
-                        }
-                        // Exécution des builds
-                        projects.each { dir ->
-                            if (dir == 'FrontOffice') {
-                                sh 'cd FrontOffice && npm run build'
-                            } else if (dir == 'BackOffice') {
-                                sh 'cd BackOffice && npm run build-dev'
-                            } else if (dir == 'Serveur') {
-                                sh 'cd Serveur && npm run build'
-                            }
-                        }
-                    }
-                }
-            }*/
-
-                    stage('Build Application') {
-                        steps {
-                            script {
-                                def projects = ['Serveur', 'BackOffice', 'FrontOffice']
-                                projects.each { dir ->
-                                    dir(dir) {
-                                        sh 'npm run build --loglevel=error || true'
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-          stage('Building images (node and mongo)') {
+        stage('SonarQube Analysis') {
             steps {
-                    script {
-                        sh 'cd Serveur docker-compose build'
+                script {
+                    def scannerHome = tool 'jenkinsSonar'
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'export SONAR_SCANNER_OPTS="-Xmx1024m -Dsonar.javascript.bridge.server.timeout=60000 -Dsonar.exclusions=src/controllers/ambulanceController.js"'
+                        sh "${scannerHome}/bin/sonar-scanner -X"
                     }
+                }
             }
-           }
+        }*/
+
+        stage('Build Application') {
+            steps {
+                script {
+                    def projects = ['Serveur', 'BackOffice', 'FrontOffice']
+                    projects.each { dir ->
+                        steps {
+                            dir(dir) {
+                                sh 'npm run build --loglevel=error || true'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Building images (node and mongo)') {
+            steps {
+                script {
+                    sh 'cd Serveur && docker-compose build'
+                }
+            }
+        }
+    }
+}
 
 
         /*stage('Run application') {
