@@ -58,7 +58,7 @@ pipeline {
             }*/
             
 
-            stage('Build Application') {
+            /*stage('Build Application') {
                 parallel {
                     stage('Build Server') {
                         steps {
@@ -82,7 +82,47 @@ pipeline {
                         }
                     }
                 }
-            }
+            }*/
+            stage('Build Application') {
+                        parallel {
+                            stage('Build Server') {
+                                steps {
+                                    dir('Serveur') {
+                                        sh '''
+                                            rm -rf node_modules package-lock.json
+                                            npm install --legacy-peer-deps --force
+                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
+                                            npm run build || true
+                                        '''
+                                    }
+                                }
+                            }
+                            stage('Build Client') {
+                                steps {
+                                    dir('BackOffice') {
+                                        sh '''
+                                            rm -rf node_modules package-lock.json
+                                            npm install --legacy-peer-deps --force
+                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
+                                            npm run build-dev
+                                        '''
+                                    }
+                                }
+                            }
+                            stage('Build FrontOffice') {
+                                steps {
+                                    dir('FrontOffice') {
+                                        sh '''
+                                            rm -rf node_modules package-lock.json
+                                            npm install --legacy-peer-deps --force
+                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
+                                            npm run build
+                                        '''
+                                    }
+                                }
+                            }
+                        }
+                    }
 
           stage('Building images (node and mongo)') {
             steps {
