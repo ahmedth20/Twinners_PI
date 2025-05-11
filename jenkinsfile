@@ -56,20 +56,9 @@ pipeline {
                     }
                 }
             }*/
-            stage('Build Application') {
-                steps {
-                    script {
-                        def projects = ['Serveur', 'BackOffice', 'FrontOffice']
-                        projects.each { dir ->
-                            dir(dir) {
-                                sh 'npm run build --loglevel=error || true'
-                            }
-                        }
-                    }
-                }
-            }
+            
 
-            /*stage('Build Application') {
+            stage('Build Application') {
                 parallel {
                     stage('Build Server') {
                         steps {
@@ -93,7 +82,7 @@ pipeline {
                         }
                     }
                 }
-            }*/
+            }
 
           stage('Building images (node and mongo)') {
             steps {
