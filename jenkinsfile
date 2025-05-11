@@ -41,17 +41,6 @@ pipeline {
                 }
             }
         }
-        /* stage('Unit Test') {
-            steps {
-                script {
-                    sh 'cd FrontOffice && npm  test '
-                    def legacyProjects = ['BackOffice', 'Serveur']
-                    legacyProjects.each { dir ->
-                        sh "cd ${dir} && npm test -- --passWithNoTests"
-                    }
-                }
-            }
-        }*/
 
             stage('SonarQube Analysis') {
                 steps {
@@ -87,28 +76,38 @@ pipeline {
             }
         } */
 
-       stage('Build application') {
-            steps {
-                script {
-                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
-                    projects.each { dir ->
-                        if (dir == 'FrontOffice') {
-                            sh "cd ${dir} && npm run build"
-                        } else if (dir == 'BackOffice') {
-                            sh '''
-                                cd BackOffice
-                                rm -rf node_modules package-lock.json
-                                npm install --legacy-peer-deps --force
-                                npm install ajv@8.12.0 --save
-                                npm run build-dev
-                            '''
-                        } else if (dir == 'Serveur') {
-                            sh "cd ${dir} && npm run build"
-                        }
-                    }
+      stage('Build application') {
+    steps {
+        script {
+            def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+            projects.each { dir ->
+                if (dir == 'FrontOffice') {
+                    sh '''
+                        cd FrontOffice
+                        rm -rf node_modules package-lock.json
+                        npm install --legacy-peer-deps --force
+                        npm run build
+                    '''
+                } else if (dir == 'BackOffice') {
+                    sh '''
+                        cd BackOffice
+                        rm -rf node_modules package-lock.json
+                        npm install --legacy-peer-deps --force
+                        npm install ajv@8.12.0 --save --legacy-peer-deps --force
+                        npm run build-dev
+                    '''
+                } else if (dir == 'Serveur') {
+                    sh '''
+                        cd Serveur
+                        rm -rf node_modules package-lock.json
+                        npm install --legacy-peer-deps --force
+                        npm run build
+                    '''
                 }
             }
         }
+    }
+}
 
           stage('Building images (node and mongo)') {
             steps {
