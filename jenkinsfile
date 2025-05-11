@@ -109,7 +109,7 @@ stage('Quality Gate') {
             }
         } */
 
-        stage('Build application') {
+       stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -121,6 +121,7 @@ stage('Quality Gate') {
                                 cd BackOffice
                                 rm -rf node_modules package-lock.json
                                 npm install --legacy-peer-deps
+                                npm audit fix
                                 npm run build-dev
                             '''
                         } else if (dir == 'Serveur') {
@@ -129,7 +130,7 @@ stage('Quality Gate') {
                     }
                 }
             }
-        }
+}
 
           stage('Building images (node and mongo)') {
             steps {
