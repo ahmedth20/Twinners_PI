@@ -83,46 +83,32 @@ pipeline {
                     }
                 }
             }*/
-            stage('Build Application') {
-                        parallel {
-                            stage('Build Server') {
-                                steps {
-                                    dir('Serveur') {
-                                        sh '''
-                                            rm -rf node_modules package-lock.json
-                                            npm install --legacy-peer-deps --force
-                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
-                                            npm run build || true
-                                        '''
-                                    }
-                                }
-                            }
-                            stage('Build Client') {
-                                steps {
-                                    dir('BackOffice') {
-                                        sh '''
-                                            rm -rf node_modules package-lock.json
-                                            npm install --legacy-peer-deps --force
-                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
-                                            npm run build-dev
-                                        '''
-                                    }
-                                }
-                            }
-                            stage('Build FrontOffice') {
-                                steps {
-                                    dir('FrontOffice') {
-                                        sh '''
-                                            rm -rf node_modules package-lock.json
-                                            npm install --legacy-peer-deps --force
-                                            npm install ajv@8.12.0 --save --legacy-peer-deps --force
-                                            npm run build
-                                        '''
-                                    }
-                                }
+            stage('Build application') {
+                steps {
+                    script {
+                        def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                        // Préparation globale pour tous les projets
+                        projects.each { dir ->
+                            sh '''
+                                cd ${dir}
+                                rm -rf node_modules package-lock.json
+                                npm install --legacy-peer-deps --force
+                                npm install ajv@8.12.0 --save --legacy-peer-deps --force
+                            '''
+                        }
+                        // Exécution des builds
+                        projects.each { dir ->
+                            if (dir == 'FrontOffice') {
+                                sh 'cd FrontOffice && npm run build'
+                            } else if (dir == 'BackOffice') {
+                                sh 'cd BackOffice && npm run build-dev'
+                            } else if (dir == 'Serveur') {
+                                sh 'cd Serveur && npm run build'
                             }
                         }
                     }
+                }
+            }
 
           stage('Building images (node and mongo)') {
             steps {
