@@ -28,6 +28,7 @@ const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const PatientFile = require("./src/models/patientFile");
 const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
 const medicalRoutes = require('./src/routes/medicalRoutes');
+const ResourceModel = require("./src/models/ressources.js");
 
 
 const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
@@ -181,4 +182,55 @@ app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
 
 app.use('/api', imagePredictionRoute);
+
+
+// Après la config Socket.IO
+io.on('connection', (socket) => {
+  console.log('Client connecté au WebSocket');
+});
+
+// Supposons que tu as une route pour créer ou update une ressource
+app.post('/ressources', async (req, res) => {
+  try {
+    const newResource = await ResourceModel.create(req.body);
+    
+    // Vérifier si la quantité est inférieure à 10
+    if (newResource.quantity < 10) {
+      io.emit('low-stock', {
+        id: newResource._id,
+        name: newResource.name,
+        quantity: newResource.quantity
+      });
+    }
+
+    res.status(201).json(newResource);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Lorsqu'une ressource est mise à jour
+app.put('/ressources/:id', async (req, res) => {
+  try {
+    const updated = await ResourceModel.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true }
+    );
+
+    // Vérifier si la quantité est inférieure à 10
+    if (updated.quantity < 10) {
+      io.emit('low-stock', {
+        id: updated._id,
+        name: updated.name,
+        quantity: updated.quantity
+      });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 
