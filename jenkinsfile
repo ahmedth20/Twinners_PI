@@ -92,7 +92,7 @@ stage('Quality Gate') {
     }
 }*/
 
-        stage('Build application') {
+        /*stage('Build application') {
             steps {
                 script {
                     def projects = ['BackOffice', 'FrontOffice', 'Serveur']
@@ -107,7 +107,29 @@ stage('Quality Gate') {
                     }
                 }
             }
-        } 
+        } */
+
+        stage('Build application') {
+            steps {
+                script {
+                    def projects = ['BackOffice', 'FrontOffice', 'Serveur']
+                    projects.each { dir ->
+                        if (dir == 'FrontOffice') {
+                            sh "cd ${dir} && npm run build"
+                        } else if (dir == 'BackOffice') {
+                            sh '''
+                                cd BackOffice
+                                rm -rf node_modules package-lock.json
+                                npm install --legacy-peer-deps
+                                npm run build-dev
+                            '''
+                        } else if (dir == 'Serveur') {
+                            sh "cd ${dir} && npm run build"
+                        }
+                    }
+                }
+            }
+        }
 
           stage('Building images (node and mongo)') {
             steps {
