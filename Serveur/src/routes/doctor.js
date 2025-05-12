@@ -6,6 +6,7 @@ const router = express.Router();
 router.get("/", doctorController.getAllDoctors);
 
 router.get("/:id", doctorController.getDoctorById);
+router.get("/getByUser/:id", doctorController.getDoctorByUser);
 
 router.post("/", doctorController.createDoctor);
 

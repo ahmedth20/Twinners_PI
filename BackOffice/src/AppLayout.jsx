@@ -44,6 +44,7 @@ const WaitingList = lazy(() => import('pages/waitingList'));
 const PatientFile = lazy(() => import('pages/PatientFile'));
 const Equipements = lazy(() => import('pages/Equipements'));
 const Consultation = lazy(() => import('pages/Consultation'));
+const Prescription = lazy(() => import('pages/prescriptions'));
 
 //const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
@@ -91,6 +92,7 @@ const AppLayout = () => {
       
       <Route path="/patientFile" element={ <PatientFile/> } />
       <Route path="/Consultation" element={ <Consultation/> } />
+      <Route path="/prescription" element={ <Prescription/> } />
       
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />

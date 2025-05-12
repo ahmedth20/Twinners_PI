@@ -9,6 +9,7 @@ const Consultation = () => {
   const [error, setError] = useState(null);
 const [patients, setPatients] = useState({});
 const [medical, setMedical] = useState({});
+const [room, setRoom] = useState({});
 
 
 const navigate = useNavigate();
@@ -38,11 +39,16 @@ const navigate = useNavigate();
         console.log("**********************DATAAA*****************");
         console.log(consultationsResponse.data[0].patient._id);
 
-       /* const responsePatient = await axios.get(`http://localhost:5000/patient/details/${consultationsResponse.data[0].patient.user._id}`);
+        const responsePatient = await axios.get(`http://localhost:5000/patient/details/${consultationsResponse.data[0].patient._id}`);
         console.log("**********************DATAAA*****************");
         console.log(responsePatient.data);
-        setMedical(responsePatient.data);*/
+        setMedical(responsePatient.data);
       
+        const responseEmergency = await axios.get(`http://localhost:5000/emergencyrooms/${consultationsResponse.data[0].emergencyRoom}`);
+        console.log("**********************Emergencyy*****************");
+        console.log(responseEmergency);
+        setRoom(responseEmergency.data);
+
       } catch (err) {
        console.log("Erreur lors de la récupération des consultations.");
       }
@@ -56,6 +62,9 @@ const handleRowClick = (patientId) => {
       navigate(`/medical_form_update/${patientId}`, { state: { patientData: medical } });
       
     }
+  };
+  const PrescriptionGo = () => {
+      navigate('/prescription', { state: { medicalRecord: medical.medicalRecord._id } });
   };
   return (
     <div style={styles.container}>
@@ -73,12 +82,14 @@ const handleRowClick = (patientId) => {
             <th style={styles.tableHeader}>Type</th>
             <th style={styles.tableHeader}>Date</th>
             <th style={styles.tableHeader}>Heure</th>
+            <th style={styles.tableHeader}>Emergency Room</th>
+            <th style={styles.tableHeader}>Prescription</th>
           </tr>
         </thead>
         <tbody>
           {consultations.map((consultation) => (
-            <tr key={consultation._id} style={styles.tableRow}  onClick={() => handleRowClick(consultation.patient._id)}>
-              <td style={styles.tableCell}>
+            <tr key={consultation._id} style={styles.tableRow}  >
+              <td style={styles.tableCell} onClick={() => handleRowClick(consultation.patient._id)}>
                {patients ? `${patients.firstName} ${patients.lastName}` : "Chargement..."}
                </td>
            <td
@@ -99,6 +110,23 @@ const handleRowClick = (patientId) => {
 
               <td style={styles.tableCell}>{new Date(consultation.date).toLocaleDateString()}</td>
               <td style={styles.tableCell}>{new Date(consultation.date).toLocaleTimeString()}</td>
+              <td style={styles.tableCell}>{room.reference}</td>
+             <td style={styles.tableCell}>
+            <button 
+              style={{ 
+                backgroundColor: 'red', 
+                color: 'white', 
+                border: 'none', 
+                padding: '8px 16px', 
+                borderRadius: '4px', 
+                cursor: 'pointer' 
+              }} 
+              onClick={() =>PrescriptionGo()}
+            >
+              ADD
+            </button>
+            </td>
+
             </tr>
           ))}
         </tbody>

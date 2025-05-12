@@ -6,7 +6,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 const connectDB = require("./src/configs/db.config.js");
-
+const mongoose = require('mongoose');
 const userRoutes = require("./src/routes/userRoutes.js");
 const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
@@ -34,6 +34,7 @@ const ResourceModel = require("./src/models/ressources.js");
 const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
 const specialtyRoutes= require("./src/routes/openAi.js");
 const waitingList= require("./src/routes/waitingList.js");
+const prescription= require("./src/routes/prescription.js");
 
 
 dotenv.config();
@@ -174,6 +175,7 @@ app.use("/operation",operationRoutes);
 app.use("/api/llm-specialty", specialtyRoutes);
 app.use("/emergencyrooms", emergencyRoomRoutes);
 app.use("/waitingList",waitingList)
+app.use("/prescription",prescription)
 // Frontends
 app.use("/ressources", ressourcesRoutes);
 // Serve les frontends
@@ -190,8 +192,49 @@ app.use('/api', imagePredictionRoute);
 // Après la config Socket.IO
 io.on('connection', (socket) => {
   console.log('Client connecté au WebSocket');
+  
+  // Émettre un événement "low-storage" toutes les 5 secondes avec l'état actuel
+  setInterval(async () => {
+    try {
+      const lowStorageResources = await ResourceModel.find({ quantity: { $lt: 10 } });
+      if (lowStorageResources.length > 0) {
+        lowStorageResources.forEach((resource) => {
+          socket.emit('low-storage', {
+            id: resource._id,
+            name: resource.name,
+            available: resource.quantity
+          });
+        });
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'émission de 'low-storage':", err);
+    }
+  }, 5000);
 });
 
+// MongoDB ChangeStream
+mongoose.connection.once('open', () => {
+  console.log("🔍 ChangeStream activé sur ResourceModel");
+
+  const changeStream = ResourceModel.watch();
+
+  changeStream.on('change', (change) => {
+    if (change.operationType === 'insert' || change.operationType === 'update') {
+      ResourceModel.findById(change.documentKey._id)
+        .then((updatedResource) => {
+          if (updatedResource.quantity < 10) {
+            console.log("⚠️ Stock bas détecté : ", updatedResource.name);
+            io.emit('low-stock', {
+              id: updatedResource._id,
+              name: updatedResource.name,
+              quantity: updatedResource.quantity,
+            });
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  });
+});
 // Supposons que tu as une route pour créer ou update une ressource
 app.post('/ressources', async (req, res) => {
   try {

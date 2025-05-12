@@ -137,7 +137,23 @@ async getConsultationById(req, res) {
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
     }
-  }
+  },
+   async getConsultationsByDoctorConnecter(req, res) {
+    try {
+
+      const consultations = await Consultation.find({ doctor: req.params.id })
+        .populate("patient")
+        .populate("doctor");
+
+      if (!consultations || consultations.length === 0) {
+        return res.status(404).json({ message: "No consultations found for this patient." });
+      }
+
+      res.status(200).json(consultations);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
+    }
+  },
 };
 
 module.exports = consultationController;

@@ -9,7 +9,6 @@ import { CloseButton, ModalContent, ModalOverlay, Title } from "styles/PopUpAddP
 import { motion } from "framer-motion";
 import { useLocation } from "react-router";
 import MedicalRecordService from "services/medicalRecordService";
-import ConsultationService from "services/consultationService";
 import axios from "axios";
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required").optional(),
@@ -21,19 +20,6 @@ const formSchema = z.object({
   sex: z.string().min(1, "Sex is required").optional(),
   height: z.number().int().min(1, "Height is required").optional(),
   weight: z.number().int().min(1, "Weight is required").optional(),
-
-  consultations: z.array(
-    z.object({
-      _id: z.string().optional(), // Pour différencier les anciennes et nouvelles consultations
-      date: z.string().refine(val => !isNaN(Date.parse(val)), {
-        message: "Invalid date format",
-      }),
-      doctor: z.string().min(1, "Doctor's ID is required"),
-      status: z.string().min(1, "Status is required"),
-      duration: z.number().min(1, "Duration is required"),
-      notes: z.string().optional(),
-    })
-  ).optional(),
 
   medicalRecord: z.object({
     diagnostic: z.object({
@@ -209,24 +195,7 @@ useEffect(() => {
     fetchMedicalData();
   
     // Consultationsf
-    const fetchConsultations = async () => {
-      try {
-        if (data.consultations) {
-          const consultationsData = await Promise.all(
-            data.consultations.map(async (consultationId) => {
-              const response = await axios.get(`http://localhost:5000/consultation/${consultationId}`);
-              return response.data;
-            })
-          );
-          console.log("Consultations récupérées :", consultationsData);
-          setValue("consultations", consultationsData);
-        }
-      } catch (error) {
-        console.error("Erreur lors du chargement des consultations :", error);
-      }
-    };
-  
-    fetchConsultations();
+   
   }, [data, setValue]);
   
   const onSubmit = async () => {
@@ -251,11 +220,7 @@ useEffect(() => {
         }
       });
   
-      // Comparaison consultations
-      if (JSON.stringify(formValues.consultations) !== JSON.stringify(data.consultations)) {
-        updatedData.consultations = formValues.consultations;
-      }
-  
+     
       // Comparaison medicalRecord
       if (JSON.stringify(formValues.medicalRecord) !== JSON.stringify(data.medicalRecord)) {
         updatedData.medicalRecord = formValues.medicalRecord;
@@ -350,39 +315,6 @@ useEffect(() => {
 </Row>
 
         </FormSection>
-
-        <FormSection title="Consultation">
-  <Row>
-    <Select {...register("doctor", { required: "Veuillez sélectionner un docteur" })}>
-      <option value="">Sélectionner un docteur</option>
-      {doctors.map((doctor) => (
-        <option key={doctor._id} value={doctor._id}>
-          {doctor.user.firstName} {doctor.user.lastName}
-        </option>
-      ))}
-    </Select>
-  </Row>
-  <Row>
-    <Column>
-      <Input {...register("duration")} placeholder="Duration (minutes)" type="number" />
-    </Column>
-    <Column>
-      <Input {...register("date")} placeholder="Date" type="date" />
-    </Column>
-  </Row>
-  <Row>
-    <Column>
-      <Select {...register("status")}>
-        <option value="">Select Status</option>
-        <option value="Planned">Planned</option>
-        <option value="Ongoing">Ongoing</option>
-        <option value="Completed">Completed</option>
-        <option value="Cancelled">Cancelled</option>
-      </Select>
-    </Column>
-  </Row>
-</FormSection>
-
 
           <FormSection title="Medical Record">
           <SectionSecondTitle>Diagnostics</SectionSecondTitle>

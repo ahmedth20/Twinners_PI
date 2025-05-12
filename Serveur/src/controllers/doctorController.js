@@ -14,7 +14,20 @@ const doctorController = {
       res.status(500).json({ message: "Erreur lors de la récupération des médecins", error });
     }
   },
+  async getDoctorByUser(req, res) {
+  try {
+    const doctor = await Doctor.find({ user: req.params.id });
+    
+    if (!doctor) {
+      return res.status(404).json({ message: "Médecin non trouvé" });
+    }
 
+    res.status(200).json(doctor);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération du médecin", error });
+  }
+}
+,
   // 📌 Récupérer un médecin par ID
   async getDoctorById(req, res) {
     try {

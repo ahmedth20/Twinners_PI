@@ -3,26 +3,26 @@ const mongoose = require("mongoose");
 const patientFileSchema = new mongoose.Schema({
   reference: { type: Number, unique: true },
 
-  phoneNumber: { type: String, required: true },
-  age: { type: Number, required: true },
-  gender: { type: String, enum: ["Male", "Female"], required: true },
-  address: { type: String, required: true },
+  phoneNumber: { type: String, },
+  age: { type: Number, },
+  gender: { type: String, enum: ["Male", "Female"], },
+  address: { type: String, },
 
-  height: { type: Number, required: true }, // en cm
-  weight: { type: Number, required: true }, // en kg
+  height: { type: Number, }, // en cm
+  weight: { type: Number, }, // en kg
 
   allergies: { type: String }, // ou Array si tu préfères un tableau
   medicalHistory: { type: String },
 
-  symptom: { type: String, required: true },
+  symptom: { type: String, },
   bloodGroup: { 
     type: String, 
     enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], 
-    required: true 
+    
   },
 
   paramedic: { type: mongoose.Schema.Types.ObjectId, ref: "Paramedic" },
-  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true }
+  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord",  required: true}
 }, { timestamps: false, versionKey: false });
 
 // Auto-incrémentation du champ `reference`
