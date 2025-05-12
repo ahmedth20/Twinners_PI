@@ -25,6 +25,19 @@ const doctorController = {
       res.status(500).json({ message: "Erreur lors de la récupération du médecin", error });
     }
   },
+// Nouvelle méthode sans req et res
+async getDoctorByIdback(doctorId) {
+  try {
+    const doctor = await Doctor.findById(doctorId).populate("user", "firstName lastName email");
+    if (!doctor) {
+      return { status: 404, message: "Médecin non trouvé" };
+    }
+    return { status: 200, doctor };
+  } catch (error) {
+    console.error("Erreur lors de la récupération du médecin :", error.message);
+    return { status: 500, message: "Erreur lors de la récupération du médecin", error: error.message };
+  }
+},
 
  /* async getDoctorsBySpecialty(req, res) {
     try {
@@ -40,44 +53,46 @@ const doctorController = {
       res.status(500).json({ message: "Erreur lors de la récupération des médecins", error });
     }
   }*/
-    async getAvailableDoctorsBySpecialty(req, res) {
-      try {
-        const { specialty } = req.params;
-        const now = new Date();
-    
-        const doctors = await Doctor.find({ speciality: specialty, availability: true })
-          .populate("user", "firstName lastName email");
-    
-        if (doctors.length === 0) {
-          return res.status(404).json({ message: "Aucun médecin trouvé pour cette spécialité" });
-        }
-    
-        const availableDoctors = [];
-    
-        for (const doctor of doctors) {
-          const hasAvailability = await appointement.findOne({
-            doctorId: doctor._id,
-            start: { $lte: now },
-            end: { $gte: now }
-          });
-    
-          if (hasAvailability) {
-            availableDoctors.push(doctor);
-          }
-        }
-    
-        if (availableDoctors.length === 0) {
-          return res.status(404).json({ message: "Aucun médecin disponible actuellement pour cette spécialité" });
-        }
-    
-        const randomDoctor = availableDoctors[Math.floor(Math.random() * availableDoctors.length)];
-    
-        res.json(randomDoctor);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur lors de la récupération des médecins disponibles", error });
+   async getAvailableDoctorsBySpecialty({ params }) {
+  try {
+    const { specialty } = params;
+    const now = new Date();
+
+    const doctors = await Doctor.find({ speciality: specialty, availability: true })
+      .populate("user", "firstName lastName email");
+
+    if (doctors.length === 0) {
+      return null;
+    }
+
+    const availableDoctors = [];
+
+    for (const doctor of doctors) {
+      const hasAvailability = await appointement.findOne({
+        doctorId: doctor._id,
+        start: { $lte: now },
+        end: { $gte: now }
+      });
+
+      if (hasAvailability) {
+        availableDoctors.push(doctor);
       }
     }
+
+    if (availableDoctors.length === 0) {
+      return null;
+    }
+
+    const randomDoctor = availableDoctors[Math.floor(Math.random() * availableDoctors.length)];
+    
+    // On retourne le médecin directement
+    return randomDoctor;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Erreur lors de la récupération des médecins disponibles");
+  }
+}
+
     
     
 ,  
@@ -217,6 +232,26 @@ async deleteDoctor(req, res) {
     res.status(500).json({ message: "Erreur lors de la suppression du médecin", error });
   }
 },
+async updateDoctorAvailabilityToFalse(doctorId) {
+  try {
+    // Mettre à jour uniquement la disponibilité à false
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      doctorId, 
+      { availability: false }, // Met la disponibilité à false
+      { new: true }  // Retourne le document mis à jour
+    );
+
+    if (!updatedDoctor) {
+      throw new Error("Médecin non trouvé");
+    }
+
+    return updatedDoctor; // Retourne le médecin mis à jour
+  } catch (error) {
+    throw new Error("Erreur lors de la mise à jour de la disponibilité : " + error.message);
+  }
+}
+
+
 };
 
 module.exports = doctorController;

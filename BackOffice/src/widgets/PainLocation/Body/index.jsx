@@ -15,12 +15,32 @@ import female_back from 'assets/female_back.svg';
 // hooks
 import useNotistack from 'hooks/useNotistack';
 import {useState} from 'react';
+import MedicalRecordService from 'services/medicalRecordService';
+import { useEffect } from 'react';
 
-const Body = ({gender}) => {
+const Body = ({gender,patient}) => {
     const [frontView, setFrontView] = useState(true);
     const [isAnyChecked, setIsAnyChecked] = useState(false);
     const {notify} = useNotistack('Your request have been successfully sent to your doctor.', 'info');
+const [medicalRecord, setMedicalRecord] = useState(null);
 
+  useEffect(() => {
+    const fetchMedicalRecord = async () => {
+      try {
+        // Appeler le service pour récupérer le dossier médical
+        const record = await MedicalRecordService.getMedicalRecordById(patient.medicalRecord);
+        setMedicalRecord(record);  // Mettre à jour l'état avec les données du dossier médical
+        console.log(record);  // Mettre à jour l'état avec les données du dossier médical
+      } catch (err) {
+
+        console.error(err);
+      }
+    };
+
+    if (patient.medicalRecord) {
+      fetchMedicalRecord();
+    }
+  }, [patient.medicalRecord]);
     const frontAreas = [
         {id: 'head', label: 'Head'},
         {id: 'neck', label: 'Neck'},

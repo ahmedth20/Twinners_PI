@@ -31,6 +31,7 @@ const medicalRoutes = require('./src/routes/medicalRoutes');
 
 const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
 const specialtyRoutes= require("./src/routes/openAi.js");
+const waitingList= require("./src/routes/waitingList.js");
 
 
 dotenv.config();
@@ -170,8 +171,8 @@ app.use("/consultation", consultationRoutes);
 app.use("/operation",operationRoutes);
 app.use("/api/llm-specialty", specialtyRoutes);
 app.use("/emergencyrooms", emergencyRoomRoutes);
-
-// Serve les frontends
+app.use("/waitingList",waitingList)
+// Frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 

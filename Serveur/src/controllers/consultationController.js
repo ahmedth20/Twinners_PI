@@ -3,29 +3,44 @@ const Patient = require("../models/patient");
 
 const consultationController = {
   // 🔹 Create a new consultation
-// 🔹 Create a new consultation
-async createConsultation(req, res) {
+async createConsultationback (consultationData) {
+  try {
+    // Extraction directe depuis l'objet passé en paramètre
+    const { patient, doctor, emergencyRoom, duration, date } = consultationData;
+
+    if (!patient || !doctor || !emergencyRoom || !duration || !date) {
+      throw new Error("Missing required fields");
+    }
+
+    const consultation = new Consultation(consultationData);
+    const savedConsultation = await consultation.save();
+    console.log("Consultation créée avec succès :", savedConsultation);
+    return savedConsultation;
+  } catch (error) {
+    console.error("Error creating consultation:", error.message);
+    throw error;
+  }
+},
+async createConsultation  (req, res) {
   try {
     const { patient, doctor, emergencyRoom, duration, date } = req.body;
 
-    // Validation de base
     if (!patient || !doctor || !emergencyRoom || !duration || !date) {
-      return res.status(400).json({ message: "Missing required fields" });
+      throw new Error("Missing required fields");
     }
 
-    const consultation = new Consultation(req.body);
+    const consultation = new Consultation();
     const savedConsultation = await consultation.save();
-    res.status(201).json(savedConsultation);
+    console.log("Consultation créée avec succès :", savedConsultation);
+    return savedConsultation;
   } catch (error) {
-    console.error("Error creating consultation:", error);
-    res.status(500).json({ message: "Error creating consultation", error });
+    console.error("Error creating consultation:", error.message);
+    throw error;
   }
 }
-
 ,
-
   // 🔹 Get all consultations
-  async getAllConsultations(req, res) {
+async getAllConsultations(req, res) {
     try {
       const consultations = await Consultation.find()
         .populate("patient", "firstName lastName")
@@ -34,7 +49,7 @@ async createConsultation(req, res) {
     } catch (error) {
       res.status(500).json({ message: "Error retrieving consultations", error });
     }
-  },
+},
 
 // 🔹 Get consultation by ID
 async getConsultationById(req, res) {
@@ -94,6 +109,25 @@ async getConsultationById(req, res) {
       const consultations = await Consultation.find({ patient: req.params.id })
         .populate("patient", "firstName lastName user")
         .populate("doctor", "firstName lastName specialty");
+
+      if (!consultations || consultations.length === 0) {
+        return res.status(404).json({ message: "No consultations found for this patient." });
+      }
+
+      res.status(200).json(consultations);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
+    }
+  },
+   async getConsultationsByPatientback(req, res) {
+    try {
+
+      const consultations = await Consultation.findOne({ patient: req.params.id })
+        .sort({ createdAt: -1 })
+        .populate("patient", "firstName lastName user")
+        .populate("doctor", "firstName lastName specialty");
+       // Trie par date de création (la plus récente en premier)
+      
 
       if (!consultations || consultations.length === 0) {
         return res.status(404).json({ message: "No consultations found for this patient." });

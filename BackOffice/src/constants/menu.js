@@ -39,7 +39,8 @@ export const menuchefservice = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
-        
+            { name: "Waiting List", link: '/waitingList' }
+            
         ]
     },
     {
@@ -299,7 +300,8 @@ export const menuadmin = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
-        
+            { name: "Waiting List", link: '/waitingList' }
+
         ]
     },
     {

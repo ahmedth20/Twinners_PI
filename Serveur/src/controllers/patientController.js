@@ -57,6 +57,40 @@ const patientController = {
         }
       }
   
+,// Nouvelle méthode sans req et res
+async getPatientInfoByIdback(id) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("ID invalide");
+    }
+
+    const patient = await Patient.findById(id)
+      .populate("user", "firstName lastName email")
+      .populate({
+        path: "medicalRecord",
+        populate: [
+          { path: "operations" },
+          { path: "patientFiles" },
+          { path: "prescriptions" }
+        ]
+      })
+      .populate({
+        path: "consultations",
+        populate: { path: "doctor", select: "name specialty email phone" }
+      });
+
+    if (!patient) {
+      throw new Error("Patient non trouvé");
+    }
+
+    return patient;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du patient :", error.message);
+    return null;
+  }
+}
+
+
 ,
   async createSimplePatient(req, res) {
     const session = await mongoose.startSession();
@@ -677,7 +711,9 @@ async updatePatientProfile(req, res) {
           patient.phone = req.body.phone || patient.phone;
           patient.firstName = req.body.firstName || patient.firstName;
           patient.lastName = req.body.lastName || patient.lastName;
-  
+            if (req.file) {
+              user.picture = req.file.path; // Stocke le chemin du fichier
+            }
           // Sauvegarder le patient mis à jour
           await patient.save();
         }
@@ -708,48 +744,47 @@ async updatePatientProfile(req, res) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },
-  async addConsultationToPatient(req, res) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+async addConsultationToPatient(patientId, consultationData) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    try {
-        const { consultationId } = req.body; // Consultation ID passé dans le body
+  try {
+    const { consultationId } = consultationData;  // Consultation ID passé dans le body
 
-        const patientId = req.params.id; // Patient ID passé dans l'URL
-
-        // Vérifier si les IDs sont valides
-        if (!mongoose.Types.ObjectId.isValid(patientId)) {
-            return res.status(400).json({ message: "Patient ID invalide" });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(consultationId)) {
-            return res.status(400).json({ message: "Consultation ID invalide" });
-        }
-
-        // Vérifier si le patient existe
-        const patient = await Patient.findById(patientId).session(session);
-        if (!patient) {
-            await session.abortTransaction();
-            return res.status(404).json({ message: "Patient non trouvé" });
-        }
-
-        // Ajouter la consultation au tableau `consultations`
-        patient.consultations.push(consultationId);
-
-        await patient.save({ session });
-        await session.commitTransaction();
-        session.endSession();
-
-        console.log(`🟢 Consultation ${consultationId} ajoutée avec succès au patient ${patientId}`);
-        res.status(200).json({ message: "Consultation ajoutée avec succès" });
-
-    } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        console.error("❌ Erreur lors de l'ajout de la consultation :", error);
-        res.status(500).json({ message: "Erreur lors de l'ajout de la consultation", error: error.message });
+    // Vérifier si les IDs sont valides
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+      return { status: 400, message: "Patient ID invalide" };
     }
+
+    if (!mongoose.Types.ObjectId.isValid(consultationId)) {
+      return { status: 400, message: "Consultation ID invalide" };
+    }
+
+    // Vérifier si le patient existe
+    const patient = await Patient.findById(patientId).session(session);
+    if (!patient) {
+      await session.abortTransaction();
+      return { status: 404, message: "Patient non trouvé" };
+    }
+
+    // Ajouter la consultation au tableau `consultations`
+    patient.consultations.push(consultationId);
+
+    await patient.save({ session });
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log(`🟢 Consultation ${consultationId} ajoutée avec succès au patient ${patientId}`);
+    return { status: 200, message: "Consultation ajoutée avec succès" };
+
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error("❌ Erreur lors de l'ajout de la consultation :", error);
+    return { status: 500, message: "Erreur lors de l'ajout de la consultation", error: error.message };
+  }
 }
+
 
 
 };
