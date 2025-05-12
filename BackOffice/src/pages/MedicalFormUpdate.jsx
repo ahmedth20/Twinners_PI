@@ -409,12 +409,12 @@ useEffect(() => {
         updatedData.medicalRecord = formValues.medicalRecord;
       }
   
-     if (Object.keys(updatedData).length > 0) {
-  console.log("📦 Payload envoyé :", updatedData); // Vérification
-  await PatientService.updatePatient(data._id, updatedData);
-  alert("✅ Patient mis à jour avec succès !");
+        if (Object.keys(updatedData).length > 0) {
+      console.log("📦 Payload envoyé :", updatedData); // Vérification
+      await PatientService.updatePatient(data._id, updatedData);
+      alert("✅ Patient mis à jour avec succès !");
 
-    } catch (error) {
+  }  } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);
       alert("Erreur lors de la mise à jour du patient.");
     }
