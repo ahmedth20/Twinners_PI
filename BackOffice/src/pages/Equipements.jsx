@@ -41,6 +41,29 @@ const Ressources = () => {
       if (newSocket) newSocket.disconnect();
     };
   }, []);
+const [lowStorageWarning, setLowStorageWarning] = useState(null);
+
+useEffect(() => {
+  if (!socket) return;
+
+  // Écoute de l'événement "low-storage" émis toutes les 5 secondes
+  socket.on('low-storage', (data) => {
+    console.log("⚠️ Notification de stockage bas : ", data);
+    setLowStorageWarning(`⚠️ Stockage bas : ${data.name} (${data.available} unités restantes)`);
+  });
+
+  // Écoute de l'événement "low-stock" émis lors d'un changement direct dans MongoDB
+  socket.on('low-stock', (data) => {
+    console.log("⚠️ Notification de stock bas détectée : ", data);
+    setLowStorageWarning(`⚠️ Stockage bas : ${data.name} (${data.quantity} unités restantes)`);
+  });
+
+  return () => {
+    socket.off('low-storage');
+    socket.off('low-stock');
+  };
+}, [socket]);
+
 
   // Écouter les événements de stock bas
   useEffect(() => {
@@ -169,7 +192,18 @@ const Ressources = () => {
     <div style={styles.container}>
       {/* Conteneur pour les notifications */}
       <ToastContainer />
-      
+         {lowStorageWarning && (
+  <div style={{
+    backgroundColor: '#ffcccc',
+    color: '#b30000',
+    padding: '10px',
+    marginTop: '15px',
+    borderRadius: '5px',
+    fontWeight: 'bold'
+  }}>
+    {lowStorageWarning}
+  </div>
+)}
       <div style={styles.header}>
         <h2 style={styles.title}>Gestion des Ressources</h2>
         <button onClick={() => {
@@ -322,6 +356,8 @@ const Ressources = () => {
           ))}
         </tbody>
       </table>
+   
+
     </div>
   );
 };

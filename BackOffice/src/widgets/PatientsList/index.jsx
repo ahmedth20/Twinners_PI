@@ -102,27 +102,27 @@ const PatientsList = () => {
             <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
                 {dateFilteredArr.length !== 0 ? (
                     <>
-                {selectedLetter ? (
-    <Group
-        key={`patients-${selectedLetter}`}
-        gender={gender.value}
-        char={selectedLetter}
-        type={'patient'}
-        arr={displayedPatients} // Patients filtrés par lettre
-    />
-) : (
-    alphabet.map((char) => (
-        <Group
-            key={`patients-${char}`}
-            gender={gender.value}
-            char={char}
-            type={'patient'}
-            arr={filteredPatients.filter(patient => 
-                patient.user?.lastName && patient.user.lastName[0]?.toLowerCase() === char
-            )}
-        />
-    ))
-)}
+                                {selectedLetter ? (
+                    <Group
+                        key={`patients-${selectedLetter}`}
+                        gender={gender.value}
+                        char={selectedLetter}
+                        type={'patient'}
+                        arr={displayedPatients} // Patients filtrés par lettre
+                    />
+                ) : (
+                    alphabet.map((char) => (
+                        <Group
+                            key={`patients-${char}`}
+                            gender={gender.value}
+                            char={char}
+                            type={'patient'}
+                            arr={filteredPatients.filter(patient => 
+                                patient.user?.lastName && patient.user.lastName[0]?.toLowerCase() === char
+                            )}
+                        />
+                    ))
+                )}
 
 
 

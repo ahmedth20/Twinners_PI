@@ -43,7 +43,6 @@ import { useRef } from 'react';
 // actions
 import { saveToLocalStorage } from 'store/features/layout';
 import { Suspense } from 'react';
-import { SocketProvider } from 'Notifications/SocketContext';
 import GlobalNotifications from 'Notifications/GlobalNotif';
 
 const App = () => {

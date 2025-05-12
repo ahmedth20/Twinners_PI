@@ -121,7 +121,8 @@ export const menudoctors = [
         cat: 'consultaions',
         icon: 'users',
         links: [
-            { name: "Liste Of consultaions", link: '/consultations' },
+            { name: "My Consultaions", link: '/Consultation' },
+            { name: "Liste Of Consultaions", link: '/consultations' },
         
         ]
     },
