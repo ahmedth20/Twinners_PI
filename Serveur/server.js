@@ -17,6 +17,7 @@ const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
 const ressourcesRoutes = require("./src/routes/ressources.js");
 const http = require('http');
+const axios = require('axios');
 
 
 const consultationRoutes = require("./src/routes/consultation.js")
@@ -240,9 +241,6 @@ app.get('/api/stripe/transactions', async (req, res) => {
   }
 });
 
-
-
-
 // Déclaration de la fonction d'envoi SMS
 const sendSms = async (phoneNumber, clientName, amount) => {
   try {
@@ -257,6 +255,30 @@ const sendSms = async (phoneNumber, clientName, amount) => {
   }
 };
 
+
+
+
+async function predictEmergencyLevel(patientData) {
+  try {
+    const response = await axios.post('http://127.0.0.1:5001/predict', patientData);
+    console.log('Niveau d\'urgence prédit :', response.data.emergencyLevel);
+    return response.data.emergencyLevel;
+  } catch (error) {
+    console.error('Erreur lors de la prédiction :', error.message);
+    throw error;
+  }
+}
+
+// Exemple de patient
+const newPatient = {
+  age: 40,
+  gender: 0,
+  oxygenSaturation: 91,
+  bloodTest: 1.7,
+  chestXray: 0.6
+};
+
+predictEmergencyLevel(newPatient);
 
 
 // Lancer le serveur

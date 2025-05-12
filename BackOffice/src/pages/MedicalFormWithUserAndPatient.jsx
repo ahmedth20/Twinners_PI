@@ -7,6 +7,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import axios from "axios"; // si pas déjà importé
+
+async function predictEmergencyLevel(patientData) {
+  try {
+    const response = await axios.post('http://127.0.0.1:5001/predict', patientData);
+    console.log('Niveau d\'urgence prédit :', response.data.emergencyLevel);
+    return response.data.emergencyLevel;
+  } catch (error) {
+    console.error('Erreur lors de la prédiction :', error.message);
+    throw error;
+  }
+}
+
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -33,45 +46,70 @@ const MedicalFormWithUserAndPatient = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
-    const formattedData = {
+const onSubmit = async (data) => {
+  const gender = data.gender; // Récupérer tel quel pour le backend
+  const genderMap = {
+    Male: 0,
+    Female: 1
+  };
+
+  const age = new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear();
+
+  // Préparer les données pour la prédiction
+  const predictionInput = {
+    age: age,
+    gender: genderMap[gender], // utiliser 0 ou 1 pour la prédiction
+    oxygenSaturation: parseFloat(data.testResults?.oxygenSaturation ),
+    bloodTest: parseFloat(data.testResults?.bloodTest ),
+    chestXray: parseFloat(data.testResults?.chestXray ),
+  };
+
+  try {
+    const predictedLevel = await predictEmergencyLevel(predictionInput);
+    console.log("✅ Niveau d'urgence prédit :", predictedLevel);
+
+    // Données à envoyer au backend
+    const finalData = {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      sex: data.gender,
-      age: new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear(),
+      sex: gender, // ⬅️ garder la valeur littérale ici ("Male", "Female")
+      age: age,
       phone: data.phone,
       address: data.address,
       dateIssued: data.dateIssued,
       symptoms: data.symptoms,
-      emergencyLevel: data.emergencyLevel,
       description: data.description,
+      emergencyLevel: predictedLevel,
       testResults: {
-        chestXray: data.testResults?.chestXray,
-        bloodTest: data.testResults?.bloodTest,
-        oxygenSaturation: data.testResults?.oxygenSaturation,
+        chestXray: predictionInput.chestXray,
+        bloodTest: predictionInput.bloodTest,
+        oxygenSaturation: predictionInput.oxygenSaturation,
       },
     };
 
-    try {
-      const response = await fetch("http://localhost:5000/patient/createSimplePatient1", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formattedData),
-      });
+    const response = await fetch("http://localhost:5000/patient/createSimplePatient1", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalData),
+    });
 
-      if (response.ok) {
-        const result = await response.json();
-        navigate("/patients");
-        console.log("✅ Patient with file created:", result);
-      } else {
-        const errorText = await response.text();
-        console.error("❌ Failed to create patient:", errorText);
-      }
-    } catch (error) {
-      console.error("❌ Network or server error:", error);
+    if (response.ok) {
+      const result = await response.json();
+      navigate("/patients");
+      console.log("✅ Patient with file created:", result);
+    } else {
+      const errorText = await response.text();
+      console.error("❌ Failed to create patient:", errorText);
     }
-  };
+  } catch (error) {
+    console.error("❌ Network or server error:", error);
+  }
+};
+
+
+
+
 
   const FormSection = ({ title, children }) => (
     <div>
@@ -144,15 +182,7 @@ const MedicalFormWithUserAndPatient = () => {
               <Input {...register("symptoms")} placeholder="Symptoms" />
               {errors.symptoms && <p>{errors.symptoms.message}</p>}
             </Column>
-            <Column>
-              <Select {...register("emergencyLevel")}>
-                <option value="">Emergency Level</option>
-                <option value="low">Low</option>
-                <option value="moderate">Moderate</option>
-                <option value="critical">Critical</option>
-              </Select>
-              {errors.emergencyLevel && <p>{errors.emergencyLevel.message}</p>}
-            </Column>
+            
           </Row>
         </FormSection>
 

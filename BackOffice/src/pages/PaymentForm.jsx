@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { CardElement, useElements, useStripe, Elements } from '@stripe/react-stripe-js';
+
+
 import { loadStripe } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,6 +19,9 @@ function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  useEffect(() => {
+    toast.info("🧪 Ceci est un message de test affiché à l'ouverture de la page");
+  }, []);
 
 const handlePayment = async () => {
   if (!stripe || !elements) return;
@@ -57,6 +62,7 @@ const handlePayment = async () => {
 
   return (
     <div style={styles.wrapper}>
+      <ToastContainer  position="bottom-right" autoClose={3000} />
       <div style={styles.container}>
         <div style={styles.header}>
           <h1 style={styles.title}>Formulaire de Paiement</h1>
@@ -132,7 +138,7 @@ const handlePayment = async () => {
 function PaymentPage() {
   return (
     <Elements stripe={stripePromise}>
-        <ToastContainer />
+
       <PaymentForm />
     </Elements>
   );
