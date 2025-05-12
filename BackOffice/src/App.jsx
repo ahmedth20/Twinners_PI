@@ -10,6 +10,9 @@ import {useLocation} from 'react-router-dom';
 import AppLayout from './AppLayout';
 import {SnackbarProvider} from 'notistack';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // utils
 import {ThemeProvider, StyleSheetManager} from 'styled-components';
 import {ThemeProvider as MuiThemeProvider, createTheme} from '@mui/material/styles';

@@ -1,38 +1,44 @@
 import React from "react";
 import Page from "layout/Page";
 import {
-  Container, Title, SectionTitle, Row, Column, Input, Select, TextArea
+  Container, Title, SectionTitle, Row, Column, Input, Select, TextArea,Button
 } from "../styles/medicalForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import axios from "axios"; // si pas déjà importé
 
-// Validation Zod
+async function predictEmergencyLevel(patientData) {
+  try {
+    const response = await axios.post('http://127.0.0.1:5001/predict', patientData);
+    console.log('Niveau d\'urgence prédit :', response.data.emergencyLevel);
+    return response.data.emergencyLevel;
+  } catch (error) {
+    console.error('Erreur lors de la prédiction :', error.message);
+    throw error;
+  }
+}
+
+
 const formSchema = z.object({
-  // User Info
-  user: z.object({
-    username: z.string().min(1, "Username is required"),
-    email: z.string().email("Invalid email").min(1, "Email is required"),
-    phoneNumber: z.string().min(1, "Phone number is required"),
-  }),
-
-  // Patient Info
-  patient: z.object({
-    dateOfBirth: z.string().min(1, "Date of Birth is required"),
-    gender: z.enum(["Male", "Female", "Other"]),
-    address: z.string().min(1, "Address is required"),
-  }),
-
-  // Patient File Info
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  dateOfBirth: z.string().min(1, "Date of Birth is required"),
+  gender: z.enum(["Male", "Female", "Other"]),
+  address: z.string().min(1, "Address is required"),
   dateIssued: z.string().min(1, "Date is required"),
   description: z.string().optional(),
   symptoms: z.string().min(1, "Symptoms are required"),
+  allergies: z.string().optional(),
+  MedicalHistory: z.string().optional(), // Historique médical (optionnel)
   emergencyLevel: z.enum(["low", "moderate", "critical"]).optional(),
   testResults: z.object({
     chestXray: z.string().optional(),
     bloodTest: z.string().optional(),
     oxygenSaturation: z.string().optional(),
-  })
+  }).optional(),
 });
 
 const MedicalFormWithUserAndPatient = () => {
@@ -40,52 +46,78 @@ const MedicalFormWithUserAndPatient = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (data) => {
-    console.log("🧾 Données envoyées :", data);
+  const navigate = useNavigate();
 
-    try {
-      const generatedMedicalRecord = "Record-" + Math.floor(Math.random() * 10000);
-      const generatedReference = Math.floor(Math.random() * 1000000);
-
-      const formattedData = {
-        user: {
-          username: data.user.username,
-          email: data.user.email,
-          phoneNumber: data.user.phoneNumber,
-        },
-        patient: {
-          dateOfBirth: data.patient.dateOfBirth,
-          gender: data.patient.gender,
-          address: data.patient.address,
-        },
-        reference: generatedReference,
-        dateIssued: data.dateIssued,
-        description: data.description,
-        symptoms: data.symptoms,
-        emergencyLevel: data.emergencyLevel,
-        medicalRecord: generatedMedicalRecord,
-        testResults: data.testResults
-      };
-
-      console.log("Données formatées pour l'API :", formattedData);
-
-      const response = await fetch("http://localhost:5000/patient", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formattedData),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("✅ Patient with file created:", result);
-      } else {
-        const errorText = await response.text();
-        console.error("❌ Failed to create patient:", errorText);
-      }
-    } catch (error) {
-      console.error("❌ Network or server error:", error);
-    }
+const onSubmit = async (data) => {
+  const gender = data.gender; // Récupérer tel quel pour le backend
+  const genderMap = {
+    Male: 0,
+    Female: 1
   };
+
+  const age = new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear();
+
+
+  // Préparer les données pour la prédiction
+  const predictionInput = {
+    age: age,
+    gender: genderMap[gender], // utiliser 0 ou 1 pour la prédiction
+    oxygenSaturation: parseFloat(data.testResults?.oxygenSaturation ),
+    bloodTest: parseFloat(data.testResults?.bloodTest ),
+    chestXray: parseFloat(data.testResults?.chestXray ),
+  };
+
+  try {
+    const predictedLevel = await predictEmergencyLevel(predictionInput);
+    console.log("✅ Niveau d'urgence prédit :", predictedLevel);
+
+    // Données à envoyer au backend
+    const finalData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      sex: gender, // ⬅️ garder la valeur littérale ici ("Male", "Female")
+      age: age,
+      phone: data.phone,
+      address: data.address,
+      dateIssued: data.dateIssued,
+      symptoms: data.symptoms,
+      diagnostic:{
+        symptoms: data.symptoms,
+      },
+      allergies: data.allergies,
+      MedicalHistory: data.MedicalHistory,
+      description: data.description,
+      emergencyLevel: predictedLevel,
+      testResults: {
+        chestXray: predictionInput.chestXray,
+        bloodTest: predictionInput.bloodTest,
+        oxygenSaturation: predictionInput.oxygenSaturation,
+      },
+    };
+
+    const response = await fetch("http://localhost:5000/patient/createSimplePatient1", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalData),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      navigate("/patients");
+      console.log("✅ Patient with file created:", result);
+    } else {
+      const errorText = await response.text();
+      console.error("❌ Failed to create patient:", errorText);
+    }
+  } catch (error) {
+    console.error("❌ Network or server error:", error);
+  }
+};
+
+
+
+
 
   const FormSection = ({ title, children }) => (
     <div>
@@ -99,52 +131,49 @@ const MedicalFormWithUserAndPatient = () => {
       <Container>
         <Title>Medical Form</Title>
 
-        {/* User Information */}
         <FormSection title="User Information">
           <Row>
             <Column>
-              <Input {...register("user.username")} placeholder="Username" />
-              {errors.user?.username && <p>{errors.user.username.message}</p>}
+              <Input {...register("firstName")} placeholder="First Name" />
+              {errors.firstName && <p>{errors.firstName.message}</p>}
             </Column>
             <Column>
-              <Input {...register("user.email")} placeholder="Email" type="email" />
-              {errors.user?.email && <p>{errors.user.email.message}</p>}
+              <Input {...register("lastName")} placeholder="Last Name" />
+              {errors.lastName && <p>{errors.lastName.message}</p>}
             </Column>
           </Row>
           <Row>
             <Column>
-              <Input {...register("user.phoneNumber")} placeholder="Phone Number" />
-              {errors.user?.phoneNumber && <p>{errors.user.phoneNumber.message}</p>}
+              <Input {...register("email")} placeholder="Email" type="email" />
+              {errors.email && <p>{errors.email.message}</p>}
             </Column>
           </Row>
         </FormSection>
 
-        {/* Patient Information */}
         <FormSection title="Patient Information">
           <Row>
             <Column>
-              <Input {...register("patient.dateOfBirth")} placeholder="Date of Birth" type="date" />
-              {errors.patient?.dateOfBirth && <p>{errors.patient.dateOfBirth.message}</p>}
+              <Input {...register("dateOfBirth")} placeholder="Date of Birth" type="date" />
+              {errors.dateOfBirth && <p>{errors.dateOfBirth.message}</p>}
             </Column>
             <Column>
-              <Select {...register("patient.gender")}>
+              <Select {...register("gender")}>
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </Select>
-              {errors.patient?.gender && <p>{errors.patient.gender.message}</p>}
+              {errors.gender && <p>{errors.gender.message}</p>}
             </Column>
           </Row>
           <Row>
             <Column>
-              <Input {...register("patient.address")} placeholder="Address" />
-              {errors.patient?.address && <p>{errors.patient.address.message}</p>}
+              <Input {...register("address")} placeholder="Address" />
+              {errors.address && <p>{errors.address.message}</p>}
             </Column>
           </Row>
         </FormSection>
 
-        {/* Patient File Information */}
         <FormSection title="Patient File Information">
           <Row>
             <Column>
@@ -162,18 +191,16 @@ const MedicalFormWithUserAndPatient = () => {
               {errors.symptoms && <p>{errors.symptoms.message}</p>}
             </Column>
             <Column>
-              <Select {...register("emergencyLevel")}>
-                <option value="">Emergency Level</option>
-                <option value="low">Low</option>
-                <option value="moderate">Moderate</option>
-                <option value="critical">Critical</option>
-              </Select>
-              {errors.emergencyLevel && <p>{errors.emergencyLevel.message}</p>}
+              <Input {...register("allergies")} placeholder="allergies" />
+              {errors.allergies && <p>{errors.allergies.message}</p>}
+            </Column>
+            <Column>
+              <Input {...register("MedicalHistory")} placeholder="MedicalHistory" />
+              {errors.MedicalHistory && <p>{errors.MedicalHistory.message}</p>}
             </Column>
           </Row>
         </FormSection>
 
-        {/* Test Results */}
         <FormSection title="Test Results">
           <Row>
             <Column>
@@ -190,10 +217,11 @@ const MedicalFormWithUserAndPatient = () => {
           </Row>
         </FormSection>
 
-        <button type="submit" onClick={handleSubmit(onSubmit)}>Submit</button>
+        <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
     </Page>
   );
 };
 
 export default MedicalFormWithUserAndPatient;
+
