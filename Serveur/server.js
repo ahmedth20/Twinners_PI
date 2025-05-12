@@ -12,10 +12,11 @@ const emergencyRoutes = require("./src/routes/allEmergency.js");
 const patientRoutes = require("./src/routes/patient.js");
 const sermanagerRoutes = require("./src/routes/serviceManager.js");
 const ambulanceRoutes = require('./src/routes/ambulance.js');
+const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
+const ressourcesRoutes = require("./src/routes/ressources.js");
 
-const staffRoutes = require("./src/routes/staff.js");
 const consultationRoutes = require("./src/routes/consultation.js")
 const operationRoutes = require("./src/routes/operations.js")
 const paramedicRoutes = require('./src/routes/paramedicRoutes.js');
@@ -27,6 +28,7 @@ const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const PatientFile = require("./src/models/patientFile");
 const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
 const medicalRoutes = require('./src/routes/medicalRoutes');
+const ResourceModel = require("./src/models/ressources.js");
 
 
 const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
@@ -173,10 +175,65 @@ app.use("/api/llm-specialty", specialtyRoutes);
 app.use("/emergencyrooms", emergencyRoomRoutes);
 app.use("/waitingList",waitingList)
 // Frontends
+app.use("/ressources", ressourcesRoutes);
+// Serve les frontends
 app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build")));
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 
+
+// Démarrer serveur AVEC WebSocket support
+server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
+
 app.use('/api', imagePredictionRoute);
 
-// Lancer le serveur
-server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
+
+// Après la config Socket.IO
+io.on('connection', (socket) => {
+  console.log('Client connecté au WebSocket');
+});
+
+// Supposons que tu as une route pour créer ou update une ressource
+app.post('/ressources', async (req, res) => {
+  try {
+    const newResource = await ResourceModel.create(req.body);
+    
+    // Vérifier si la quantité est inférieure à 10
+    if (newResource.quantity < 10) {
+      io.emit('low-stock', {
+        id: newResource._id,
+        name: newResource.name,
+        quantity: newResource.quantity
+      });
+    }
+
+    res.status(201).json(newResource);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Lorsqu'une ressource est mise à jour
+app.put('/ressources/:id', async (req, res) => {
+  try {
+    const updated = await ResourceModel.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true }
+    );
+
+    // Vérifier si la quantité est inférieure à 10
+    if (updated.quantity < 10) {
+      io.emit('low-stock', {
+        id: updated._id,
+        name: updated.name,
+        quantity: updated.quantity
+      });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+

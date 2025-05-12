@@ -20,27 +20,16 @@ import useGenderFilter from 'hooks/useGenderFilter';
 // import corrected
 import PatientService from 'services/PatientService';
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
 const PatientsList = () => {
     const contentRef = useRef(null);
     const [patients, setPatients] = useState([]);
     const [selectedLetter, setSelectedLetter] = useState(null);
-  //  const [lastGender, setLastGender] = useState(null);
 
     const handleLetterClick = (char) => {
         setSelectedLetter(prevLetter => (prevLetter === char ? null : char));
     };
-    
-  /*  const handleGenderClick = (newGender) => {
-        if (lastGender === newGender.value) {
-            // Double-clic : Réinitialiser la sélection de lettre
-            setSelectedLetter(null);
-        }
-        setLastGender(newGender.value);
-        setGender(newGender);
-    };
-    */
-    
-    
     useEffect(() => {
         const fetchPatients = async () => {
             try {
@@ -55,19 +44,19 @@ const PatientsList = () => {
         fetchPatients();
     }, []);
 
-    // current filter by month
     const [month, setMonth] = useState({ label: 'This month', number: new Date().getMonth() });
     const dateFilteredArr = patients;
-    // current filter by gender
+
     const { gender, setGender, genderArr } = useGenderFilter(dateFilteredArr);
-  
     const filteredPatients = genderArr(gender);
 
     const displayedPatients = selectedLetter
-    ? filteredPatients.filter(patient => 
-        patient.user?.lastName?.[0]?.toLowerCase() === selectedLetter
-    ) 
-    : filteredPatients;
+        ? filteredPatients.filter(patient =>
+            typeof patient.user?.lastName === 'string' &&
+            patient.user.lastName.length > 0 &&
+            patient.user.lastName[0].toLowerCase() === selectedLetter
+        )
+        : filteredPatients;
 
 
     // generate an array containing alphabet
@@ -98,15 +87,13 @@ const PatientsList = () => {
                     <LetterNav>
                         {alphabet.map(char => (
                             <li key={nanoid(3)}>
-                             <LetterNavItem
-                                className={`${isCharInPatients(char, filteredPatients) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
-                                href={`#${char}`}
-                                onClick={() => handleLetterClick(char)}
-                            >
-                                {char}
-                            </LetterNavItem>
-
-
+                                <LetterNavItem
+                                    className={`${isCharInPatients(char, filteredPatients) ? 'active' : ''} ${selectedLetter === char ? 'selected' : ''}`}
+                                    href={`#${char}`}
+                                    onClick={() => handleLetterClick(char)}
+                                >
+                                    {char}
+                                </LetterNavItem>
                             </li>
                         ))}
                     </LetterNav>
