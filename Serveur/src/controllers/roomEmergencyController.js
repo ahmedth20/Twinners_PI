@@ -35,6 +35,19 @@ exports.getEmergencyRoomById = async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la recherche", error: err });
   }
 };
+exports.getEmergencyRoomByIdback = async (emergencyRoomId) => {
+  try {
+    const room = await EmergencyRoom.findById(emergencyRoomId);
+    if (!room) {
+      return { status: 404, message: "Salle non trouvée" };
+    }
+    return { status: 200, room };
+  } catch (err) {
+    console.error("Erreur lors de la recherche :", err.message);
+    return { status: 500, message: "Erreur lors de la recherche", error: err.message };
+  }
+};
+
 
 // Mettre à jour une emergency room
 exports.updateEmergencyRoom = async (req, res) => {
@@ -63,26 +76,21 @@ exports.deleteEmergencyRoom = async (req, res) => {
 };
 
 
-exports.getRandomEmergencyRoomByDepartement = async (req, res) => {
-    try {
-      const { departement } = req.params;
-  
-      const matchingRooms = await EmergencyRoom.find({
-        departement: departement,
-        capacity: { $gt: 0 },
-      });
-  
-      if (matchingRooms.length === 0) {
-        return res.status(404).json({ message: "Aucune salle disponible trouvée pour ce département" });
-      }
-  
-      // Tirage aléatoire
-      const randomRoom = matchingRooms[Math.floor(Math.random() * matchingRooms.length)];
-  
-      res.json(randomRoom);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Erreur lors de la récupération de la salle", error: err });
+exports.getRandomEmergencyRoomByDepartement = async (departement) => {
+  try {
+    const matchingRooms = await EmergencyRoom.find({
+      departement: departement,
+      capacity: { $gt: 0 },
+    });
+
+    if (matchingRooms.length === 0) {
+      return null;
     }
-  };
-  
+
+    const randomRoom = matchingRooms[Math.floor(Math.random() * matchingRooms.length)];
+    return randomRoom;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Erreur lors de la récupération de la salle");
+  }
+};

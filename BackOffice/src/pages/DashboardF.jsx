@@ -22,7 +22,7 @@ const DashboardF = () => {
         </div>
       )}
       <div key="pain-location">
-        <PainLocation />
+        <PainLocation patient={patient}/>
       </div>
       <div key="daily-app-chart">
         <DailyAppointmentChart />

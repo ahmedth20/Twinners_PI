@@ -14,8 +14,21 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSelector } from 'react-redux';
 import Navbar2 from '../Shared/Navbar/Navbar2';
+import axios from 'axios';
 
 const Main = () => {
+   useEffect(() => {
+    const startProcess = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/waitingList/process');
+        console.log("***********PROCESSSSSS***************"); // "Traitement de la liste d'attente en cours..."
+        console.log(response.data.message); // "Traitement de la liste d'attente en cours..."
+      } catch (error) {
+        console.error("Erreur lors du démarrage du processus :", error.message);
+      }
+    };
+    startProcess();
+  }, []);
   useEffect(() => {
     AOS.init();
     AOS.refresh();

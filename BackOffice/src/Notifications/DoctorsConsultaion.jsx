@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import { motion } from 'framer-motion';
-
-const socket = io('http://localhost:5000');
+import { useSocket } from './SocketContext'; // Importer le hook pour accéder à la socket
+import { useSnackbar } from 'notistack';
 
 function ConsultationNotification() {
-  const [notification, setNotification] = useState(null);
+  const socket = useSocket();  // Récupérer la socket depuis le contexte
+  const { enqueueSnackbar } = useSnackbar();  // Utiliser notistack pour afficher les notifications
+  const [notification, setNotification] = useState(null);  // Initialiser notification avec null
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -16,16 +17,25 @@ function ConsultationNotification() {
       console.log('Notification reçue:', consultationDataDetails);
       setNotification(consultationDataDetails);
 
+      // Utiliser notistack pour afficher la notification
+      enqueueSnackbar(
+        `Nouvelle consultation: Patient: ${consultationDataDetails.patient}, Durée: ${consultationDataDetails.duration} minutes`,
+        { 
+          variant: 'info',  // Choisir le type de notification (info, success, error, etc.)
+          autoHideDuration: 10000,  // Disparition automatique après 10 secondes
+        }
+      );
+
       // Disparition de la notification après 10 secondes
       setTimeout(() => {
-        setNotification(null);
+        setNotification(null);  // Réinitialiser l'état de notification après un délai
       }, 10000);
     });
 
     return () => {
-      socket.off('send_notification');
+      socket.off('send_notification');  // Nettoyage de l'événement lorsque le composant est démonté
     };
-  }, []);
+  }, [socket, enqueueSnackbar]);
 
   return (
     <div className="fixed top-5 right-5 z-50">
@@ -48,4 +58,3 @@ function ConsultationNotification() {
 }
 
 export default ConsultationNotification;
-

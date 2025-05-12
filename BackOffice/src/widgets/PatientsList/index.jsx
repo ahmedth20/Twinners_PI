@@ -73,9 +73,12 @@ const PatientsList = () => {
     // generate an array containing alphabet
     const alphabet = generateAlphabet();
 
-    const isCharInPatients = (char, arr) => {
-        return arr.some(patient => patient.user?.lastName[0].toLowerCase() === char);
-    };
+   const isCharInPatients = (char, arr) => {
+    return arr.some(patient => 
+        patient.user?.lastName?.[0]?.toLowerCase() === char
+    );
+};
+
 
     useEffect(() => {
         contentRef.current?.scrollTo({
@@ -112,8 +115,7 @@ const PatientsList = () => {
             <WidgetBody style={{ padding: 0 }} elRef={contentRef}>
                 {dateFilteredArr.length !== 0 ? (
                     <>
-                    {selectedLetter ? (
-    // Si une lettre est sélectionnée, afficher uniquement ce groupe
+                {selectedLetter ? (
     <Group
         key={`patients-${selectedLetter}`}
         gender={gender.value}
@@ -122,19 +124,19 @@ const PatientsList = () => {
         arr={displayedPatients} // Patients filtrés par lettre
     />
 ) : (
-    // Sinon, afficher tous les groupes classés par lettre
-    alphabet.map(char => (
+    alphabet.map((char) => (
         <Group
             key={`patients-${char}`}
             gender={gender.value}
             char={char}
             type={'patient'}
             arr={filteredPatients.filter(patient => 
-                patient.user?.lastName?.[0]?.toLowerCase() === char
+                patient.user?.lastName && patient.user.lastName[0]?.toLowerCase() === char
             )}
         />
     ))
 )}
+
 
 
                     </>

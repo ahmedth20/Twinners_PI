@@ -98,7 +98,26 @@ const medicalRecordController = {
       console.error(error);
       res.status(500).json({ message: "Erreur serveur", error });
     }
+  },
+  async getMedicalRecordByIdAsync(req,res) {
+  try {
+    const record = await MedicalRecord.findById(req.params.id)
+      .populate("patient", "firstName lastName")
+      .populate("operations")
+      .populate("patientFiles")
+      .populate("prescriptions");
+
+    if (!record) {
+      console.error("Dossier médical introuvable");
+      return null;
+    }
+    return record;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du dossier :", error.message);
+    return null;
   }
+},
+
 };
 
 

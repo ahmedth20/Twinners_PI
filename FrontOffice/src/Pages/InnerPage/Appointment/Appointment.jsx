@@ -23,6 +23,8 @@ import ConsultationService from '../../../services/consultationService';
 import { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 const socket = io('http://localhost:5000');
+import { useNavigate } from "react-router-dom";
+
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -83,12 +85,96 @@ const Appoinment = ({ id }) => {
     resolver: zodResolver(patientSchema),
   });
   const user = useSelector(state => state.auth.user.user1.id); 
+  const [patientId, setPatientId] = useState(null);
   const sendNotification = async (consultationDataDetails) => {
     console.log("Envoi des données de la consultation :", consultationDataDetails);  // Vérifiez ici
     socket.emit('send_notification', consultationDataDetails);
   };
-  
-  
+     useEffect(() => {
+      const startProcess = async () => {
+        try {
+          const response = await axios.get('http://localhost:5000/waitingList/process');
+          console.log("***********PROCESSSSSS***************"); // "Traitement de la liste d'attente en cours..."
+          console.log(response.data.message); // "Traitement de la liste d'attente en cours..."
+        } catch (error) {
+          console.error("Erreur lors du démarrage du processus :", error.message);
+        }
+      };
+      startProcess();
+    }, []);
+  const navigate = useNavigate();
+const checkPatientStatus = async () => {
+  if (!patientId) {
+    console.warn("⚠️ patientId est null ou indéfini. Vérifiez le processus d'enregistrement.");
+    return;
+  }
+
+  console.log("🔍 patientId utilisé pour la requête :", patientId);
+
+  const checkStatus = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/waitingList/status/${patientId}`);
+
+      if (response.status === 200) {
+        console.log("⏳ Patient toujours en attente... Nouvelle vérification dans 30 secondes.");
+        setTimeout(checkStatus, 30000); // Relance après 30 secondes
+      } else if (response.status === 204) {
+        console.log("🚦 Le patient n'est plus dans la liste d'attente. Vérification de la consultation...");
+
+        // Vérification s'il est affecté à un médecin (consultation)
+        const consultationResponse = await axios.get(`http://localhost:5000/consultation/OneByUser/${patientId}`);
+
+        if (consultationResponse.status === 200) {
+          console.log("✅ CONSULTATION trouvée...", consultationResponse.data);
+
+          const consultationDataDetails = {
+            duration: consultationResponse.data.duration,
+            date: consultationResponse.data.date,
+            status: consultationResponse.data.status,
+            diagnostic: consultationResponse.data.diagnostic,
+            patient: `${consultationResponse.data.patient.user.firstName} ${consultationResponse.data.patient.user.lastName}`,
+            doctor: `${consultationResponse.data.doctor.user.firstName} ${consultationResponse.data.doctor.user.lastName}`,
+            emergencyRoom: consultationResponse.data.emergencyRoom,
+          };
+
+          sendNotification(consultationDataDetails);
+          toast.success(
+            <div>
+               <p><strong>👤 Doctor:</strong> {consultationDataDetails.doctor}</p>   
+              <p><strong>🚑 Emergency Room:</strong> {consultationDataDetails.emergencyRoom}</p>
+              <p><strong>🕒 Duration:</strong> {consultationDataDetails.duration} minutes</p>
+              <p><strong>📅 Date:</strong> {new Date(consultationDataDetails.date).toLocaleString()}</p>
+                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
+            </div>,
+            { position: "top-center", autoClose: false }
+          );
+        } else if (consultationResponse.status === 204) {
+          console.log("❌ Aucune consultation trouvée. Fin de la vérification.");
+        }
+      }
+    } catch (error) {
+      console.error("Erreur lors de la vérification du statut du patient :", error.message);
+    }
+  };
+
+  checkStatus(); // On démarre la première vérification
+};
+
+
+
+  // Lancer la vérification à chaque fois que patientId change
+  useEffect(() => {
+    if (patientId) {
+      console.log("👀 Vérification du statut démarrée...");
+
+      const intervalId = setInterval(() => {
+        checkPatientStatus();
+      }, 30000);
+
+      // Nettoyage lors du démontage du composant
+      return () => clearInterval(intervalId);
+    }
+  }, [patientId]);
   const onSubmit = async (data) => {
     try {
       console.log(data);
@@ -103,6 +189,20 @@ const Appoinment = ({ id }) => {
       const specialtyCleaned = specialty.specialty.split(" ")[0];
       console.log("Spécialité devinée (nettoyée) :", specialtyCleaned);
 
+      /****************************************** */
+
+       const waitinglistResponse = await axios.post('http://localhost:5000/waitingList', {
+              patient: SavedPatient.patient,
+              specialty: specialtyCleaned,
+            });
+      const list = waitinglistResponse.data; // On prend le premier disponible
+      console.log("listt :", list);
+
+    // Lancer la vérification de l'état du patient
+    console.log(" 👇 Démarrage de la vérification directement après l'ajout dans la liste d'attente")
+    //checkPatientStatus(SavedPatient.patient._id);
+     setPatientId(SavedPatient.patient._id);
+/*
       // Appel pour trouver un médecin disponible avec cette spécialité
       const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialty/${specialtyCleaned}`);
       const doctor = doctorResponse.data; // On prend le premier disponible
@@ -130,7 +230,6 @@ const Appoinment = ({ id }) => {
        const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
       console.log("Consultation créée avec succès :", createdConsultation.data);
   
-      alert("✅ Patient ajouté avec succès !");
       await axios.put(`http://localhost:5000/doctors/${doctor._id}`, { availability: false });
       console.log(`Médecin ${doctor._id} mis à jour à disponibilité: false`);
 
@@ -165,11 +264,7 @@ const Appoinment = ({ id }) => {
               }
             } catch (error) {
               console.error("❌ Erreur lors de l'ajout de la consultation :", error.response ? error.response.data : error.message);
-            }
-            
-            
-            
-            
+            }     
             
             const consultationDataDetails = {
               duration: 30,  // Exemple de durée, tu peux la personnaliser
@@ -191,7 +286,8 @@ const Appoinment = ({ id }) => {
               </div>,
               { position: "top-center", autoClose: false }
             );
-
+            navigate("/");
+*/
     } catch (error) {
       alert("❌ Erreur lors de l'ajout du patient.");
     }

@@ -1,22 +1,11 @@
 import { useState, useRef,useEffect } from 'react';
-import { FaArrowRight, FaCog, FaInfoCircle, FaStethoscope, FaNotesMedical,FaWrench,FaFlask, FaUser, FaAddressCard, FaGenderless } from 'react-icons/fa';
-
+import { FaArrowRight, FaCog,  FaStethoscope, FaNotesMedical,FaWrench,FaFlask, FaUser, FaAddressCard, FaGenderless } from 'react-icons/fa';
 import { GoArrowRight } from 'react-icons/go';
-import { MdCall } from 'react-icons/md';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { blue } from '@mui/material/colors';
-
-import { Snackbar, Alert } from "@mui/material";
-import {
-  Box, Button, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Chip, Stack
-} from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MedicalRecordService from '../../services/medicalRecordService';
 import ConsultationService from '../../services/consultationService';
 import OperationService from '../../services/operationService';
@@ -51,33 +40,53 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(false);
   const [medicalRecord, setMedicalRecord] = useState(null);
   const [consultations, setConsultations] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue
+  } = 
+  useForm({
+    resolver: zodResolver(patientSchema),
+  });
 
-  useEffect(() => {
-      const fetchPatientProfile = async () => {
-          setLoading(true);
-          try {
-              const response = await axios.get(`http://localhost:5000/patient/getPatientProfile/${user}`);
-              const data = response.data;
-              setUserData(data);
-              setFirstName(data.firstName || "");
-              setLastName(data.lastName || "");
-              setPhone(data.phone || "");
-              setAge(data.age || "");
-              setSex(data.sex || "");
-              setAddress(data.address || "");
-              setPatientId(data._id|| "");
-              console.log(data);
-              
-          } catch (error) {
-              console.error("Error fetching patient profile:", error);
-              setErr("Error fetching profile data.");
-          } finally {
-              setLoading(false);
-          }
-      };
+ useEffect(() => {
+    const fetchPatientProfile = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:5000/patient/getPatientProfile/${user}`);
+        const data = response.data;
 
-      fetchPatientProfile();
-  }, [user]);
+        setUserData(data);
+
+        // Synchroniser les états locaux
+        setFirstName(data.firstName || "");
+        setLastName(data.lastName || "");
+        setPhone(data.phone || "");
+        setAge(data.age || "");
+        setSex(data.sex || "");
+        setAddress(data.address || "");
+        setPatientId(data._id || "");
+
+        // ➡️ Synchroniser avec React Hook Form (IMPORTANT : après l'initialisation)
+        setValue('firstName', data.firstName || "");
+        setValue('lastName', data.lastName || "");
+        setValue('phone', data.phone || "");
+        setValue('age', data.age || "");
+        setValue('sex', data.sex || "");
+        setValue('address', data.address || "");
+
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching patient profile:", error);
+        setErr("Error fetching profile data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatientProfile();
+  }, [user, setValue]);
 
  
 
@@ -140,7 +149,7 @@ const ProfileSettings = () => {
   const handleUpdateProfile = async (data) => {
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/patients/updatePatientProfile/${user}`, data);
+      await axios.put(`http://localhost:5000/patient/updatePatientProfile/${user}`, data);
       setSuccess("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -165,16 +174,7 @@ const ProfileSettings = () => {
   const medicalRecordRef = useRef(null);
   const operationsRef = useRef(null);
   const testResultRef = useRef(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue
-  } = 
-  useForm({
-    resolver: zodResolver(patientSchema),
-  });
-
+ 
 
   return (
     <>
@@ -279,16 +279,18 @@ const ProfileSettings = () => {
               >
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                    <div className="relative w-full">
-                    <input
+                      <input
                       type="text"
-                      name="FirstName"
+                      name="firstName"
                       id="firstName"
                       placeholder="Enter First Name*"
                       required
-                      value={firstName}  // Utilisation de la donnée de l'état
-                      onChange={(e) => setFirstName(e.target.value)} // Mise à jour de l'état
+                      value={firstName}
+                      onChange={(e) => {
+                        setFirstName(e.target.value);
+                        setValue('firstName', e.target.value); // On synchronise avec React Hook Form
+                      }}
                       className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                      {...register("firstName")}
                     />
                     {errors.firstName && (
                       <span className="text-red-500 text-sm">{errors.firstName.message}</span>
@@ -301,18 +303,19 @@ const ProfileSettings = () => {
 
                 
                   <div className="relative w-full">
-                  <input
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                    placeholder="Enter Last Name*"
-                    required
-                    value={lastName}  // Utilisation de la donnée de l'état
-                    onChange={(e) => setLastName(e.target.value)} // Mise à jour de l'état
-              
-                    className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                    {...register("lastName")}
-                  />
+              <input
+                      type="text"
+                      name="lastName"
+                      id="lastName"
+                      placeholder="Enter Last Name*"
+                      required
+                      value={lastName}
+                      onChange={(e) => {
+                        setLastName(e.target.value);
+                        setValue('lastName', e.target.value); // On synchronise avec React Hook Form
+                      }}
+                      className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                    />
                   {errors.lastName && (
                     <span className="text-red-500 text-sm">{errors.lastName.message}</span>
                   )}
@@ -326,33 +329,37 @@ const ProfileSettings = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="relative w-full">
-                <input
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  placeholder="Enter Phone Number*"
-                  required
-                  value={phone}  // Utilisation de la donnée de l'état
-                  onChange={(e) => setPhone(e.target.value)} // Mise à jour de l'état
-                  className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                  {...register("phone")}
-                />
+                      <input
+                      type="number"
+                      name="phone"
+                      id="phone"
+                      placeholder="Enter Phone*"
+                      required
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        setValue('phone', e.target.value); // On synchronise avec React Hook Form
+                      }}
+                      className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                    />
                 {errors.phone && (
                   <span className="text-red-500 text-sm">{errors.phone.message}</span>
                 )}
               </div>
               <div className="relative w-full">
-                <input
-                  type="text"
-                  name="age"
-                  id="age"
-                  placeholder="Enter Age*"
-                  required
-                  value={age}  // Utilisation de la donnée de l'état
-                  onChange={(e) => setAge(e.target.value)} // Mise à jour de l'état
-                  className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                  {...register("age")}
-                />
+                     <input
+                      type="text"
+                      name="age"
+                      id="age"
+                      placeholder="Enter Age*"
+                      required
+                      value={age}
+                      onChange={(e) => {
+                        setAge(e.target.value);
+                        setValue('age', e.target.value); // On synchronise avec React Hook Form
+                      }}
+                      className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                    />
                 {errors.age && (
                   <span className="text-red-500 text-sm">{errors.age.message}</span>
                 )}
@@ -361,23 +368,18 @@ const ProfileSettings = () => {
 
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="relative w-full">
-                  <select
-                    name="sex"
-                    id="sex"
-                    required
-                    value={sex}
-                    onChange={(e) => {
-                      setSex(e.target.value);          // Met à jour l'état local
-                      setValue("sex", e.target.value); // Met à jour le form (React Hook Form)
-                    }}
-                    className="font-AlbertSans text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                    {...register("sex")}
-                  >
-                    <option value="">Select Gender*</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-
+                 <select
+                  name="sex"
+                  id="sex"
+                  required
+                  defaultValue={sex} // Prend la valeur au premier rendu
+                  className="font-AlbertSans text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
+                  {...register("sex")}
+                >
+                  <option value="">Select Gender*</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
                     <error>{errors.sex?.message}</error>
                     <FaGenderless
                       size="20"
@@ -386,16 +388,18 @@ const ProfileSettings = () => {
                   </div>
 
                    <div className="relative w-full">
-                    <input
+                     <input
                       type="text"
                       name="address"
                       id="address"
                       placeholder="Enter Address*"
                       required
-                      value={address}  // Utilisation de la donnée de l'état
-                      onChange={(e) => setAddress(e.target.value)} // Mise à jour de l'état
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        setValue('address', e.target.value); // On synchronise avec React Hook Form
+                      }}
                       className="font-AlbertSans text-HeadingColor-0 placeholder:text-HeadingColor-0 font-light bg-transparent border border-Secondarycolor-0 border-opacity-45 rounded-xl py-5 px-6 h-[70px] w-full focus:outline-PrimaryColor-0 text-lg"
-                      {...register("address")}
                     />
                     {errors.address && (
                       <span className="text-red-500 text-sm">{errors.address.message}</span>
