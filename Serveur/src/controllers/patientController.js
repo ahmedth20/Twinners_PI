@@ -539,6 +539,7 @@ async createPatient(req, res) {
 }
 ,
 async updatePatient(req, res) {
+    console.log("🟡 Requête reçue au backend :", req.body);
     const session = await mongoose.startSession();
     session.startTransaction();
 

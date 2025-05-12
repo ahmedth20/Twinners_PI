@@ -1,3 +1,168 @@
+/*import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Container,
+  SectionTitle,
+  Title,
+  Row,
+  Column,
+  Input,
+} from "../styles/medicalForm";
+
+const formSchema = z.object({
+  firstName: z.string().min(1, "First Name is required"),
+  lastName: z.string().min(1, "Last Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(8, "Phone number is required"),
+  address: z.string().min(5, "Address is required"),
+});
+
+const FormSection = ({ title, children }) => (
+  <div className="mb-6 w-full">
+    <SectionTitle>{title}</SectionTitle>
+    {children}
+  </div>
+);
+
+const MedicalFormUpdate = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  const onSubmit = (data) => {
+    console.log("Form data submitted:", data);
+    alert("Form submitted successfully!");
+  };
+
+  return (
+    <Container className="w-full p-8">
+      <Title>Medical Record Form</Title>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <FormSection title="User Information">
+          <Row className="w-full">
+            <Column className="w-full">
+              <label>First Name:</label>
+              <Input
+                {...register("firstName")}
+                placeholder="First Name"
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded"
+              />
+              {errors.firstName && (
+                <p className="text-red-500">{errors.firstName.message}</p>
+              )}
+            </Column>
+            <Column className="w-full">
+              <label>Last Name:</label>
+              <Input
+                {...register("lastName")}
+                placeholder="Last Name"
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded"
+              />
+              {errors.lastName && (
+                <p className="text-red-500">{errors.lastName.message}</p>
+              )}
+            </Column>
+          </Row>
+
+          <Row className="w-full">
+            <Column className="w-full">
+              <label>Email:</label>
+              <Input
+                {...register("email")}
+                placeholder="Email"
+                type="email"
+                className="w-full p-3 border border-gray-300 rounded"
+              />
+              {errors.email && (
+                <p className="text-red-500">{errors.email.message}</p>
+              )}
+            </Column>
+          </Row>
+
+          <Row className="w-full">
+            <Column className="w-full">
+              <label>Phone:</label>
+              <Input
+                {...register("phone")}
+                placeholder="Phone"
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded"
+              />
+              {errors.phone && (
+                <p className="text-red-500">{errors.phone.message}</p>
+              )}
+            </Column>
+            <Column className="w-full">
+              <label>Address:</label>
+              <Input
+                {...register("address")}
+                placeholder="Address"
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded"
+              />
+              {errors.address && (
+                <p className="text-red-500">{errors.address.message}</p>
+              )}
+            </Column>
+          </Row>
+        </FormSection>
+
+        <div className="mt-8 w-full">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white w-full p-3 rounded hover:bg-blue-700 transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </Container>
+  );
+};
+
+export default MedicalFormUpdate;
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import Page from "layout/Page";
 import { Container, SectionTitle, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
@@ -63,7 +228,7 @@ const FormSection = ({ title, children }) => (
 const MedicalFormUpdate = () => {
   const { state } = useLocation();  // Récupère les données envoyées via navigate
   const data = state?.patientData; // Accède aux données du patient
-  console.log(data);
+ 
   const [symptoms, setSymptoms] = useState([""]);
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
 
@@ -73,13 +238,30 @@ const MedicalFormUpdate = () => {
   const [medicalR, setMedicalR] = useState([]);
 
   const addField = (setState) => setState(prev => [...prev, ""]);
-  const addMedication = () => setMedications(prev => [...prev, { name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
-  const addOperation = () => setOperations(prev => [...prev, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
-  const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
-  const removeMedication = (index) => setMedications(medications.filter((_, i) => i !== index));
-  const removeOperation = (index) => {
-    setOperations(operations.filter((_, i) => i !== index));
-  };
+  const addMedication = () => {
+  const newMedications = [...medications, { name: "", dosage: "", frequency: "", duration: "", notes: "" }];
+  setMedications(newMedications);
+  setValue("medicalRecord.treatment.medications", newMedications);
+};
+
+const removeMedication = (index) => {
+  const newMedications = medications.filter((_, i) => i !== index);
+  setMedications(newMedications);
+  setValue("medicalRecord.treatment.medications", newMedications);
+};
+const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
+const addOperation = () => {
+  const newOperations = [...operations, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }];
+  setOperations(newOperations);
+  setValue("operations", newOperations);
+};
+
+const removeOperation = (index) => {
+  const newOperations = operations.filter((_, i) => i !== index);
+  setOperations(newOperations);
+  setValue("operations", newOperations);
+};
+
 
 useEffect(() => {
       const fetchDoctors = async () => {
@@ -200,6 +382,7 @@ useEffect(() => {
   
   const onSubmit = async () => {
     try {
+      console.log("🟢 Form submitted!");
       const formValues = getValues();
       const updatedData = {};
   
@@ -226,26 +409,21 @@ useEffect(() => {
         updatedData.medicalRecord = formValues.medicalRecord;
       }
   
-      if (Object.keys(updatedData).length > 0) {
-        await PatientService.updatePatient(data._id, updatedData);
-        alert("✅ Patient mis à jour avec succès !");
-      } else {
-        alert("Aucune modification détectée.");
-      }
-  
+     if (Object.keys(updatedData).length > 0) {
+  console.log("📦 Payload envoyé :", updatedData); // Vérification
+  await PatientService.updatePatient(data._id, updatedData);
+  alert("✅ Patient mis à jour avec succès !");
+
     } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);
       alert("Erreur lors de la mise à jour du patient.");
     }
   };
-  
-  
   return (
        <Page title="Medical Record">
       <Container>
         <Title>Medical Record Form</Title>
 
-        {/* Informations de l'utilisateur */}
         <FormSection title="User Information">
           <Row>
             <Column>
@@ -263,7 +441,6 @@ useEffect(() => {
           </Row>
         </FormSection>
 
-        {/* Informations sur le patient */}
         <FormSection title="Patient Information">
           <Row>
             <Column>
@@ -442,7 +619,7 @@ useEffect(() => {
                     <div key={index}>
                       <Row>
                         <Column>
-                          <Input
+                         <Input
                             {...register(`operations.${index}.type`)}
                             placeholder="Operation Type"
                             value={operation.type}
@@ -450,8 +627,10 @@ useEffect(() => {
                               const newOperations = [...operations];
                               newOperations[index].type = e.target.value;
                               setOperations(newOperations);
+                              setValue(`operations.${index}.type`, e.target.value); // ✅ Met à jour react-hook-form
                             }}
                           />
+
                         </Column>
                         <Column>
                         <Input
@@ -522,9 +701,7 @@ useEffect(() => {
 
         <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
-   </Page>
-    
-        
+   </Page>    
   );
 };
 
