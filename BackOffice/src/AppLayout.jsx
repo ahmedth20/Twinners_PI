@@ -40,6 +40,7 @@ const Settings = lazy(() => import('pages/Settings'));
 const MedicalForm = lazy(() => import('pages/MedicalForm'));
 const GeminiChatbot = lazy(() => import('pages/GeminiChatbot'));
 const WaitingList = lazy(() => import('pages/waitingList'));
+const PatientFile = lazy(() => import('pages/PatientFile'));
 
 //const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
@@ -81,6 +82,8 @@ const AppLayout = () => {
       <Route path="/paramedicchat" element={ <ParamedicChat/> } />
       <Route path="/consultations" element={ <DoctorsConsultaion/> } />
       <Route path="/waitingList" element={ <WaitingList/> } />
+      
+      <Route path="/patientFile" element={ <PatientFile/> } />
       
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />

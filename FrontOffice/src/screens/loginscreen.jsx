@@ -338,15 +338,12 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                 <form ><div>
                 <h1 className="text-lg font-bold text-center mb-2">Sign In</h1>
 
-<a style={{
-                   marginBottom:'20px' 
-                    
-                  }}
-  className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
-  onClick={() => setIsSignUp(true)}
->
-  Create Account
-</a>
+                    <a style={{marginBottom:'20px'}}
+                      className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
+                      onClick={() => setIsSignUp(true)}
+                    >
+                      Create Account
+                    </a>
 
                   <input style={{
                    marginBottom:'10px' 
@@ -358,37 +355,39 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     required
                     onChange={handleEmailChange}
                     className={`p-2 w-full border rounded focus:outline-none ${
-    emailError ? "border-red-500" : "border-gray-300"
-  }`}                  />
-{emailError && <small className="text-red-500">Email invalide</small>}
-<input
+                      emailError ? "border-red-500" : "border-gray-300"
+                      }`}                  />
+                      {emailError && <small className="text-red-500">Email invalide</small>}
+                    <input
                     type={showPassword ? "text" : "password"}
                     placeholder="mot de passe"
                     name="password"
                     required
                     onChange={handlePasswordChange}
                     className={`p-2 w-full border rounded focus:outline-none ${
-    passwordError ? "border-red-500" : "border-gray-300"
-  }`}
-                  />      {passwordError &&  ( <small className="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>)
-}
+                          passwordError ? "border-red-500" : "border-gray-300"
+                        }`} />
+                        {passwordError &&  ( <small className="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>)}
 
                   <a  style={{
                    marginTop:'50px' 
                     
                   }} href="/forgotpassword">Forgot your password?</a>
+                  
                   <button
-      type="submit"
-      disabled={!isFormValid()}
-      onClick={handleSubmit}
-     className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
-        isFormValid() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-      }`}
-    > 
-      Sign In
-    </button>
-</div>
-<div>
+                      type="submit"
+                      disabled={!isFormValid()}
+                      onClick={handleSubmit}
+                    className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
+                        isFormValid() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                      }`}
+                    > 
+                    
+                    Sign In
+                      </button>
+                      <a href="http://localhost:5174/LoginRF">Login with FaceId</a>
+                  </div>
+                  <div>
                   <GoogleLogin text="signin_with"   style={{
                    marginBottom:'10px' 
                     
@@ -446,11 +445,11 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                    marginBottom:'20px' 
                     
                   }}
-  className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
-  onClick={() => setIsSignUp(false)}
->
-  Se connecter
-</a>
+                      className="text-blue-500 text-sm text-center cursor-pointer hover:underline mb-2"
+                      onClick={() => setIsSignUp(false)}
+                    >
+                      Se connecter
+                    </a>
                   <input
                     type="email"
                     placeholder="nom@gmail.com"
@@ -458,8 +457,8 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     required
                     onChange={handleEmailChange1}
                     className={`p-2 w-full border rounded focus:outline-none ${
-    emailError1 ? "border-red-500" : "border-gray-300"
-  }`}                  />
+                      emailError1 ? "border-red-500" : "border-gray-300"
+                    }`}/>
                   {emailError1 && <small className="error-msg">Email invalide</small>}
                   <input
                     type={showPassword1 ? "text" : "password"}
@@ -468,8 +467,9 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     required
                     onChange={handlePasswordChange1}
                     className={`p-2 w-full border rounded focus:outline-none ${
-    emailError1 ? "border-red-500" : "border-gray-300"
-  }`}                                   />      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+                        emailError1 ? "border-red-500" : "border-gray-300"
+                      }`}/>
+                      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
 
                   <input
                     type="text"
@@ -486,9 +486,9 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                   />
                   <button
                     type="submit"  className={`mt-2 p-2 w-full text-white text-sm font-semibold rounded ${
-        isFormValid1() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-      }`}
-      onClick={handleSubmit1}
+                      isFormValid1() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    onClick={handleSubmit1}
                   >
                     Sign Up
                   </button>

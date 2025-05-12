@@ -79,6 +79,7 @@
     "react-select-country-list": "^2.2.3",
     "react-sizeme": "^3.0.2",
     "react-swipeable-views": "^0.14.0",
+    "react-toastify": "^11.0.5",
     "react-transition-group": "^4.4.5",
     "react-use": "^17.4.0",
     "recharts": "^2.1.12",

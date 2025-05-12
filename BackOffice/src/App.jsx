@@ -20,6 +20,7 @@ import createCache from '@emotion/cache';
 
 // contexts
 import { SidebarContextAPI } from 'contexts/sidebarContext';
+import { SocketProvider } from "./contexts/SocketContext";
 
 // hooks
 import { useEffect } from 'react';

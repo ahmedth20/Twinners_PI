@@ -25,7 +25,6 @@ import io from 'socket.io-client';
 const socket = io('http://localhost:5000');
 import { useNavigate } from "react-router-dom";
 
-
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const patientSchema = z.object({

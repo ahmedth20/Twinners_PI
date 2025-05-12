@@ -5,12 +5,12 @@ const patientFileSchema = new mongoose.Schema({
   dateIssued: { type: String, required: true },
   description: { type: String},
   symptoms: { type: String, required: true },
-  emergencyLevel: { type: String, enum: ["low", "moderate", "critical"]},
+  emergencyLevel: { type: String, enum: ["low", "moderate", "critical"], required: true },
   paramedic: { type: mongoose.Schema.Types.ObjectId, ref: "Paramedic" },
   medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: true }
 }, { timestamps: false, versionKey: false });
 
-// Auto-incrémentation de `reference` avant l'enregistrement
+// Auto-incrémentation de reference avant l'enregistrement
 patientFileSchema.pre("save", async function (next) {
   if (!this.reference) {
     const lastFile = await mongoose.model("PatientFile").findOne().sort({ reference: -1 });
