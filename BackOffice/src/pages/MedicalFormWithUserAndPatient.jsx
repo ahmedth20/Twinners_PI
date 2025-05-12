@@ -31,6 +31,8 @@ const formSchema = z.object({
   dateIssued: z.string().min(1, "Date is required"),
   description: z.string().optional(),
   symptoms: z.string().min(1, "Symptoms are required"),
+  allergies: z.string().optional(),
+  MedicalHistory: z.string().optional(), // Historique médical (optionnel)
   emergencyLevel: z.enum(["low", "moderate", "critical"]).optional(),
   testResults: z.object({
     chestXray: z.string().optional(),
@@ -54,6 +56,7 @@ const onSubmit = async (data) => {
   };
 
   const age = new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear();
+
 
   // Préparer les données pour la prédiction
   const predictionInput = {
@@ -79,6 +82,11 @@ const onSubmit = async (data) => {
       address: data.address,
       dateIssued: data.dateIssued,
       symptoms: data.symptoms,
+      diagnostic:{
+        symptoms: data.symptoms,
+      },
+      allergies: data.allergies,
+      MedicalHistory: data.MedicalHistory,
       description: data.description,
       emergencyLevel: predictedLevel,
       testResults: {
@@ -182,7 +190,14 @@ const onSubmit = async (data) => {
               <Input {...register("symptoms")} placeholder="Symptoms" />
               {errors.symptoms && <p>{errors.symptoms.message}</p>}
             </Column>
-            
+            <Column>
+              <Input {...register("allergies")} placeholder="allergies" />
+              {errors.allergies && <p>{errors.allergies.message}</p>}
+            </Column>
+            <Column>
+              <Input {...register("MedicalHistory")} placeholder="MedicalHistory" />
+              {errors.MedicalHistory && <p>{errors.MedicalHistory.message}</p>}
+            </Column>
           </Row>
         </FormSection>
 

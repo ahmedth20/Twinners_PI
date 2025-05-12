@@ -319,7 +319,7 @@ async addPatientStaff(req, res) {
   session.startTransaction();
 
   try {
-    const { firstName, lastName, email, sex, age, phone, address, dateIssued, symptoms, emergencyLevel, description, testResults } = req.body;
+    const { firstName, lastName, email, sex, age, phone, address, dateIssued, symptoms, emergencyLevel,allergies,MedicalHistory, description, testResults } = req.body;
 
     if (!firstName || !lastName || !email) {
       throw new Error("Données utilisateur manquantes !");
@@ -354,7 +354,12 @@ async addPatientStaff(req, res) {
 
     // Création du dossier médical
     const medicalRecord = new MedicalRecord({
-      patient: savedPatient._id
+      patient: savedPatient._id,
+        diagnostic: {
+    symptoms: symptoms || []  // <== Ici on ajoute les symptômes
+  },
+  allergies: allergies || [],
+  MedicalHistory: MedicalHistory || []
     });
 
     const savedMedicalRecord = await medicalRecord.save({ session });
@@ -364,6 +369,8 @@ async addPatientStaff(req, res) {
       dateIssued,
       symptoms,
       emergencyLevel,
+      allergies,
+      MedicalHistory,
       description,
       testResults,
       medicalRecord: savedMedicalRecord._id
