@@ -31,31 +31,32 @@ const patientController = {
     }
   },
 
-  async getPatientInfoById(req, res) {
-        try {
-          const patient = await Patient.findById(req.params.id)
-            .populate("user", "firstName lastName email ") // Récupérer les infos du user sans l'ID seulement
+ async getPatientInfoById(req, res) {
+    try {
+        const patient = await Patient.findById(req.params.id)
+            .populate("user", "firstName lastName email")
             .populate({
-              path: "medicalRecord",
-              populate: [
-                { path: "operations" },
-                { path: "patientFiles" },
-                { path: "prescriptions" }
-              ]
+                path: "medicalRecord",
+                populate: [
+                    { path: "operations" },  // Include operations
+                    { path: "treatment.medications" },  // Include treatment medications
+                    { path: "patientFiles" },
+                    { path: "prescriptions" }
+                ]
             })
             .populate({
-              path: "consultations",
-              populate: { path: "doctor", select: "name specialty email phone" } // Charger les infos du médecin
+                path: "consultations",
+                populate: { path: "doctor", select: "name specialty email phone" }
             });
-      
-          if (!patient) return res.status(404).json({ message: "Patient non trouvé" });
-      
-          res.json(patient);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: "Erreur lors de la récupération du patient", error: error.message });
-        }
-      }
+
+        if (!patient) return res.status(404).json({ message: "Patient non trouvé" });
+
+        res.json(patient);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération du patient", error: error.message });
+    }
+}
   
 ,
   async createSimplePatient(req, res) {
@@ -474,7 +475,7 @@ async createPatient(req, res) {
         console.log("🟡 Mise à jour simple du patient", req.params.id);
         console.log("Données reçues :", req.body);
 
-        const { firstName, lastName, sex, age, phone, address } = req.body;
+        const { firstName, lastName, sex, age, phone, address, weight, height } = req.body;
 
         // Vérifier si le patient et l'utilisateur existent
         const patient = await Patient.findById(req.params.id);
@@ -493,6 +494,9 @@ async createPatient(req, res) {
         patient.age = age || patient.age;
         patient.phone = phone || patient.phone;
         patient.address = address || patient.address;
+        patient.weight = weight || patient.weight;
+        patient.height = height || patient.height;
+        
 
         await patient.save();
 
@@ -512,7 +516,18 @@ async updatePatient(req, res) {
         console.log("🟡 Mise à jour complète du patient", req.params.id);
         console.log("Données reçues :", req.body);
 
-        const { firstName, lastName, sex, age, phone, address, consultations = [], medicalRecord = {} } = req.body;
+        const { 
+            firstName, 
+            lastName, 
+            sex, 
+            age, 
+            phone, 
+            address, 
+            weight, 
+            height, 
+            consultations = [], 
+            medicalRecord = {} 
+        } = req.body;
 
         // Vérifier si le patient existe
         const patient = await Patient.findById(req.params.id).session(session);
@@ -522,7 +537,7 @@ async updatePatient(req, res) {
         const user = await User.findById(patient.user).session(session);
         if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-        // Mise à jour des informations utilisateur (sans modifier l'email ni le password)
+        // Mise à jour des informations utilisateur
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;
         await user.save({ session });
@@ -532,16 +547,16 @@ async updatePatient(req, res) {
         patient.age = age || patient.age;
         patient.phone = phone || patient.phone;
         patient.address = address || patient.address;
+        patient.weight = weight || patient.weight;
+        patient.height = height || patient.height;
 
         // Mise à jour des consultations
         const consultationDocs = await Promise.all(
             consultations.map(async (consultation) => {
                 if (!consultation._id) {
-                    // Nouvelle consultation
                     const newConsultation = new Consultation({ ...consultation, patient: patient._id });
                     return await newConsultation.save({ session });
                 } else {
-                    // Mise à jour de la consultation existante
                     return await Consultation.findByIdAndUpdate(consultation._id, consultation, { new: true, session });
                 }
             })
@@ -551,8 +566,15 @@ async updatePatient(req, res) {
 
         // Mise à jour du dossier médical
         if (patient.medicalRecord) {
-            await MedicalRecord.findByIdAndUpdate(patient.medicalRecord, medicalRecord, { session });
+            // Update existing medical record
+            await MedicalRecord.findByIdAndUpdate(patient.medicalRecord, {
+                ...medicalRecord,
+                // Ensure we handle treatment and operations
+                treatment: medicalRecord.treatment || {},
+                operations: medicalRecord.operations || []
+            }, { session });
         } else {
+            // Create a new medical record
             const newMedicalRecord = new MedicalRecord({ ...medicalRecord, patient: patient._id });
             const savedMedicalRecord = await newMedicalRecord.save({ session });
             patient.medicalRecord = savedMedicalRecord._id;

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Snackbar, Alert } from "@mui/material";
 
 
+
 function ForgotPassword() {
  
 const [email, setEmail] = useState("");
@@ -46,13 +47,13 @@ const [email, setEmail] = useState("");
        
         <input
       type="email"
-      placeholder="nom@gmail.com"
+      placeholder="name@gmail.com"
       name="email"
       required
       onChange={handleEmailChange}
       className={emailError ? "input-error" : "bbb"}
     />
-        {emailError && <small className="error-msg">Email invalide</small>}
+        {emailError && <small className="error-msg">invalid Email</small>}
        
         <button 
       type="submit"

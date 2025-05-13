@@ -350,24 +350,24 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     
                   }}
                     type="email"
-                    placeholder="nom@gmail.com"
+                    placeholder="name@gmail.com"
                     name="email"
                     required
                     onChange={handleEmailChange}
                     className={`p-2 w-full border rounded focus:outline-none ${
                       emailError ? "border-red-500" : "border-gray-300"
                       }`}                  />
-                      {emailError && <small className="text-red-500">Email invalide</small>}
+                      {emailError && <small className="text-red-500">invalid Email</small>}
                     <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="mot de passe"
+                    placeholder="password"
                     name="password"
                     required
                     onChange={handlePasswordChange}
                     className={`p-2 w-full border rounded focus:outline-none ${
                           passwordError ? "border-red-500" : "border-gray-300"
                         }`} />
-                        {passwordError &&  ( <small className="text-red-500">Le mot de passe doit contenir au moins 8 caractères.</small>)}
+                        {passwordError &&  ( <small className="text-red-500">Password must contain at least 8 caracters.</small>)}
 
                   <a  style={{
                    marginTop:'50px' 
@@ -452,24 +452,24 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
                     </a>
                   <input
                     type="email"
-                    placeholder="nom@gmail.com"
+                    placeholder="name@gmail.com"
                     name="email"
                     required
                     onChange={handleEmailChange1}
                     className={`p-2 w-full border rounded focus:outline-none ${
                       emailError1 ? "border-red-500" : "border-gray-300"
                     }`}/>
-                  {emailError1 && <small className="error-msg">Email invalide</small>}
+                  {emailError1 && <small className="error-msg">invalid Email</small>}
                   <input
                     type={showPassword1 ? "text" : "password"}
-                    placeholder="mot de passe"
+                    placeholder="password"
                     name="password"
                     required
                     onChange={handlePasswordChange1}
                     className={`p-2 w-full border rounded focus:outline-none ${
                         emailError1 ? "border-red-500" : "border-gray-300"
                       }`}/>
-                      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+                      {passwordError1 && <small className="error-message">Password must contain at least 8 caracters.</small>}
 
                   <input
                     type="text"
@@ -550,9 +550,9 @@ else if (data.message=="your account has been created"){  setSuccess("your accou
             <div className="text-slider">
               <div className="text-wrap">
                 <div className="text-group">
-                  <h2>Gérez votre santé facilement</h2>
-                  <h2>Restez en sécurité avec Smart190</h2>
-                  <h2>Consultez des professionnels en ligne</h2>
+                  <h2>Manage your health easily</h2>
+                  <h2>Stay safe with Smart 190</h2>
+                  <h2>Consult professionals online</h2>
                 </div>
               </div>
               <div className="bullets">

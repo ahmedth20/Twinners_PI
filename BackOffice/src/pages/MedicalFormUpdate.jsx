@@ -137,97 +137,77 @@ useEffect(() => {
       }
     }
   });
-  useEffect(() => {
-    if (!data) return;
-  
-    console.log("Données brutes :", data);
-  
-    // Données de l'utilisateur
-    if (data.user) {
-      setValue("firstName", data.user.firstName || "");
-      setValue("lastName", data.user.lastName || "");
-      setValue("email", data.user.email || "");
+ useEffect(() => {
+  if (!data) return;
+
+  // Log raw data for debugging
+  console.log("Données brutes :", data);
+
+  // Populate user information if it exists
+  if (data.user) {
+    setValue("firstName", data.user.firstName || "");
+    setValue("lastName", data.user.lastName || "");
+    setValue("email", data.user.email || "");
+  }
+
+  // Populate other fields if they exist
+  setValue("sex", data.sex || "");
+  setValue("age", data.age || "");
+  setValue("phone", data.phone || "");
+  setValue("address", data.address || "");
+  setValue("height", data.height || "");
+  setValue("weight", data.weight || "");
+
+  // Fetch medical data
+  const fetchMedicalData = async () => {
+    try {
+      const medicalData = await MedicalRecordService.getMedicalRecordById(data.medicalRecord);
+      setMedicalR(medicalData);
+
+      // Populate medical record fields
+      setValue("medicalRecord.diagnostic.condition", medicalData.diagnostic?.condition || "");
+      setValue("medicalRecord.diagnostic.severity", medicalData.diagnostic?.severity || "");
+      setValue("medicalRecord.diagnostic.notes", medicalData.diagnostic?.notes || "");
+      if (medicalData.diagnostic?.symptoms) {
+        setSymptoms(medicalData.diagnostic.symptoms);
+        setValue("medicalRecord.diagnostic.symptoms", medicalData.diagnostic.symptoms);
+      }
+
+      // Populate treatments
+      if (medicalData.treatment?.medications) {
+        setMedications(medicalData.treatment.medications);
+        setValue("medicalRecord.treatment.medications", medicalData.treatment.medications);
+      }
+
+      // Continue populating other relevant fields...
+      
+    } catch (error) {
+      console.error("Erreur lors du chargement du dossier médical :", error);
     }
-  
-    setValue("sex", data.sex || "");
-    setValue("age", data.age || "");
-    setValue("phone", data.phone || "");
-    setValue("address", data.address || "");
-    setValue("height", data.height || "");
-    setValue("weight", data.weight || "");
-  
-    // Chargement des données médicales depuis l'ID
-    const fetchMedicalData = async () => {
-      try {
-        const medicalData = await MedicalRecordService.getMedicalRecordById(data.medicalRecord);
-        setMedicalR(medicalData);
-        console.log("Dossier médical complet :", medicalData);
-  
-        // Diagnostic
-        setValue("medicalRecord.diagnostic.condition", medicalData.diagnostic?.condition || "");
-        setValue("medicalRecord.diagnostic.severity", medicalData.diagnostic?.severity || "");
-        setValue("medicalRecord.diagnostic.notes", medicalData.diagnostic?.notes || "");
-        if (medicalData.diagnostic?.symptoms) {
-          setSymptoms(medicalData.diagnostic.symptoms);
-          setValue("medicalRecord.diagnostic.symptoms", medicalData.diagnostic.symptoms);
-        }
-  
-        // Traitement
-        if (medicalData.treatment?.medications) {
-          setMedications(medicalData.treatment.medications);
-          setValue("medicalRecord.treatment.medications", medicalData.treatment.medications);
-        }
-        setValue("medicalRecord.treatment.procedures.name", medicalData.treatment?.procedures?.name || "");
-        setValue("medicalRecord.treatment.procedures.duration", medicalData.treatment?.procedures?.duration || "");
-        setValue("medicalRecord.treatment.lifestyleRecommendations", medicalData.treatment?.lifestyleRecommendations || []);
-  
-        // Allergies
-        if (medicalData.allergies) {
-          setAllergies(medicalData.allergies);
-          setValue("medicalRecord.allergies", medicalData.allergies);
-        }
-  
-        // Résultats de tests
-        setValue("medicalRecord.testResults.chestXray", medicalData.testResults?.chestXray || "");
-        setValue("medicalRecord.testResults.bloodTest", medicalData.testResults?.bloodTest || "");
-        setValue("medicalRecord.testResults.oxygenSaturation", medicalData.testResults?.oxygenSaturation || "");
-  
-        // Autres infos
-        setValue("medicalRecord.bloodGroup", medicalData.bloodGroup || "");
-        setValue("medicalRecord.MedicalHistory", medicalData.MedicalHistory || []);
-        if (medicalData.operations) {
-          setOperations(medicalData.operations);
-          setValue("medicalRecord.operations", medicalData.operations);
-        }
-  
-      } catch (error) {
-        console.error("Erreur lors du chargement du dossier médical :", error);
+  };
+
+  // Execute fetchMedicalData
+  fetchMedicalData();
+
+  // Fetch consultations
+  const fetchConsultations = async () => {
+    try {
+      if (data.consultations) {
+        const consultationsData = await Promise.all(
+          data.consultations.map(async (consultationId) => {
+            const response = await axios.get(`http://localhost:5000/consultation/${consultationId}`);
+            return response.data;
+          })
+        );
+        setValue("consultations", consultationsData);
       }
-    };
-  
-    // Exécuter la fonction
-    fetchMedicalData();
-  
-    // Consultationsf
-    const fetchConsultations = async () => {
-      try {
-        if (data.consultations) {
-          const consultationsData = await Promise.all(
-            data.consultations.map(async (consultationId) => {
-              const response = await axios.get(`http://localhost:5000/consultation/${consultationId}`);
-              return response.data;
-            })
-          );
-          console.log("Consultations récupérées :", consultationsData);
-          setValue("consultations", consultationsData);
-        }
-      } catch (error) {
-        console.error("Erreur lors du chargement des consultations :", error);
-      }
-    };
-  
-    fetchConsultations();
-  }, [data, setValue]);
+    } catch (error) {
+      console.error("Erreur lors du chargement des consultations :", error);
+    }
+  };
+
+  fetchConsultations();
+}, [data, setValue]);
   
   const onSubmit = async () => {
     try {

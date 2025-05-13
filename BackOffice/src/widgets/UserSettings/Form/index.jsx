@@ -1,91 +1,180 @@
-// styled components
-import {StyledForm, Container} from 'widgets/UserSettings/style';
-import {Input} from 'UI/Field';
-
-// components
+import { StyledForm, Container } from 'widgets/UserSettings/style';
+import { Input } from 'UI/Field';
 import DropFiles from 'components/DropFiles';
 import Btn from 'UI/Btn';
 import LabeledFormInput from 'UI/LabeledFormInput';
-import CustomSelect from 'UI/Select';
 import DateInput from 'components/MaskedInputs/Date';
 import Phone from 'components/MaskedInputs/Phone';
-
-// utils
 import PropTypes from 'prop-types';
-import countryList from 'react-select-country-list';
-import {City} from 'country-state-city';
-
-// hooks
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import useNotistack from 'hooks/useNotistack';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const Form = ({type}) => {
-    const {notify} = useNotistack('Your changes have been successfully saved.', 'success');
-    const hint = 'Drag image here or click to select file';
+const Form = ({ type }) => {
+  const { notify } = useNotistack('Your changes have been successfully saved.', 'success');
+  const hint = 'Drag image here or click to select file';
 
-    const [selectedCountry, setSelectedCountry] = useState();
-    const [selectedCity, setSelectedCity] = useState();
-    const [cities, setCities] = useState([]);
+  const userId = useSelector((state) => state.auth?.user?.id); // Make sure this is the correct path
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const getCountriesOptions = () => {
-        let countries = countryList().getData();
-        for (let i = 0; i < countries.length; i++) {
-            if (countries[i].value === 'RU') {
-                countries[i].label = 'Russia [terrorist state]';
-            }
+  // Combine state for simplicity
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    birthday: '',
+    profileImage: null,
+  });
+  const [, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/users/getprofile/${userId}`); // Use userId
+        if (!response.ok) {
+          throw new Error('Error fetching user data');
         }
-        return countries
-    }
+        const data = await response.json();
+        setUserData({
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          birthday: data.birthday || '',
+          profileImage: data.picture || null,
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        notify(); // Optional: Add failure notification
+      }
+    };
 
-    const handleCountryChange = (country) => {
-        setSelectedCountry(country);
-        setSelectedCity(null);
-        let options = [];
-        const rawData = City.getCitiesOfCountry(country.value);
-        rawData.map(item => options.push({value: item.name, label: item.name}));
-        setCities(options);
-    }
+    if (userId) fetchUser();
+  }, [userId]);
 
-    return (
-        <StyledForm action="#" method="post" id={`settings_${type}`} onSubmit={e => e.preventDefault()}>
-            <div className="wrapper">
-                <DropFiles multiple={false} type="image">
-                    <i className="icon icon-image" aria-label={hint} />
-                    <span className="hint">{hint}</span>
-                </DropFiles>
-                <Container>
-                    <LabeledFormInput id={`${type}ProfileFirstName`} title="First Name" placeholder="First Name"/>
-                    <LabeledFormInput id={`${type}ProfileLastName`} title="Last Name" placeholder="Last Name"/>
-                    <LabeledFormInput id={`${type}ProfileProfileResidence`} title="Residence" placeholder="Residence" customInput={
-                        <CustomSelect label={`${type}ProfileProfileResidence`} placeholder="Residence" options={getCountriesOptions()} value={selectedCountry}
-                                      variant="basic" changeHandler={e => handleCountryChange(e)}/>
-                    }/>
-                    <LabeledFormInput id={`${type}ProfileCity`} title="City" placeholder="City" customInput={
-                        <CustomSelect label={`${type}ProfileCity`} placeholder="City" options={cities} value={selectedCity}
-                                      variant="basic" changeHandler={e => setSelectedCity(e)}/>
-                    }/>
-                    <LabeledFormInput id={`${type}ProfileStreet`} title="Street" placeholder="Street"/>
-                    <LabeledFormInput id={`${type}ProfileAddress1`} title="Address Line 1" placeholder="Address Line 1"/>
-                    <LabeledFormInput id={`${type}ProfileAddress2`} title="Address Line 2" placeholder="Address Line 2"/>
-                    <LabeledFormInput id={`${type}ProfileBirthday`} title="Birthday" placeholder="Birthday"
-                                      customInput={<Input as={DateInput} id={`${type}ProfileBirthday`} />}/>
-                    {
-                        type === 'patient' && <>
-                            <LabeledFormInput id="patientProfilePhone" title="Phone" placeholder="Phone" customInput={
-                                <Phone id="patientProfilePhone" placeholder="+1(000)-000-00-00" />
-                            } />
-                            <LabeledFormInput id="patientProfileEmail" title="Email" placeholder="example@domain.com"/>
-                        </>
-                    }
-                </Container>
-            </div>
-            <Btn text="Save" handler={notify} type="submit" />
-        </StyledForm>
-    )
-}
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setUserData((prevState) => ({
+      ...prevState,
+      profileImage: file,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    
+    // Append form data
+    Object.entries(userData).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+
+    try {
+      await axios.put('http://localhost:5000/users/editprofile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      notify();
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Error updating profile.');
+    }
+  };
+
+  return (
+    <StyledForm action="#" method="post" id={`settings_${type}`} onSubmit={handleSubmit}>
+      <div className="wrapper">
+        {/* Profile image preview */}
+        <div className="profile-image-container" style={{ marginBottom: '20px' }}>
+          {userData.profileImage ? (
+            <img
+              src={URL.createObjectURL(userData.profileImage)}
+              alt="Profile"
+              style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+            />
+          ) : (
+            <div>No Image Available</div> // Fallback if no image is set
+          )}
+        </div>
+
+        <DropFiles multiple={false} type="image">
+          <i className="icon icon-image" aria-label={hint} />
+          <span className="hint">{hint}</span>
+          <input type="file" onChange={handleFileChange} />
+        </DropFiles>
+
+        <Container>
+          <LabeledFormInput
+            id={`${type}FirstName`}
+            title="First Name"
+            placeholder="First Name"
+            value={userData.firstName}
+            onChange={(e) =>
+              setUserData((prevState) => ({ ...prevState, firstName: e.target.value }))
+            }
+          />
+          <LabeledFormInput
+            id={`${type}LastName`}
+            title="Last Name"
+            placeholder="Last Name"
+            value={userData.lastName}
+            onChange={(e) =>
+              setUserData((prevState) => ({ ...prevState, lastName: e.target.value }))
+            }
+          />
+
+          <LabeledFormInput
+            id={`${type}Email`}
+            title="Email"
+            placeholder="example@domain.com"
+            value={userData.email}
+            onChange={(e) =>
+              setUserData((prevState) => ({ ...prevState, email: e.target.value }))
+            }
+          />
+
+          <LabeledFormInput
+            id={`${type}Phone`}
+            title="Phone"
+            placeholder="+1(000)-000-00-00"
+            customInput={
+              <Phone
+                id={`${type}Phone`}
+                value={userData.phone}
+                onChange={(e) =>
+                  setUserData((prevState) => ({ ...prevState, phone: e.target.value }))
+                }
+              />
+            }
+          />
+
+          <LabeledFormInput
+            id={`${type}Birthday`}
+            title="Birthday"
+            placeholder="YYYY-MM-DD"
+            customInput={
+              <Input
+                as={DateInput}
+                id={`${type}Birthday`}
+                value={userData.birthday}
+                onChange={(e) =>
+                  setUserData((prevState) => ({ ...prevState, birthday: e.target.value }))
+                }
+              />
+            }
+          />
+        </Container>
+      </div>
+      <Btn text="Save" handler={handleSubmit} type="submit" />
+    </StyledForm>
+  );
+};
 
 Form.propTypes = {
-    type: PropTypes.oneOf(['patient', 'doctor']).isRequired
-}
+  type: PropTypes.string.isRequired,
+};
 
 export default Form;
