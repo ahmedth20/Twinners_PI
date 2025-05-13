@@ -97,10 +97,11 @@ pipeline {
                     }
                 }
             }
+          }
+        }
         stage('Run Prometheus') {
             steps {
                 script {
-                    // Lancer Prometheus avec un fichier de configuration
                     sh """
                         docker run -d \
                             --name prometheus \
@@ -111,10 +112,10 @@ pipeline {
                 }
             }
         }
+
         stage('Run Grafana') {
             steps {
                 script {
-                    // Lancer Grafana avec un mot de passe administrateur défini
                     sh """
                         docker run -d \
                             --name grafana \
@@ -151,8 +152,8 @@ pipeline {
                 }
             }
         }*/
-    }
-}
+    
+
 
 
 
