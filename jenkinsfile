@@ -91,7 +91,7 @@ pipeline {
 }
 
 
-        /*stage('Run application') {
+        stage('Run application') {
             steps {
                 script {
                     docker.withRegistry("http://${NEXUS_URL}", NEXUS_CREDENTIAL_ID) {
@@ -100,7 +100,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
 
      /*   stage('Build and Tag Docker Image') {
