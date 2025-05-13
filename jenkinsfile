@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        /*stage('Unit Test') {
+        stage('Unit Test') {
             steps {
                 script {
                     sh '''
@@ -69,7 +69,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
         stage('Building images (node and mongo)') {
             steps {
@@ -97,8 +97,46 @@ pipeline {
                     }
                 }
             }
+        stage('Run Prometheus') {
+            steps {
+                script {
+                    // Lancer Prometheus avec un fichier de configuration
+                    sh """
+                        docker run -d \
+                            --name prometheus \
+                            -p 9090:9090 \
+                            -v /path/to/prometheus.yml:/etc/prometheus/prometheus.yml \
+                            prom/prometheus
+                    """
+                }
+            }
+        }
+        stage('Run Grafana') {
+            steps {
+                script {
+                    // Lancer Grafana avec un mot de passe administrateur défini
+                    sh """
+                        docker run -d \
+                            --name grafana \
+                            -p 3000:3000 \
+                            -e "GF_SECURITY_ADMIN_PASSWORD=admin" \
+                            grafana/grafana
+                    """
+                }
+            }
+        }
+
         }
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,6 +153,21 @@ pipeline {
         }*/
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
      /*   stage('Build and Tag Docker Image') {
