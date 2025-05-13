@@ -56,7 +56,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
         stage('Build Application') {
             steps {
@@ -69,7 +69,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Building images (node and mongo)') {
             steps {
