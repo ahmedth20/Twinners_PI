@@ -87,8 +87,8 @@ pipeline {
                 }
             }
         }
-    }
-}
+    
+
 
 
         stage('Run application') {
@@ -101,6 +101,8 @@ pipeline {
                 }
             }
         }
+    }
+}
 
 
      /*   stage('Build and Tag Docker Image') {
