@@ -16,6 +16,9 @@ const staffRoutes = require("./src/routes/staff.js");
 const doctorRoutes = require("./src/routes/doctor.js");
 const medicalRecordRoutes = require('./src/routes/medicalRecord.js');
 const ressourcesRoutes = require("./src/routes/ressources.js");
+const http = require('http');
+const axios = require('axios');
+
 
 const consultationRoutes = require("./src/routes/consultation.js")
 const operationRoutes = require("./src/routes/operations.js")
@@ -35,6 +38,12 @@ const emergencyRoomRoutes = require("./src/routes/roomEmergency.js");
 const specialtyRoutes= require("./src/routes/openAi.js");
 const waitingList= require("./src/routes/waitingList.js");
 const prescription= require("./src/routes/prescription.js");
+const stripeRoutes = require('./src/routes/stripe');
+
+const twilio = require('twilio');
+const accountSid = 'AC1185ae3b469d55fbc6b005d8f7066e53';
+const authToken = 'c35707b6eb113f0ecdd537863fc38046';
+const client = twilio(accountSid, authToken);
 
 
 dotenv.config();
@@ -157,6 +166,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use('/api', medicalRoutes);
 
+
+app.use('/api/stripe', stripeRoutes);
 // Routes
 app.use("/users", userRoutes);
 app.use("/emergency", emergencyRoutes);
@@ -280,3 +291,106 @@ app.put('/ressources/:id', async (req, res) => {
 });
 
 
+
+const stripe = require('stripe')('sk_test_51RNHOxQfFMfIjADYfssLirIsSvaCGJohvpvhGtTriiFkcG0py6zgovBmyA0HNWeDge2zYRE9tU0LnmdvuVHK7eo500He7PFcRe');  // Remplacez par votre clé secrète Stripe
+
+
+app.use(express.json());  // Pour pouvoir lire les données JSON envoyées par le front-end
+
+// Route pour créer un paiement
+app.post('/api/create-payment-intent', async (req, res) => {
+  const { amount, clientName, phoneNumber, cin } = req.body;
+
+  console.log("Données du client :", {
+    amount,
+    clientName,
+    phoneNumber,
+    cin,
+  });
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: 'usd',
+      metadata: {
+        clientName,
+        phoneNumber,
+        cin,
+      },
+    });
+  await sendSms(phoneNumber, clientName, amount);
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.get('/api/stripe/transactions', async (req, res) => {
+  try {
+    const paymentIntents = await stripe.paymentIntents.list({
+      limit: 20, // ajuste selon besoin
+    });
+
+    const transactions = paymentIntents.data.map((pi) => ({
+      id: pi.id,
+      amount: pi.amount,
+      currency: pi.currency,
+      status: pi.status,
+      created: pi.created,
+      nom: pi.metadata.clientName || '—',
+      phoneNumber: pi.metadata.phoneNumber || '—',
+      cin: pi.metadata.cin || '—',
+    }));
+
+    res.json(transactions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des transactions' });
+  }
+});
+
+// Déclaration de la fonction d'envoi SMS
+const sendSms = async (phoneNumber, clientName, amount) => {
+  try {
+    await client.messages.create({
+      body: `Bonjour ${clientName}, votre paiement de ${(amount / 100).toFixed(2)} DT a été effectué avec succès. Merci !`,
+      from: '+19783912271', // Remplace par ton numéro Twilio
+      to: phoneNumber.startsWith('+') ? phoneNumber : `+216${phoneNumber}`, // Exemple pour la Tunisie
+    });
+    console.log('SMS envoyé à', phoneNumber);
+  } catch (err) {
+    console.error('Erreur d’envoi SMS :', err.message);
+  }
+};
+
+
+
+
+async function predictEmergencyLevel(patientData) {
+  try {
+    const response = await axios.post('http://127.0.0.1:5001/predict', patientData);
+    console.log('Niveau d\'urgence prédit :', response.data.emergencyLevel);
+    return response.data.emergencyLevel;
+  } catch (error) {
+    console.error('Erreur lors de la prédiction :', error.message);
+    throw error;
+  }
+}
+
+// Exemple de patient
+const newPatient = {
+  age: 40,
+  gender: 0,
+  oxygenSaturation: 91,
+  bloodTest: 1.7,
+  chestXray: 0.6
+};
+
+predictEmergencyLevel(newPatient);
+
+
+// Lancer le serveur
+server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));

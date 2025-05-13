@@ -22,7 +22,12 @@ const patientFileSchema = new mongoose.Schema({
   },
 
   paramedic: { type: mongoose.Schema.Types.ObjectId, ref: "Paramedic" },
-  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord",  required: true}
+  medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord", required: false },
+  testResults: {
+    chestXray: { type: String },
+    bloodTest: { type: String },
+    oxygenSaturation: { type: String }
+  }
 }, { timestamps: false, versionKey: false });
 
 // Auto-incrémentation du champ `reference`

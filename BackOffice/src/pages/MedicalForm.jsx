@@ -124,7 +124,7 @@ useEffect(() => {
       // Créer une nouvelle consultation avec les valeurs du formulaire
       const newConsultation = {
         doctor: watch("doctor"),  // L'ID du médecin
-       duration: Number(watch("duration")),  // Convertir la durée en nombre
+        duration: Number(watch("duration")),  // Convertir la durée en nombre
         date: watch("date"),  // Date de la consultation
         status: watch("status"),  // Statut de la consultation
         notes: watch("notes") || "",  // Notes facultatives

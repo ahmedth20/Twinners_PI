@@ -11,6 +11,7 @@ router.get("/detailsback/:id", patientController.getPatientInfoByIdback);
 router.get("/getPatientProfile/:user", patientController.getPatientProfile);
 router.post("/", patientController.createPatient);
 router.post("/createSimplePatient", patientController.createSimplePatient);
+router.post("/createSimplePatient1", patientController.addPatientStaff);
 router.post("/createSimplePatientFront", patientController.createSimplePatientFront);
 router.put("/:id", patientController.updatePatient);
 router.put("/updatePatientProfile/:user",upload.single('picture'), patientController.updatePatientProfile);

@@ -31,8 +31,9 @@
     "path": "^0.12.7",
     "pdfkit": "^0.17.1",
     "socket.io": "^4.8.1",
+    "stripe": "^18.1.0",
     "tesseract.js": "^6.0.1",
-    "twilio": "^5.4.5"
+    "twilio": "^5.6.0"
   },
   "devDependencies": {
     "jest": "^29.7.0"

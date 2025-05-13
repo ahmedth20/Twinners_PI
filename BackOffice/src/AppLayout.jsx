@@ -1,6 +1,7 @@
 // utils
 import {lazy} from 'react';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Route, Routes} from 'react-router-dom';
 
 import Forgotpassword from 'pages/screens/forgotpassword'
@@ -45,6 +46,9 @@ const PatientFile = lazy(() => import('pages/PatientFile'));
 const Equipements = lazy(() => import('pages/Equipements'));
 const Consultation = lazy(() => import('pages/Consultation'));
 const Prescription = lazy(() => import('pages/prescriptions'));
+const PaymentPage = lazy(() => import('pages/PaymentForm'));
+const TransactionList = lazy(() => import('pages/TransactionList'));
+const CreatePatientForm = lazy(() => import('pages/createpatientstaff'));
 
 //const PageNotFound = lazy(() => import('pages/PageNotFound'));
 
@@ -94,6 +98,8 @@ const AppLayout = () => {
       <Route path="/Consultation" element={ <Consultation/> } />
       <Route path="/prescription" element={ <Prescription/> } />
       
+      <Route path="/azerty" element={ <CreatePatientForm/> } />
+      <Route path="/PaymentPage" element={ <PaymentPage/> } />
       <Route path="/doctor_reviews" element={ <DoctorsReviews /> } />
       <Route path="/patient_reviews" element={ <PatientReviews /> } />
       <Route path="/finances" element={ <Finances /> } />
@@ -102,6 +108,7 @@ const AppLayout = () => {
       <Route path="/medical_form_update/:id" element={ <MedicalFormUpdate/> } />
       <Route path="/forgotpassword" element={ <Forgotpassword/> } />
       <Route path="/ResetPassword/:id" element={ <Resetpassword1/> } />
+          <Route path="/TransactionList" element={ <TransactionList/> } />
 
     
 

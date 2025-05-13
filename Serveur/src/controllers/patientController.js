@@ -495,13 +495,133 @@ async createPatient(req, res) {
       console.error("❌ Erreur lors de l'enregistrement :", error);
       res.status(500).json({ message: "Erreur lors de l'enregistrement", error: error.message });
   }
+},
+
+
+//staff ajout d'un patient 
+async addPatientStaff(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { firstName, lastName, email, sex, age, phone, address, dateIssued, symptoms, emergencyLevel,allergies,MedicalHistory, description, testResults } = req.body;
+
+    if (!firstName || !lastName || !email) {
+      throw new Error("Données utilisateur manquantes !");
+    }
+
+    // Génération d'un mot de passe aléatoire
+    const generatedPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+    // Création de l'utilisateur avec rôle patient
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      role: "patient"
+    });
+
+    const savedUser = await newUser.save({ session });
+
+    // Création du patient
+    const newPatient = new Patient({
+      reference: Math.floor(Math.random() * 10000),
+      sex,
+      age,
+      phone,
+      address,
+      user: savedUser._id
+    });
+
+    const savedPatient = await newPatient.save({ session });
+
+    // Création du dossier médical
+    const medicalRecord = new MedicalRecord({
+      patient: savedPatient._id,
+        diagnostic: {
+    symptoms: symptoms || []  // <== Ici on ajoute les symptômes
+  },
+  allergies: allergies || [],
+  MedicalHistory: MedicalHistory || []
+    });
+
+    const savedMedicalRecord = await medicalRecord.save({ session });
+
+    // Création de la fiche patient (PatientFile)
+    const initialPatientFile = new PatientFile({
+      dateIssued,
+      symptoms,
+      emergencyLevel,
+      allergies,
+      MedicalHistory,
+      description,
+      testResults,
+      medicalRecord: savedMedicalRecord._id
+    });
+
+    const savedFile = await initialPatientFile.save({ session });
+
+    // Association de la fiche patient au dossier médical
+    savedMedicalRecord.patientFiles.push(savedFile._id);
+    await savedMedicalRecord.save({ session });
+
+    // Envoi d'email
+    const transport = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "gytgutu@gmail.com",
+        pass: "strp rifw uhso ciin",
+      },
+    });
+
+    const mailOptions = {
+      from: "smart 190",
+      to: email,
+      subject: "Création de votre compte",
+      html: `
+        <div>
+          <h1>Bienvenue ${firstName} ${lastName} !</h1>
+          <p>Votre compte a été créé avec succès.</p>
+          <p><strong>Email :</strong> ${email}</p>
+          <p><strong>Mot de passe :</strong> ${generatedPassword}</p>
+          <p>Vous pouvez vous connecter ici :</p>
+          <a href="http://localhost:5173/loginPage">Se connecter</a>
+        </div>
+      `
+    };
+
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Erreur d'envoi d'email :", error);
+      } else {
+        console.log("Email envoyé :", info.response);
+      }
+    });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({
+      message: "Patient, utilisateur, dossier médical et fiche patient créés avec succès.",
+      patient: savedPatient,
+      medicalRecord: savedMedicalRecord,
+      patientFile: savedFile
+    });
+
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error("Erreur :", error);
+    res.status(500).json({ message: "Erreur lors de l'ajout du patient", error: error.message });
+  }
 }
 
-
-
-
-
 ,
+
+
   // 📌 Mettre à jour un patient
   async updateSimplePatient(req, res) {
     try {

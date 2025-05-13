@@ -10,6 +10,11 @@ import { useLocation } from 'react-router-dom';
 
 // components
 import AppLayout from './AppLayout';
+import {SnackbarProvider} from 'notistack';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // utils
 import { ThemeProvider, StyleSheetManager } from 'styled-components';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
@@ -34,7 +39,6 @@ import Login from 'pages/screens/loginscreenn';
 import ForgotPassword from 'pages/screens/forgotpassword';
 import Resetpassword1 from 'pages/screens/restpasswordslouma';
 
-import { SnackbarProvider } from 'notistack';
 
 // hooks
 import usePageIsOverflow from 'hooks/usePageIsOverflow';
