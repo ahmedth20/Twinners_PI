@@ -1,186 +1,205 @@
 # 🏥 Smart Emergency Management System (S190)
 
-## 📌 Description du Projet
+## 📌 Project Description
 
-Le **Smart Emergency Management System (S190)** est une application web innovante conçue pour optimiser la gestion des urgences hospitalières. Elle permet :
+The **Smart Emergency Management System (S190)** is an innovative web application designed to optimize the management of hospital emergencies. It enables:
 
-- Une **coordination intelligente** entre les patients, médecins, ambulanciers et gestionnaires.
-- Une **prise en charge en temps réel** grâce à l’IA et à des objets connectés.
-- Une **interface dédiée** pour chaque acteur du système de santé.
+- **Intelligent coordination** between patients, doctors, paramedics, and managers.
+- **Real-time patient care** using AI and connected devices.
+- **Dedicated interfaces** for each healthcare system actor.
 
 ---
 
-## 🧾 Table des Matières
+## 🧾 Table of Contents
 
-- [Fonctionnalités](#fonctionnalités)
-- [Structure du Projet](#structure-du-projet)
-- [Installation & Lancement](#installation--lancement)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation & Launch](#installation--launch)
   - [1. Backend (Node.js + Express)](#1-backend-nodejs--express)
   - [2. Front-Office (Patients)](#2-front-office-patients)
-  - [3. Back-Office (Personnel médical & Admin)](#3-back-office-personnel-médical--admin)
-- [Technologies Utilisées](#technologies-utilisées)
-- [Authentification et Rôles](#authentification-et-rôles)
-- [Sécurité](#sécurité)
-- [CI/CD et Déploiement](#cicd-et-déploiement)
-- [Équipe](#équipe)
+  - [3. Back-Office (Medical Staff & Admin)](#3-back-office-medical-staff--admin)
+- [Technologies Used](#technologies-used)
+- [Authentication and Roles](#authentication-and-roles)
+- [Security](#security)
+- [CI/CD and Deployment](#cicd-and-deployment)
+- [Team](#team)
+- [Final Remarks](#final-remarks)
 
 ---
 
-## ✅ Fonctionnalités
+## ✅ Features
 
 ### Patients
 
-- Enregistrement en ligne (pré-admission)
-- Suivi de dossier médical en temps réel
-- Affichage du temps d’attente estimé
-- Consultation de l’historique médical
-- Demande d’ambulance avec géolocalisation
+- Online registration (pre-admission)
+- Real-time medical record tracking
+- Display of estimated waiting time
+- Access to medical history
+- Ambulance request with geolocation
 
 ### Paramedics
 
-- Transmission automatique des données médicales au CHU
-- Carte des urgences et des hôpitaux avec occupation en direct
-- Optimisation de l’itinéraire selon l’urgence et la distance
+- Automatic transmission of medical data to hospital
+- Emergency map with live hospital occupancy
+- Optimized route based on urgency and distance
 
-### Médecins
+### Doctors
 
-- Accès instantané aux dossiers des patients
-- Attribution automatique des cas selon spécialité et disponibilité
-- Aide au diagnostic via intelligence artificielle
+- Instant access to patient records
+- Automatic case assignment by specialty and availability
+- AI-assisted diagnosis
 
 ### Service Manager
 
-- Suivi de l’occupation des salles, lits et ressources
-- Prédictions sur les pics d’urgences
-- Supervision des performances et génération de rapports
+- Monitoring of rooms, beds, and resources
+- Emergency peak predictions
+- Performance monitoring and report generation
 
-  ### Staff
+### Staff
 
-- Suivi Enregistrement des patients 
-- Faire les transactions
-
+- Patient tracking and registration
+- Transaction management
 
 ---
 
-## 🗂 Structure du Projet
+## 🗂 Project Structure
 
+```
 root/
-│
-├── Serveur/ # (BackEnd) Serveur Express Node.js (API REST)
-│ └── server.js
-│
-├── front-office/ # Interface utilisateur pour les patients (React + Vite)
-│ ├── public/
-│ └── src/
-│
-├── back-office/ # Interface pour médecins, staff et gestionnaires (React + CRA)
-│ ├── public/
-│ └── src/
-│
-└── README.md
+├── Serveur/               # Backend: Node.js + Express (REST API)
+│   └── server.js
+├── front-office/          # Patient Interface (React + Vite)
+│   ├── public/
+│   └── src/
+├── back-office/           # Medical Staff, Admin Interface (React CRA)
+│   ├── public/
+│   └── src/
+└── README.md              # Documentation
+```
 
-Configuration
-Créer un fichier .env dans /backend :
+---
 
+## 🚀 Installation & Launch
+
+### Prerequisites
+
+- Node.js v18+
+- MongoDB (local or Atlas)
+- npm
+
+### Configuration
+
+Create a `.env` file inside the `Serveur/` folder:
+
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
+```
 
-1. Lancement du backend
+---
 
+### 1. Backend (Node.js + Express)
+
+```bash
+cd Serveur
+npm install
 node server.js
-L’API sera accessible sur : http://localhost:5000
+```
 
-2. Front-Office (Patients)
+📍 REST API available at: `http://localhost:5000`
 
+---
+
+### 2. Front-Office (Patients)
+
+```bash
 cd front-office
 npm install
 npm run dev
-Accessible sur : http://localhost:5173
+```
 
-3. Back-Office (Personnel médical & Admin)
+📍 App available at: `http://localhost:5173`
 
+---
+
+### 3. Back-Office (Medical Staff & Admin)
+
+```bash
 cd back-office
 npm install
 npm start
-Accessible sur : http://localhost:3000
+```
 
-🛠 Technologies Utilisées
-Côté	Technologie
-Backend	Node.js, Express.js, MongoDB, Mongoose, JWT
-Front-Office	React, Vite, TailwindCSS
-Back-Office	React (CRA), Redux, Axios
-Authentification	JWT, BCrypt
-DevOps	GitHub Actions, Docker (optionnel), Vercel ou Heroku
-Tests	Jest, Supertest, Cypress (optionnel)
+📍 App available at: `http://localhost:3000`
 
-👤 Authentification et Rôles
-Patient
+---
 
-Médecin
+## 🛠 Technologies Used
 
-Ambulancier
+| Layer         | Technologies                                                |
+|---------------|-------------------------------------------------------------|
+| Backend       | Node.js, Express.js, MongoDB, Mongoose, JWT                 |
+| Front-Office  | React, Vite, CSS                                            |
+| Back-Office   | React (CRA), Redux, Axios                                   |
+| Authentication| JWT, Bcrypt                                                 |
+| DevOps        | GitHub Actions, Docker (optional), Jenkins, Nexus           |
 
-Réceptionniste
+---
 
-Responsable de service
+## 👤 Authentication and Roles
 
-Chaque utilisateur accède à un tableau de bord personnalisé en fonction de son rôle avec des permissions spécifiques.
+- **Patient**
+- **Doctor**
+- **Paramedic**
+- **Staff**
+- **Service Manager**
 
-🔐 Sécurité
-JWT pour l’authentification
+Each user accesses a **personalized dashboard** with **role-based permissions (RBAC)**.
 
-Hashage des mots de passe via Bcrypt
+---
 
-Validation des inputs via Express-validator
+## 🔐 Security
 
-Helmet & CORS pour la sécurité des headers et requêtes
+- **JWT** authentication
+- Passwords **hashed with Bcrypt**
+- Input validation with **express-validator**
+- **Role-based access control** with JWT Tokens
 
-RBAC (Role-Based Access Control)
+---
 
-🔄 CI/CD et Déploiement
-Contrôle de version avec Git/GitHub
+## 🔄 CI/CD and Deployment
 
-CI/CD via GitHub Actions
+- Version control with **Git/GitHub**
+- **CI/CD** via GitHub Actions
+- Linting: **ESLint + Prettier**
+- Automated tests on each push
+- Deployment:
+  - **Backend**: Nexus
+  - **Frontend**: Nexus
+- Future Monitoring: **Prometheus**, **Grafana**
 
-Linting via ESLint + Prettier
+---
 
-Tests automatiques à chaque push
+## 👨‍💻 Team
 
-Déploiement :
+- Abdessalem Chaouch  
+- Aymen Khelifa  
+- Zorgui Ramez  
+- Yosr Charek  
+- Ahmed Thabti  
 
-Backend : Heroku, Render, Railway
+🎓 **Class**: 4TWIN5 - Esprit School of Engineering  
+👥 **Group**: Twinners  
+🧑‍🏫 **Supervised by**: Mrs. Ameni Rommene
 
-Front : Vercel ou Netlify
+---
 
-Monitoring : Prometheus, Grafana (future intégration)
+## 📌 Final Remarks
 
-👨‍💻 Équipe
-
-Abdessalem Chaouch
-
-Aymen Khelifa
-
-Zorgui Ramez
-
-Yosr Charek
-
-Ahmed Thabti
-
-Supervisé par Mme Ameni Rommene
-
-Classe : 4TWIN5 - ESPRIT
-Groupe : Twinners
-
-📌 Remarques finales
-Le projet est en phase active de développement.
-
-Certaines fonctionnalités peuvent être simulées en environnement local.
-
-Les futures versions incluront :
-
-Intégration d’un bracelet connecté simulé
-
-IA de prédiction de flux patients
-
-Interconnexion avec des APIs de cartographie réelle (OpenStreetMap, Google Maps)
+- The project is **actively under development**.
+- Some features are **simulated locally**.
+- Upcoming additions:
+  - **Simulated connected bracelet**
+  - **Predictive AI** for patient flow
+  - **Map APIs** (OpenStreetMap, Google Maps)
