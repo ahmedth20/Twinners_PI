@@ -58,7 +58,7 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        /*stage('Build Application') {
             steps {
                 script {
                     def projects = ['Serveur', 'BackOffice', 'FrontOffice']
@@ -69,7 +69,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Building images (node and mongo)') {
             steps {
