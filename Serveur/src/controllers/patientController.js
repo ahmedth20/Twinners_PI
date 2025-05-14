@@ -659,7 +659,6 @@ async addPatientStaff(req, res) {
 }
 ,
 async updatePatient(req, res) {
-    console.log("🟡 Requête reçue au backend :", req.body);
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -667,7 +666,18 @@ async updatePatient(req, res) {
         console.log("🟡 Mise à jour complète du patient", req.params.id);
         console.log("Données reçues :", req.body);
 
-        const { firstName, lastName, sex, age, phone, address, consultations = [], medicalRecord = {} } = req.body;
+        const { 
+            firstName, 
+            lastName, 
+            sex, 
+            age, 
+            phone, 
+            address, 
+            weight, 
+            height, 
+            consultations = [], 
+            medicalRecord = {} 
+        } = req.body;
 
         // Vérifier si le patient existe
         const patient = await Patient.findById(req.params.id).session(session);
@@ -677,7 +687,7 @@ async updatePatient(req, res) {
         const user = await User.findById(patient.user).session(session);
         if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-        // Mise à jour des informations utilisateur (sans modifier l'email ni le password)
+        // Mise à jour des informations utilisateur
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;
         await user.save({ session });
@@ -687,16 +697,16 @@ async updatePatient(req, res) {
         patient.age = age || patient.age;
         patient.phone = phone || patient.phone;
         patient.address = address || patient.address;
+        patient.weight = weight || patient.weight;
+        patient.height = height || patient.height;
 
         // Mise à jour des consultations
         const consultationDocs = await Promise.all(
             consultations.map(async (consultation) => {
                 if (!consultation._id) {
-                    // Nouvelle consultation
                     const newConsultation = new Consultation({ ...consultation, patient: patient._id });
                     return await newConsultation.save({ session });
                 } else {
-                    // Mise à jour de la consultation existante
                     return await Consultation.findByIdAndUpdate(consultation._id, consultation, { new: true, session });
                 }
             })
@@ -706,8 +716,15 @@ async updatePatient(req, res) {
 
         // Mise à jour du dossier médical
         if (patient.medicalRecord) {
-            await MedicalRecord.findByIdAndUpdate(patient.medicalRecord, medicalRecord, { session });
+            // Update existing medical record
+            await MedicalRecord.findByIdAndUpdate(patient.medicalRecord, {
+                ...medicalRecord,
+                // Ensure we handle treatment and operations
+                treatment: medicalRecord.treatment || {},
+                operations: medicalRecord.operations || []
+            }, { session });
         } else {
+            // Create a new medical record
             const newMedicalRecord = new MedicalRecord({ ...medicalRecord, patient: patient._id });
             const savedMedicalRecord = await newMedicalRecord.save({ session });
             patient.medicalRecord = savedMedicalRecord._id;

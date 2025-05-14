@@ -8,7 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import axios from "axios"; // si pas déjà importé
+import io from 'socket.io-client';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import openaiService from "services/openaiServices";
+const socket = io('http://localhost:5000');
 async function predictEmergencyLevel(patientData) {
   try {
     const response = await axios.post('http://127.0.0.1:5001/predict', patientData);
@@ -47,7 +52,10 @@ const MedicalFormWithUserAndPatient = () => {
   });
 
   const navigate = useNavigate();
-
+  const sendNotification = async (consultationDataDetails) => {
+    console.log("Envoi des données de la consultation :", consultationDataDetails);  // Vérifiez ici
+    socket.emit('send_notification', consultationDataDetails);
+  };
 const onSubmit = async (data) => {
   const gender = data.gender; // Récupérer tel quel pour le backend
   const genderMap = {
@@ -95,21 +103,95 @@ const onSubmit = async (data) => {
         oxygenSaturation: predictionInput.oxygenSaturation,
       },
     };
-
+console.log(finalData)
     const response = await fetch("http://localhost:5000/patient/createSimplePatient1", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(finalData),
     });
 
-    if (response.ok) {
       const result = await response.json();
+
+       const specialty = await openaiService.getSpeciality(result);
+      const specialtyCleaned = specialty.specialty.split(" ")[0];
+      console.log("Spécialité devinée (nettoyée) :", specialtyCleaned);
+      // Appel pour trouver un médecin disponible avec cette spécialité
+      const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialtyy/${specialtyCleaned}`);
+      const doctor = doctorResponse.data; // On prend le premier disponible
+      console.log("Médecin trouvé :", doctor);
+
+      // Récupération d'une salle d'urgence aléatoire dans le même département
+      console.log(doctor.departement);
+      const roomResponse = await axios.get(`http://localhost:5000/emergencyrooms/randomfront/${doctor.departement}`);
+      const room = roomResponse.data; // On prend le premier disponible
+     
+      //const room = await emergencyRoomService.getRandomEmergencyRoomByDepartement(doctor.departement);
+      console.log("Salle d'urgence trouvée :", room);
+       
+      const consultationData = {
+        duration: 30,  // Exemple de durée, tu peux la personnaliser
+        date: new Date(),
+        status: "Planned",  // Statut initial
+        diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+        patient: result.patient._id,  // Assure-toi que l'ID patient est bien récupéré
+        doctor: doctor._id,  // ID du médecin
+        emergencyRoom: room._id  // ID de la salle d'urgence
+      };
+  
+      console.log("Données de la consultation :", consultationData);
+       const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
+      console.log("Consultation créée avec succès :", createdConsultation.data);
+  
+      alert("✅ Patient ajouté avec succès !");
+
+      await axios.put(`http://localhost:5000/doctors/${doctor._id}`, { availability: false });
+      console.log(`Médecin ${doctor._id} mis à jour à disponibilité: false`);
+
+      const newCapacity = room.capacity - 1;
+      const emergencyRoomUpdate = {
+        capacity: newCapacity,
+        availability: newCapacity > 0 // dispo seulement s'il reste de la place
+      };
+
+      await axios.put(`http://localhost:5000/emergencyrooms/${room._id}`, emergencyRoomUpdate);
+      
+      console.log(`Salle d'urgence ${room._id} mise à jour avec capacité: ${newCapacity} et disponibilité: ${emergencyRoomUpdate.availability}`);
+            const consultation = createdConsultation.data;
+            const doctorResponses = await axios.get(`http://localhost:5000/doctors/${createdConsultation.data.doctor}`);
+            const patientResponse = await axios.get(`http://localhost:5000/patient/details/${createdConsultation.data.patient}`);
+            const roomResponses = await axios.get(`http://localhost:5000/emergencyrooms/${createdConsultation.data.emergencyRoom}`);
+
+            const doctorName = `${doctorResponses.data.user.firstName} ${doctorResponses.data.user.lastName}`;
+            const patientName = `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`;
+            const roomNumber = roomResponses.data.reference;
+            console.log(result.patient._id);
+            console.log(createdConsultation.data._id);
+          
+            
+            const consultationDataDetails = {
+              duration: 30,  // Exemple de durée, tu peux la personnaliser
+              date: new Date(),
+              status: "Planned",  // Statut initial
+              diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+              patient: `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`,  // Assure-toi que l'ID patient est bien récupéré
+              emergencyRoom: roomResponses.data.reference  // ID de la salle d'urgence
+            };
+            sendNotification(consultationDataDetails);
+      
+       toast.success(
+              <div>
+                <p><strong>👤 Patient:</strong> {patientName}</p>
+                <p><strong>🚑 Doctor:</strong> {doctorName}</p>
+                <p><strong>🏥 Emergency Room:</strong> Room #{roomNumber}</p>
+                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
+                <p><strong>📅 Date:</strong> {new Date(consultation.date).toLocaleString()}</p>
+              </div>,
+              { position: "top-center", autoClose: false }
+            );
+ 
       navigate("/patients");
       console.log("✅ Patient with file created:", result);
-    } else {
-      const errorText = await response.text();
-      console.error("❌ Failed to create patient:", errorText);
-    }
+    
   } catch (error) {
     console.error("❌ Network or server error:", error);
   }

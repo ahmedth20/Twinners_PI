@@ -111,6 +111,10 @@ useEffect(() => {
   const handleCreate = async (e) => {
     e.preventDefault();
 
+  const quantity = formData.quantity ? parseInt(formData.quantity) : 0;
+  const inUse = formData.usage.inUse ? parseInt(formData.usage.inUse) : 0;
+  const available = formData.usage.available ? parseInt(formData.usage.available) : 0;
+  const maintenance = formData.usage.maintenance ? parseInt(formData.usage.maintenance) :0;
     // Convertir les champs en nombre uniquement au moment de l'envoi
     const dataToSubmit = {
       ...formData,
@@ -131,6 +135,12 @@ useEffect(() => {
       setError("Tous les champs doivent être remplis");
       return;
     }
+ // 🟨 Validation : somme cohérente
+  if (quantity !== (inUse + available + maintenance)) {
+    setError("Erreur : La quantité totale doit être égale à la somme de En usage, Disponible et Maintenance.");
+    return;
+  }
+
 
     try {
       if (isEditing) {
@@ -182,6 +192,19 @@ useEffect(() => {
     setIsEditing(true);
     setShowForm(true); // Afficher le formulaire en mode édition
   };
+const getStatus = (usage) => {
+  const inUse = parseInt(usage.inUse) || 0;
+  const available = parseInt(usage.available) || 0;
+  const maintenance = parseInt(usage.maintenance) || 0;
+
+  if (available > (inUse + maintenance)) {
+    return { text: "Disponible", style: { ...styles.badgeBase, ...styles.badgeColors.green } };
+  } else if (available === (inUse + maintenance)) {
+    return { text: "Limité", style: { ...styles.badgeBase, ...styles.badgeColors.orange } };
+  } else {
+    return { text: "Indisponible", style: { ...styles.badgeBase, ...styles.badgeColors.red } };
+  }
+};
 
   // Style pour les ressources avec stock bas
   const getLowStockStyle = (quantity) => {
@@ -323,11 +346,14 @@ useEffect(() => {
             <th style={styles.tableHeader}>En Usage</th>
             <th style={styles.tableHeader}>Disponible</th>
             <th style={styles.tableHeader}>Maintenance</th>
+             <th style={styles.tableHeader}>Statut</th> 
             <th style={styles.tableHeader}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {ressources.map((res) => (
+          {ressources.map((res) => 
+         {const status = getStatus(res.usage); return (
+            
             <tr key={res._id} style={styles.tableRow}>
               <td style={styles.tableCell}>{res.name}</td>
               <td style={styles.tableCell}>{res.type}</td>
@@ -344,6 +370,9 @@ useEffect(() => {
               <td style={styles.tableCell}>{res.usage.inUse}</td>
               <td style={styles.tableCell}>{res.usage.available}</td>
               <td style={styles.tableCell}>{res.usage.maintenance}</td>
+               <td style={styles.tableCell}>
+                  <span style={status.style}>{status.text}</span>
+                </td>
               <td style={styles.tableCell}>
                 <button onClick={() => handleEdit(res)} style={styles.iconButton}>
                   <FaEdit />
@@ -353,7 +382,7 @@ useEffect(() => {
                 </button>
               </td>
             </tr>
-          ))}
+          )})}
         </tbody>
       </table>
    

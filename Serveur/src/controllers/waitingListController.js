@@ -228,7 +228,7 @@ exports.processWaitingList = async (req, res) => {
 
         if (patientToAssign) {
           const specialtyCleaned = specialty.trim().replace(/ /g, '%20');
-          
+
           // Boucle infinie (toutes les 30 secondes) jusqu'à trouver un médecin
           let doctor;
           while (!doctor) {
@@ -253,29 +253,39 @@ exports.processWaitingList = async (req, res) => {
             date: new Date(),
             status: 'Planned',
             diagnostic: {},
-            patient: patientToAssign._id,
+            patient: patientToAssign.patient, // 🔄 Correction ici, on utilise directement patientToAssign.patient
             doctor: doctor._id,
             emergencyRoom: room._id
           };
 
           const createdConsultation = await consultationController.createConsultationback(consultationData);
-          await doctorController.updateDoctorAvailabilityToFalse(doctor._id);
 
-          // Mise à jour de la capacité de la salle
-          const newCapacity = room.capacity - 1;
-          await EmergencyRoom.findByIdAndUpdate(room._id, {
-            capacity: newCapacity,
-            availability: newCapacity > 0
-          }, { new: true });
+          if (createdConsultation) {
+            // Mise à jour de la capacité de la salle
+            const newCapacity = room.capacity - 1;
 
-          // Mise à jour du patient
-          await patientController.addConsultationToPatient(patientToAssign.patient._id.toString(), {
-            consultationId: createdConsultation._id
-          });
+            await EmergencyRoom.findByIdAndUpdate(
+              room._id,
+              {
+                capacity: newCapacity,
+                availability: newCapacity > 0
+              },
+              { new: true }
+            );
 
-          // Retirer le patient de la liste d'attente
-          await WaitingList.findByIdAndDelete(patientToAssign._id);
-          console.log(`✅ Consultation planifiée pour ${patientToAssign.patient.firstName} ${patientToAssign.patient.lastName}`);
+            // Mise à jour de la disponibilité du médecin
+           // await doctorController.updateDoctorAvailabilityToFalse(doctor._id);
+
+            // Mise à jour du patient
+            await patientController.addConsultationToPatient(
+              patientToAssign.patient.toString(), // 🔄 Conversion en string si nécessaire
+              createdConsultation._id
+            );
+
+            // Retirer le patient de la liste d'attente
+            await WaitingList.findByIdAndDelete(patientToAssign._id);
+          }
+          console.log(`✅ Consultation planifiée pour le patient : ${patientToAssign.patient}`);
         }
       }
     } catch (error) {
@@ -290,6 +300,7 @@ exports.processWaitingList = async (req, res) => {
   // Réponse immédiate pour éviter l'erreur de double header
   res.status(200).json({ message: "Traitement de la liste d'attente en cours..." });
 };
+
 
 exports.getWaitingList = async (req, res) => {
   const process = async () => {
@@ -363,30 +374,7 @@ exports.getWaitingList = async (req, res) => {
   res.status(200).json(result);
 };
 
-exports.getWaitingListStatus = async (req, res) => {
-  const { patientId } = req.params;
 
-  try {
-    const patient = await WaitingList.findOne({ patient: patientId })
-      .populate('patient')
-      .populate({
-        path: 'patient',
-        populate: {
-          path: 'user',
-          model: 'User',
-        },
-      })
-
-    if (patient) {
-      res.status(200).json(patient);
-    } else {
-      res.status(404).json({ message: "Patient non trouvé dans la liste d'attente" });
-    }
-  } catch (error) {
-    console.error("Erreur lors de la récupération du statut du patient :", error.message);
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-};
 exports.getWaitingListStatus = async (req, res) => {
   const { patientId } = req.params;
 

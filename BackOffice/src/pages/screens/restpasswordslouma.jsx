@@ -83,7 +83,7 @@ function Resetpassword1() {
                 />
                 {passwordError && (
                   <small className="error-message">
-                    Le mot de passe doit contenir au moins 8 caractères.
+                    The password must contain at least 8 characters.
                   </small>
                 )}
 
@@ -112,9 +112,9 @@ function Resetpassword1() {
             <div className="text-slider">
               <div className="text-wrap">
                 <div className="text-group">
-                  <h2>Gérez votre santé facilement</h2>
-                  <h2>Restez en sécurité avec Smart190</h2>
-                  <h2>Consultez des professionnels en ligne</h2>
+                  <h2>Manage your health easily</h2>
+                  <h2>Stay safe with Smart190</h2>
+                  <h2>Consult professionals online</h2>
                 </div>
               </div>
               <div className="bullets">

@@ -143,6 +143,31 @@ const styles = {
       marginBottom: '20px',
       fontWeight: 'bold',
     },
+     badgeBase : {
+  display: 'inline-block',
+  padding: '4px 10px',
+  borderRadius: '20px',
+  fontWeight: 'bold',
+  fontSize: '0.85rem',
+  border: '2px solid',
+  backgroundColor: 'transparent',
+  textAlign: 'center'
+},
+
+ badgeColors : {
+  green: {
+    color: '#28a745',
+    borderColor: '#28a745'
+  },
+  orange: {
+    color: '#fd7e14',
+    borderColor: '#fd7e14'
+  },
+  red: {
+    color: '#dc3545',
+    borderColor: '#dc3545'
+  }
+},
   };
   
   export default styles;

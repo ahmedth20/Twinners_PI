@@ -3,6 +3,7 @@ const Patient = require("../models/patient");
 const Operation = require("../models/operation");
 const PatientFile = require("../models/patientFile");
 const Prescription = require("../models/prescription");
+const openAiController = require("./openAiController");
 
 const medicalRecordController = {
   // 🔹 Créer un dossier médical
@@ -45,6 +46,26 @@ const medicalRecordController = {
       res.status(500).json({ message: "Erreur lors de la récupération du dossier", error });
     }
   },
+
+async getMedicalRecordByIdOPENAI(req, res) {
+  try {
+    const record = await MedicalRecord.findById(req.params.id)
+      .populate("patient", "firstName lastName")
+      .populate("operations")
+      .populate("patientFiles")
+      .populate("prescriptions");
+
+    // Récupération des localisations de douleur avec OpenAI
+    const painLocations = await openAiController.getMedicalPainLocation(record);
+
+    // Retourner le dossier médical avec les localisations de douleur
+    return res.status(200).json({ painLocations });
+  } catch (error) {
+    console.error("Erreur lors de la récupération du dossier :", error.message);
+    return res.status(500).json({ message: "Erreur lors de la récupération du dossier", error });
+  }
+}
+,
 
   // 🔹 Mettre à jour un dossier médical
   async updateMedicalRecord(req, res) {

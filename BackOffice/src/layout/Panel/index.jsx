@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { motion } from "framer-motion";
 import { Actions, Header, Input, Label, Search } from "./style";
 import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Components
 import Logo from "UI/Logo";
@@ -25,6 +27,7 @@ const Panel = () => {
   const { isSidebarOpen } = useSidebarContext();
   const headerRef = useRef(null);
   const notificationRef = useRef(null);
+  const navigate = useNavigate();
 
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -53,13 +56,29 @@ const Panel = () => {
     socket.on('notif', (consultationData) => {
       console.log('Notification reçue:', consultationData);
       setNotification(consultationData);
-      localStorage.setItem('notification', JSON.stringify(consultationData)); // Enregistrement
+      localStorage.setItem('notification', JSON.stringify(consultationData));
+
+      // Toast cliquable
+      toast.info(
+       // <div onClick={() => navigate(`/medical_form/${consultationData.id}`)} style={{ cursor: 'pointer' }}>
+        <div onClick={() => navigate(`/medical_form_updateNotif/${consultationData.id}`)} style={{ cursor: 'pointer' }}>
+          Nouvelle consultation : {consultationData.Description}
+        </div>,
+        {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
     });
 
     return () => {
       socket.off('notif');
     };
-  }, []);
+  }, [navigate]);
 
   // Fermer la notification en cliquant à l’extérieur
   useEffect(() => {
@@ -74,7 +93,7 @@ const Panel = () => {
     };
   }, []);
 
-  // Marquer comme lue (supprime la notif)
+  // Marquer comme lue
   const clearNotification = () => {
     setNotification(null);
     localStorage.removeItem('notification');
@@ -138,13 +157,31 @@ const Panel = () => {
               <div>
                 <h2>Consultation Notification</h2>
                 {notification ? (
-                  <div>
-                    <h3>Nouvelle Consultation</h3>
-                    <p><strong>Patient:</strong> {notification.Description}</p>
+                  <>
+                    <div
+                      onClick={() => navigate(`/medical_form_updateNotif/${notification.id}`)}
+                      style={{
+                        cursor: 'pointer',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        backgroundColor: '#f5f5f5',
+                      }}
+                    >
+                      <h3>Nouvelle Consultation</h3>
+                      <p><strong>Patient vous à envoyé un fichier</strong> {notification.Description}</p>
+                      <p><strong>reference :</strong> {notification.reference}</p>
+                      <p><strong>id :</strong> {notification._id}</p>
+                      <p><strong>Description :</strong> {notification.Description}</p>
+                      <p><strong>age :</strong> {notification.age}</p>
+                      <p><strong>symptom :</strong> {notification.symptom}</p>
+                      <p><strong>bloodGroup :</strong> {notification.bloodGroup}</p>
+
+
+                    </div>
                     <button onClick={clearNotification} style={{ marginTop: '10px', color: 'red' }}>
-                      Marquer comme lue
+                      Effacer la notification
                     </button>
-                  </div>
+                  </>
                 ) : (
                   <p>Aucune nouvelle consultation.</p>
                 )}

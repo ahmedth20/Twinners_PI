@@ -21,7 +21,9 @@ import useWindowSize from 'hooks/useWindowSize';
 // utils
 import moment from 'moment';
 import {getMonthArray} from 'utils/dates';
-
+//autre
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 // data placeholder
 import {y2019, y2020, y2021, y2022} from 'db/gender';
 import {rgba} from 'polished';
@@ -29,10 +31,26 @@ import {rgba} from 'polished';
 const PatientsGenderLineChart = () => {
     const isMobile = useWindowSize().width < 768;
     const {theme} = useTheme();
-    const periods = ['2019', '2020', '2021', '2022'];
+    const periods = ['2024', '2025'];
     const {index, navigate} = useArrayNav(periods);
 
-    // common line props
+    const [statsData, setStatsData] = useState([]);
+
+    // Fetch data when index (year) changes
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await axios.get(`http://localhost:5000/api/gender-stats/${periods[index]}`); // ⚠️ Remplace par l’URL de ton backend
+                setStatsData(res.data);
+            } catch (error) {
+                console.error("Erreur lors du chargement des données:", error);
+                setStatsData([]); // fallback to empty
+            }
+        };
+
+        fetchStats();
+    }, [index]);
+
     const common = {
         type:"monotone",
         strokeWidth: 3,
@@ -60,22 +78,6 @@ const PatientsGenderLineChart = () => {
         }
     ];
 
-    const currentData = () => {
-        switch (periods[index]) {
-            case '2019':
-                return y2019
-            case '2020':
-                return y2020
-            case '2021':
-                return y2021
-            default:
-            case '2022':
-                return y2022
-        }
-    }
-
-    const data = currentData();
-
     return (
         <Widget name="PatientsGenderLineChart" mobile={400}>
             <WidgetHeader title="Patients gender" flex="column">
@@ -91,7 +93,7 @@ const PatientsGenderLineChart = () => {
                         ))
                     }
                 </Labels>
-                <CartesianChart variant="line" id="patientsGender" data={data} elems={chartElems} />
+                <CartesianChart variant="line" id="patientsGender" data={statsData} elems={chartElems} />
                 <LegendList overlay={true}>
                     <LegendItem color="azure" legend="men" />
                     <LegendItem color="peach" legend="women" />

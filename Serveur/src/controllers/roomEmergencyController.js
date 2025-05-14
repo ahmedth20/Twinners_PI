@@ -94,3 +94,27 @@ exports.getRandomEmergencyRoomByDepartement = async (departement) => {
     throw new Error("Erreur lors de la récupération de la salle");
   }
 };
+
+
+// 🔹 Get a random Emergency Room by Departement
+exports.getRandomEmergencyRoomByDepartementfront = async (req, res) => {
+  try {
+    const { departement } = req.params;
+
+    const matchingRooms = await EmergencyRoom.find({
+      departement: departement,
+      capacity: { $gt: 0 },
+    });
+
+    if (matchingRooms.length === 0) {
+      return res.status(404).json({ message: "Aucune salle trouvée pour ce département" });
+    }
+
+    const randomRoom = matchingRooms[Math.floor(Math.random() * matchingRooms.length)];
+    res.status(200).json(randomRoom);
+
+  } catch (err) {
+    console.error("Erreur lors de la récupération de la salle :", err.message);
+    res.status(500).json({ message: "Erreur serveur lors de la récupération de la salle", error: err.message });
+  }
+};

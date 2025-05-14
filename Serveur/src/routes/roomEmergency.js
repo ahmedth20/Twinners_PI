@@ -8,5 +8,6 @@ router.get("/:id", controller.getEmergencyRoomById);
 router.put("/:id", controller.updateEmergencyRoom);
 router.delete("/:id", controller.deleteEmergencyRoom);
 router.get("/random/:departement", controller.getRandomEmergencyRoomByDepartement);
+router.get("/randomfront/:departement", controller.getRandomEmergencyRoomByDepartementfront);
 
 module.exports = router;

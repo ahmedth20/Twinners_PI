@@ -31,6 +31,7 @@ const AmbulanceRequest = require("./src/models/AmbulanceRequest.js");
 const PatientFile = require("./src/models/patientFile");
 const imagePredictionRoute = require('./src/routes/imagePredictionRoute');
 const medicalRoutes = require('./src/routes/medicalRoutes');
+const genderStatsRoute = require('./src/routes/genderStatsRoute');
 const ResourceModel = require("./src/models/ressources.js");
 
 
@@ -45,7 +46,6 @@ const accountSid = 'AC1185ae3b469d55fbc6b005d8f7066e53';
 const authToken = 'c35707b6eb113f0ecdd537863fc38046';
 const client = twilio(accountSid, authToken);
 
-
 dotenv.config();
 connectDB();
 
@@ -53,7 +53,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Créer un serveur HTTP
-const http = require("http");
+
 const server = http.createServer(app);
 
 // Initialiser Socket.IO
@@ -69,6 +69,8 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log(`Utilisateur connecté: ${socket.id}`);
+
+   console.log(`Utilisateur connecté: ${socket.id}`);
 
   // Quand un patient appelle une ambulance
   socket.on('call_ambulance', async (data) => {
@@ -121,6 +123,12 @@ io.on('connection', (socket) => {
     console.log('Message received:', data);
     socket.broadcast.emit('receive_message', data); // Diffuser à tous les autres clients
   });
+  
+  socket.on('send_notification',(consultationDataDetails) => {
+      console.log('Message reçu côté serveur:', consultationDataDetails);
+      // Émettre l'événement à tous les clients connectés
+      socket.broadcast.emit('send_notification', consultationDataDetails);
+    });
 
   socket.on('notif',(consultationData) => {
     console.log('Message reçu côté serveur:', consultationData);
@@ -129,11 +137,7 @@ io.on('connection', (socket) => {
   });
 
   
-  socket.on('send_notification',(consultationDataDetails) => {
-      console.log('Message reçu côté serveur:', consultationDataDetails);
-      // Émettre l'événement à tous les clients connectés
-      socket.broadcast.emit('send_notification', consultationDataDetails);
-    });
+
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté: ${socket.id}`);
   });
@@ -194,8 +198,7 @@ app.use("/", express.static(path.join(__dirname, "Medical-React-Dashboard/build"
 app.use("/admin", express.static(path.join(__dirname, "mediic/dist")));
 
 
-// Démarrer serveur AVEC WebSocket support
-server.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
+
 
 app.use('/api', imagePredictionRoute);
 
@@ -224,7 +227,7 @@ io.on('connection', (socket) => {
 });
 
 // MongoDB ChangeStream
-mongoose.connection.once('open', () => {
+/* mongoose.connection.once('open', () => {
   console.log("🔍 ChangeStream activé sur ResourceModel");
 
   const changeStream = ResourceModel.watch();
@@ -245,7 +248,7 @@ mongoose.connection.once('open', () => {
         .catch((err) => console.error(err));
     }
   });
-});
+});*/
 // Supposons que tu as une route pour créer ou update une ressource
 app.post('/ressources', async (req, res) => {
   try {
@@ -366,8 +369,13 @@ const sendSms = async (phoneNumber, clientName, amount) => {
   }
 };
 
-
-
+const appointmentRoutes = require('./src/routes/appointments.js');
+app.use('/appointments', appointmentRoutes);
+const appointmentstaffRoutes = require('./src/routes/appointmentsstaff.js');
+app.use('/appointmentsstaff', appointmentstaffRoutes);
+const appointmentparamedicRoutes = require('./src/routes/apointmentparamedic.js');
+app.use('/appointmentsparamedic', appointmentparamedicRoutes);
+app.use('/api/gender-stats', genderStatsRoute);
 
 async function predictEmergencyLevel(patientData) {
   try {

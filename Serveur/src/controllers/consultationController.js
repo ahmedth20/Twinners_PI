@@ -21,23 +21,36 @@ async createConsultationback (consultationData) {
     throw error;
   }
 },
-async createConsultation  (req, res) {
+async createConsultation(req, res) {
   try {
-    const { patient, doctor, emergencyRoom, duration, date } = req.body;
+    const { patient, doctor, emergencyRoom, duration, date, status, diagnostic } = req.body;
 
-    if (!patient || !doctor || !emergencyRoom || !duration || !date) {
-      throw new Error("Missing required fields");
-    }
+    // Vérification des données reçues
+  
 
-    const consultation = new Consultation();
+    // Création de l'objet Consultation
+    const consultation = new Consultation({
+      patient,
+      doctor,
+      emergencyRoom,
+      duration,
+      date,
+      status,
+      diagnostic
+    });
+
+    // Sauvegarde dans la base de données
     const savedConsultation = await consultation.save();
     console.log("Consultation créée avec succès :", savedConsultation);
-    return savedConsultation;
+
+    // Retour de la réponse
+    return res.status(201).json(savedConsultation);
   } catch (error) {
-    console.error("Error creating consultation:", error.message);
-    throw error;
+    console.error("Erreur lors de la création de la consultation :", error.message);
+    return res.status(500).json({ message: "Erreur lors de la création de la consultation." });
   }
 }
+
 ,
   // 🔹 Get all consultations
 async getAllConsultations(req, res) {
@@ -119,25 +132,23 @@ async getConsultationById(req, res) {
       res.status(500).json({ message: "Server error", error });
     }
   },
-   async getConsultationsByPatientback(req, res) {
-    try {
+async getConsultationsByPatientback(req, res) {
+  try {
+    const consultation = await Consultation.findOne({ patient: req.params.id })
+       .populate("doctor");
 
-      const consultations = await Consultation.findOne({ patient: req.params.id })
-        .sort({ createdAt: -1 })
-        .populate("patient", "firstName lastName user")
-        .populate("doctor", "firstName lastName specialty");
-       // Trie par date de création (la plus récente en premier)
-      
-
-      if (!consultations || consultations.length === 0) {
-        return res.status(404).json({ message: "No consultations found for this patient." });
-      }
-
-      res.status(200).json(consultations);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
+    if (!consultation) {
+      return res.status(404).json({ message: "Aucune consultation trouvée pour ce patient" });
     }
-  },
+
+    res.status(200).json(consultation);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la dernière consultation :", error.message);
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+}
+
+,
    async getConsultationsByDoctorConnecter(req, res) {
     try {
 
@@ -154,6 +165,24 @@ async getConsultationById(req, res) {
       res.status(500).json({ message: "Server error", error });
     }
   },
+
+
+  // 🔹 Delete consultations by Doctor
+async deleteConsultationsByDoctor(req, res) {
+  try {
+    const result = await Consultation.deleteMany({ doctor: req.params.id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Aucune consultation trouvée pour ce médecin" });
+    }
+
+    res.status(200).json({ message: `${result.deletedCount} consultation(s) supprimée(s) avec succès` });
+  } catch (error) {
+    console.error("Erreur lors de la suppression des consultations :", error.message);
+    res.status(500).json({ message: "Erreur lors de la suppression des consultations", error });
+  }
+}
+
 };
 
 module.exports = consultationController;

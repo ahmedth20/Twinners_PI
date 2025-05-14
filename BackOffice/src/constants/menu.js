@@ -21,7 +21,10 @@ export const menuchefservice = [
         cat: 'Schedules',
         icon: 'calendar',
         links: [
-            { name: "Doctor Schedules", link: '/doctor_appointments' }
+            { name: "Doctor Schedules", link: '/doctor_appointments' },
+            { name: "Staff Schedules", link: '/staff_appointments' },
+            { name: "Parmedic Schedules", link: '/paramedic_appointments' }
+
         ]
     },
     {
@@ -100,14 +103,7 @@ export const menudoctors = [
             { name: "Doctor Schedules", link: '/doctor_appointments' }
         ]
     },
-    {
-        cat: 'Ressources',
-        icon: 'calendar',
-        links: [
-            { name: "Equipements", link: '/Equipements' }
-            
-        ]
-    },
+  
     {
         cat: 'patients',
         icon: 'users',
@@ -181,7 +177,7 @@ export const menustaff = [
         icon: 'users',
         links: [
             { name: "Liste Of Patients", link: '/patients' },
-        
+        { name: "Patient File", link: '/patientFile' },
         ]
     },
     {

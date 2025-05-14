@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useSocket } from './SocketContext'; 
+import { useSocket } from './SocketContext'; // Importer le hook pour accéder à la socket
 import { useSnackbar } from 'notistack';
 
 function ConsultationNotification() {
-  const socket = useSocket();
-  const { enqueueSnackbar } = useSnackbar();
-  const [notification, setNotification] = useState(null);
+  const socket = useSocket();  // Récupérer la socket depuis le contexte
+  const { enqueueSnackbar } = useSnackbar();  // Utiliser notistack pour afficher les notifications
+  const [notification, setNotification] = useState(null);  // Initialiser notification avec null
 
   useEffect(() => {
-    // ➡️ Vérifier que le socket est bien défini avant de l'utiliser
-    if (!socket) {
-      console.warn("Socket is not initialized yet");
-      return;
-    }
-
     socket.on('connect', () => {
       console.log('Connected to server');
     });
@@ -23,21 +17,23 @@ function ConsultationNotification() {
       console.log('Notification reçue:', consultationDataDetails);
       setNotification(consultationDataDetails);
 
+      // Utiliser notistack pour afficher la notification
       enqueueSnackbar(
         `Nouvelle consultation: Patient: ${consultationDataDetails.patient}, Durée: ${consultationDataDetails.duration} minutes`,
         { 
-          variant: 'info',
-          autoHideDuration: 10000,
+          variant: 'info',  // Choisir le type de notification (info, success, error, etc.)
+          autoHideDuration: 10000,  // Disparition automatique après 10 secondes
         }
       );
 
+      // Disparition de la notification après 10 secondes
       setTimeout(() => {
-        setNotification(null);
+        setNotification(null);  // Réinitialiser l'état de notification après un délai
       }, 10000);
     });
 
     return () => {
-      socket.off('send_notification');
+      socket.off('send_notification');  // Nettoyage de l'événement lorsque le composant est démonté
     };
   }, [socket, enqueueSnackbar]);
 

@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const consultationSchema = new mongoose.Schema({
   reference: { type: Number, unique: true },
-  duration: { type: Number, required: true },
-  date: { type: Date, required: true },
-  status: { type: String, required: true, enum: ["Planned", "Ongoing", "Completed", "Cancelled"] },
+  duration: { type: Number, },
+  date: { type: Date,  },
+  status: { type: String, enum: ["Planned", "Ongoing", "Completed", "Cancelled"] },
   diagnostic: { type: Map, of: String },
   patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
   doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },

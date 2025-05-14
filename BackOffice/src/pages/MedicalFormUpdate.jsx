@@ -1,168 +1,3 @@
-/*import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  Container,
-  SectionTitle,
-  Title,
-  Row,
-  Column,
-  Input,
-} from "../styles/medicalForm";
-
-const formSchema = z.object({
-  firstName: z.string().min(1, "First Name is required"),
-  lastName: z.string().min(1, "Last Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(8, "Phone number is required"),
-  address: z.string().min(5, "Address is required"),
-});
-
-const FormSection = ({ title, children }) => (
-  <div className="mb-6 w-full">
-    <SectionTitle>{title}</SectionTitle>
-    {children}
-  </div>
-);
-
-const MedicalFormUpdate = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(formSchema),
-  });
-
-  const onSubmit = (data) => {
-    console.log("Form data submitted:", data);
-    alert("Form submitted successfully!");
-  };
-
-  return (
-    <Container className="w-full p-8">
-      <Title>Medical Record Form</Title>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-        <FormSection title="User Information">
-          <Row className="w-full">
-            <Column className="w-full">
-              <label>First Name:</label>
-              <Input
-                {...register("firstName")}
-                placeholder="First Name"
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded"
-              />
-              {errors.firstName && (
-                <p className="text-red-500">{errors.firstName.message}</p>
-              )}
-            </Column>
-            <Column className="w-full">
-              <label>Last Name:</label>
-              <Input
-                {...register("lastName")}
-                placeholder="Last Name"
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded"
-              />
-              {errors.lastName && (
-                <p className="text-red-500">{errors.lastName.message}</p>
-              )}
-            </Column>
-          </Row>
-
-          <Row className="w-full">
-            <Column className="w-full">
-              <label>Email:</label>
-              <Input
-                {...register("email")}
-                placeholder="Email"
-                type="email"
-                className="w-full p-3 border border-gray-300 rounded"
-              />
-              {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
-              )}
-            </Column>
-          </Row>
-
-          <Row className="w-full">
-            <Column className="w-full">
-              <label>Phone:</label>
-              <Input
-                {...register("phone")}
-                placeholder="Phone"
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded"
-              />
-              {errors.phone && (
-                <p className="text-red-500">{errors.phone.message}</p>
-              )}
-            </Column>
-            <Column className="w-full">
-              <label>Address:</label>
-              <Input
-                {...register("address")}
-                placeholder="Address"
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded"
-              />
-              {errors.address && (
-                <p className="text-red-500">{errors.address.message}</p>
-              )}
-            </Column>
-          </Row>
-        </FormSection>
-
-        <div className="mt-8 w-full">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white w-full p-3 rounded hover:bg-blue-700 transition"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </Container>
-  );
-};
-
-export default MedicalFormUpdate;
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import Page from "layout/Page";
 import { Container, SectionTitle, SectionSecondTitle, SectionThirdTitle, Select, Input, TextArea, ButtonContainer, Button, Row, Column, RemoveButton } from "../styles/medicalForm";
@@ -174,6 +9,7 @@ import { CloseButton, ModalContent, ModalOverlay, Title } from "styles/PopUpAddP
 import { motion } from "framer-motion";
 import { useLocation } from "react-router";
 import MedicalRecordService from "services/medicalRecordService";
+import ConsultationService from "services/consultationService";
 import axios from "axios";
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required").optional(),
@@ -185,6 +21,19 @@ const formSchema = z.object({
   sex: z.string().min(1, "Sex is required").optional(),
   height: z.number().int().min(1, "Height is required").optional(),
   weight: z.number().int().min(1, "Weight is required").optional(),
+
+  consultations: z.array(
+    z.object({
+      _id: z.string().optional(), // Pour différencier les anciennes et nouvelles consultations
+      date: z.string().refine(val => !isNaN(Date.parse(val)), {
+        message: "Invalid date format",
+      }),
+      doctor: z.string().min(1, "Doctor's ID is required"),
+      status: z.string().min(1, "Status is required"),
+      duration: z.number().min(1, "Duration is required"),
+      notes: z.string().optional(),
+    })
+  ).optional(),
 
   medicalRecord: z.object({
     diagnostic: z.object({
@@ -228,7 +77,7 @@ const FormSection = ({ title, children }) => (
 const MedicalFormUpdate = () => {
   const { state } = useLocation();  // Récupère les données envoyées via navigate
   const data = state?.patientData; // Accède aux données du patient
- 
+  console.log(data);
   const [symptoms, setSymptoms] = useState([""]);
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
 
@@ -238,30 +87,13 @@ const MedicalFormUpdate = () => {
   const [medicalR, setMedicalR] = useState([]);
 
   const addField = (setState) => setState(prev => [...prev, ""]);
-  const addMedication = () => {
-  const newMedications = [...medications, { name: "", dosage: "", frequency: "", duration: "", notes: "" }];
-  setMedications(newMedications);
-  setValue("medicalRecord.treatment.medications", newMedications);
-};
-
-const removeMedication = (index) => {
-  const newMedications = medications.filter((_, i) => i !== index);
-  setMedications(newMedications);
-  setValue("medicalRecord.treatment.medications", newMedications);
-};
-const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
-const addOperation = () => {
-  const newOperations = [...operations, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }];
-  setOperations(newOperations);
-  setValue("operations", newOperations);
-};
-
-const removeOperation = (index) => {
-  const newOperations = operations.filter((_, i) => i !== index);
-  setOperations(newOperations);
-  setValue("operations", newOperations);
-};
-
+  const addMedication = () => setMedications(prev => [...prev, { name: "", dosage: "", frequency: "", duration: "", notes: "" }]);
+  const addOperation = () => setOperations(prev => [...prev, { type: "", estimatedTime: "", date: "", roomNumber: "", status: "" }]);
+  const removeField = (setState, index) => setState((prev) => prev.filter((_, i) => i !== index));
+  const removeMedication = (index) => setMedications(medications.filter((_, i) => i !== index));
+  const removeOperation = (index) => {
+    setOperations(operations.filter((_, i) => i !== index));
+  };
 
 useEffect(() => {
       const fetchDoctors = async () => {
@@ -305,84 +137,80 @@ useEffect(() => {
       }
     }
   });
-  useEffect(() => {
-    if (!data) return;
-  
-    console.log("Données brutes :", data);
-  
-    // Données de l'utilisateur
-    if (data.user) {
-      setValue("firstName", data.user.firstName || "");
-      setValue("lastName", data.user.lastName || "");
-      setValue("email", data.user.email || "");
-    }
-  
-    setValue("sex", data.sex || "");
-    setValue("age", data.age || "");
-    setValue("phone", data.phone || "");
-    setValue("address", data.address || "");
-    setValue("height", data.height || "");
-    setValue("weight", data.weight || "");
-  
-    // Chargement des données médicales depuis l'ID
-    const fetchMedicalData = async () => {
-      try {
-        const medicalData = await MedicalRecordService.getMedicalRecordById(data.medicalRecord);
-        setMedicalR(medicalData);
-        console.log("Dossier médical complet :", medicalData);
-  
-        // Diagnostic
-        setValue("medicalRecord.diagnostic.condition", medicalData.diagnostic?.condition || "");
-        setValue("medicalRecord.diagnostic.severity", medicalData.diagnostic?.severity || "");
-        setValue("medicalRecord.diagnostic.notes", medicalData.diagnostic?.notes || "");
-        if (medicalData.diagnostic?.symptoms) {
-          setSymptoms(medicalData.diagnostic.symptoms);
-          setValue("medicalRecord.diagnostic.symptoms", medicalData.diagnostic.symptoms);
-        }
-  
-        // Traitement
-        if (medicalData.treatment?.medications) {
-          setMedications(medicalData.treatment.medications);
-          setValue("medicalRecord.treatment.medications", medicalData.treatment.medications);
-        }
-        setValue("medicalRecord.treatment.procedures.name", medicalData.treatment?.procedures?.name || "");
-        setValue("medicalRecord.treatment.procedures.duration", medicalData.treatment?.procedures?.duration || "");
-        setValue("medicalRecord.treatment.lifestyleRecommendations", medicalData.treatment?.lifestyleRecommendations || []);
-  
-        // Allergies
-        if (medicalData.allergies) {
-          setAllergies(medicalData.allergies);
-          setValue("medicalRecord.allergies", medicalData.allergies);
-        }
-  
-        // Résultats de tests
-        setValue("medicalRecord.testResults.chestXray", medicalData.testResults?.chestXray || "");
-        setValue("medicalRecord.testResults.bloodTest", medicalData.testResults?.bloodTest || "");
-        setValue("medicalRecord.testResults.oxygenSaturation", medicalData.testResults?.oxygenSaturation || "");
-  
-        // Autres infos
-        setValue("medicalRecord.bloodGroup", medicalData.bloodGroup || "");
-        setValue("medicalRecord.MedicalHistory", medicalData.MedicalHistory || []);
-        if (medicalData.operations) {
-          setOperations(medicalData.operations);
-          setValue("medicalRecord.operations", medicalData.operations);
-        }
-  
-      } catch (error) {
-        console.error("Erreur lors du chargement du dossier médical :", error);
+ useEffect(() => {
+  if (!data) return;
+
+  // Log raw data for debugging
+  console.log("Données brutes :", data);
+
+  // Populate user information if it exists
+  if (data.user) {
+    setValue("firstName", data.user.firstName || "");
+    setValue("lastName", data.user.lastName || "");
+    setValue("email", data.user.email || "");
+  }
+
+  // Populate other fields if they exist
+  setValue("sex", data.sex || "");
+  setValue("age", data.age || "");
+  setValue("phone", data.phone || "");
+  setValue("address", data.address || "");
+  setValue("height", data.height || "");
+  setValue("weight", data.weight || "");
+
+  // Fetch medical data
+  const fetchMedicalData = async () => {
+    try {
+      const medicalData = await MedicalRecordService.getMedicalRecordById(data.medicalRecord);
+      setMedicalR(medicalData);
+
+      // Populate medical record fields
+      setValue("medicalRecord.diagnostic.condition", medicalData.diagnostic?.condition || "");
+      setValue("medicalRecord.diagnostic.severity", medicalData.diagnostic?.severity || "");
+      setValue("medicalRecord.diagnostic.notes", medicalData.diagnostic?.notes || "");
+      if (medicalData.diagnostic?.symptoms) {
+        setSymptoms(medicalData.diagnostic.symptoms);
+        setValue("medicalRecord.diagnostic.symptoms", medicalData.diagnostic.symptoms);
       }
-    };
-  
-    // Exécuter la fonction
-    fetchMedicalData();
-  
-    // Consultationsf
-   
-  }, [data, setValue]);
+
+      // Populate treatments
+      if (medicalData.treatment?.medications) {
+        setMedications(medicalData.treatment.medications);
+        setValue("medicalRecord.treatment.medications", medicalData.treatment.medications);
+      }
+
+      // Continue populating other relevant fields...
+      
+    } catch (error) {
+      console.error("Erreur lors du chargement du dossier médical :", error);
+    }
+  };
+
+  // Execute fetchMedicalData
+  fetchMedicalData();
+
+  // Fetch consultations
+  const fetchConsultations = async () => {
+    try {
+      if (data.consultations) {
+        const consultationsData = await Promise.all(
+          data.consultations.map(async (consultationId) => {
+            const response = await axios.get(`http://localhost:5000/consultation/${consultationId}`);
+            return response.data;
+          })
+        );
+        setValue("consultations", consultationsData);
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des consultations :", error);
+    }
+  };
+
+  fetchConsultations();
+}, [data, setValue]);
   
   const onSubmit = async () => {
     try {
-      console.log("🟢 Form submitted!");
       const formValues = getValues();
       const updatedData = {};
   
@@ -403,27 +231,36 @@ useEffect(() => {
         }
       });
   
-     
+      // Comparaison consultations
+      if (JSON.stringify(formValues.consultations) !== JSON.stringify(data.consultations)) {
+        updatedData.consultations = formValues.consultations;
+      }
+  
       // Comparaison medicalRecord
       if (JSON.stringify(formValues.medicalRecord) !== JSON.stringify(data.medicalRecord)) {
         updatedData.medicalRecord = formValues.medicalRecord;
       }
   
-        if (Object.keys(updatedData).length > 0) {
-      console.log("📦 Payload envoyé :", updatedData); // Vérification
-      await PatientService.updatePatient(data._id, updatedData);
-      alert("✅ Patient mis à jour avec succès !");
-
-  }  } catch (error) {
+      if (Object.keys(updatedData).length > 0) {
+        await PatientService.updatePatient(data._id, updatedData);
+        alert("✅ Patient mis à jour avec succès !");
+      } else {
+        alert("Aucune modification détectée.");
+      }
+  
+    } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);
       alert("Erreur lors de la mise à jour du patient.");
     }
   };
+  
+  
   return (
        <Page title="Medical Record">
       <Container>
         <Title>Medical Record Form</Title>
 
+        {/* Informations de l'utilisateur */}
         <FormSection title="User Information">
           <Row>
             <Column>
@@ -441,6 +278,7 @@ useEffect(() => {
           </Row>
         </FormSection>
 
+        {/* Informations sur le patient */}
         <FormSection title="Patient Information">
           <Row>
             <Column>
@@ -492,6 +330,39 @@ useEffect(() => {
 </Row>
 
         </FormSection>
+
+        <FormSection title="Consultation">
+  <Row>
+    <Select {...register("doctor", { required: "Veuillez sélectionner un docteur" })}>
+      <option value="">Sélectionner un docteur</option>
+      {doctors.map((doctor) => (
+        <option key={doctor._id} value={doctor._id}>
+          {doctor.user.firstName} {doctor.user.lastName}
+        </option>
+      ))}
+    </Select>
+  </Row>
+  <Row>
+    <Column>
+      <Input {...register("duration")} placeholder="Duration (minutes)" type="number" />
+    </Column>
+    <Column>
+      <Input {...register("date")} placeholder="Date" type="date" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Select {...register("status")}>
+        <option value="">Select Status</option>
+        <option value="Planned">Planned</option>
+        <option value="Ongoing">Ongoing</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </Select>
+    </Column>
+  </Row>
+</FormSection>
+
 
           <FormSection title="Medical Record">
           <SectionSecondTitle>Diagnostics</SectionSecondTitle>
@@ -619,7 +490,7 @@ useEffect(() => {
                     <div key={index}>
                       <Row>
                         <Column>
-                         <Input
+                          <Input
                             {...register(`operations.${index}.type`)}
                             placeholder="Operation Type"
                             value={operation.type}
@@ -627,10 +498,8 @@ useEffect(() => {
                               const newOperations = [...operations];
                               newOperations[index].type = e.target.value;
                               setOperations(newOperations);
-                              setValue(`operations.${index}.type`, e.target.value); // ✅ Met à jour react-hook-form
                             }}
                           />
-
                         </Column>
                         <Column>
                         <Input
@@ -701,7 +570,9 @@ useEffect(() => {
 
         <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </Container>
-   </Page>    
+   </Page>
+    
+        
   );
 };
 

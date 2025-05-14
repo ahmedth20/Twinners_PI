@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+
 import {
   Input, Form, ButtonContainer, ProgressBar, NavButton, NextButton, SubmitButton, Line,
   ModalContent, ModalOverlay, CloseButton, Error, Title, StepContainer, Step, InputRow, Select, FormTitle, TextArea
 } from "../styles/PopUpAddPatientFile";
 import PatientFileService from "../services/PatientFileService";
 
+import axios from "axios"; // si pas déjà importé
 import io from 'socket.io-client';
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import openaiService from "services/openaiServices";
+
 
 const socket = io('http://localhost:5000', {
   reconnection: true,
@@ -42,11 +51,29 @@ const steps = [
 const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
+  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Récupérer l'ID du paramedic depuis l'utilisateur connecté
+ /* const token = useSelector((state) => state.auth.token); // Assurez-vous que le token est stocké dans Redux
+
+  let paramedicId = '';
+
+  try {
+    if (typeof token === 'string' && token.trim() !== '') {
+      const decoded = jwtDecode(token);
+      paramedicId = decoded.userId || '';
+    }
+  } catch (error) {
+    console.error("Erreur lors du décodage du token :", error.message);
+  }*/
+const paramedicId=useSelector(state => state.auth.user.user.id); 
+console.log(paramedicId);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: zodResolver(patientFileSchema),
   });
@@ -60,11 +87,103 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
   };
 
   const onSubmit = async (data) => {
+
     try {
-      await PatientFileService.createSimplePatientFile(data);
+          if (!paramedicId) {
+        alert("❌ Aucun paramédic connecté. Veuillez vous reconnecter.");
+        return;
+      }
+
+      // Ajouter l'ID du paramédic aux données envoyées
+      const formData = {
+        ...data,
+        paramedic: paramedicId,
+      };
+    await PatientFileService.createSimplePatientFile(data);
+const specialty = await openaiService.getSpeciality(data);
+      const specialtyCleaned = specialty.specialty.split(" ")[0];
+      console.log("Spécialité devinée (nettoyée) :", specialtyCleaned);
+      // Appel pour trouver un médecin disponible avec cette spécialité
+      const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialtyy/${specialtyCleaned}`);
+      const doctor = doctorResponse.data; // On prend le premier disponible
+      console.log("Médecin trouvé :", doctor);
+
+      // Récupération d'une salle d'urgence aléatoire dans le même département
+      console.log(doctor.departement);
+      const roomResponse = await axios.get(`http://localhost:5000/emergencyrooms/randomfront/${doctor.departement}`);
+      const room = roomResponse.data; // On prend le premier disponible
+     
+      //const room = await emergencyRoomService.getRandomEmergencyRoomByDepartement(doctor.departement);
+      console.log("Salle d'urgence trouvée :", room);
+      
+      const medicalResponse = await axios.get(`http://localhost:5000/medicalrecord/${data.medicalRecord}`);
+      const medical = medicalResponse.data; // On prend le premier disponible
+      console.log(medicalResponse.data); // On prend le premier disponible
+     
+      const consultationData = {
+        duration: 30,  // Exemple de durée, tu peux la personnaliser
+        date: new Date(),
+        status: "Planned",  // Statut initial
+        diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+        patient: medicalResponse.data.patient._id,  // Assure-toi que l'ID patient est bien récupéré
+        doctor: doctor._id,  // ID du médecin
+        emergencyRoom: room._id  // ID de la salle d'urgence
+      };
+
+ 
+      console.log("Données de la consultation :", consultationData);
+       const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
+      console.log("Consultation créée avec succès :", createdConsultation.data);
+  
+      alert("✅ Patient ajouté avec succès !");
+
+      await axios.put(`http://localhost:5000/doctors/${doctor._id}`, { availability: false });
+      console.log(`Médecin ${doctor._id} mis à jour à disponibilité: false`);
+
+      const newCapacity = room.capacity - 1;
+      const emergencyRoomUpdate = {
+        capacity: newCapacity,
+        availability: newCapacity > 0 // dispo seulement s'il reste de la place
+      };
+
+      await axios.put(`http://localhost:5000/emergencyrooms/${room._id}`, emergencyRoomUpdate);
+      
+      console.log(`Salle d'urgence ${room._id} mise à jour avec capacité: ${newCapacity} et disponibilité: ${emergencyRoomUpdate.availability}`);
+            const consultation = createdConsultation.data;
+            const doctorResponses = await axios.get(`http://localhost:5000/doctors/${createdConsultation.data.doctor}`);
+            const patientResponse = await axios.get(`http://localhost:5000/patient/details/${createdConsultation.data.patient}`);
+            const roomResponses = await axios.get(`http://localhost:5000/emergencyrooms/${createdConsultation.data.emergencyRoom}`);
+
+            const doctorName = `${doctorResponses.data.user.firstName} ${doctorResponses.data.user.lastName}`;
+            const patientName = `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`;
+            const roomNumber = roomResponses.data.reference;
+            console.log(data.patient._id);
+            console.log(createdConsultation.data._id);
+          
+            
+            const consultationDataDetails = {
+              duration: 30,  // Exemple de durée, tu peux la personnaliser
+              date: new Date(),
+              status: "Planned",  // Statut initial
+              diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
+              patient: `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`,  // Assure-toi que l'ID patient est bien récupéré
+              emergencyRoom: roomResponses.data.reference  // ID de la salle d'urgence
+            };
+            sendNotification(consultationDataDetails);
+      
+       toast.success(
+              <div>
+                <p><strong>👤 Patient:</strong> {patientName}</p>
+                <p><strong>🚑 Doctor:</strong> {doctorName}</p>
+                <p><strong>🏥 Emergency Room:</strong> Room #{roomNumber}</p>
+                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
+                <p><strong>📅 Date:</strong> {new Date(consultation.date).toLocaleString()}</p>
+              </div>,
+              { position: "top-center", autoClose: false }
+            );
 
       alert("✅ Fichier patient ajouté avec succès !");
-      sendNotification(data);
+      sendNotification(consultationData);
       onClose();
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || "Erreur inconnue";
@@ -72,7 +191,39 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
       console.error("Détails de l'erreur:", errorMessage);
     }
   };
-  
+
+  // Charger les dossiers médicaux depuis l'API
+  useEffect(() => {
+    const fetchMedicalRecords = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/medicalrecord', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setMedicalRecords(data);
+        } else {
+          console.error("Erreur lors de la récupération des dossiers médicaux :", response.status);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des dossiers médicaux :", error);
+        setLoading(false);
+      }
+    };
+    fetchMedicalRecords();
+  }, []);
+
+
+  // Mettre le paramedicId dans le formulaire
+  useEffect(() => {
+    setValue('paramedic', paramedicId);
+  }, [paramedicId, setValue]);
+
   if (!isOpen) return null;
 
   return (
@@ -155,12 +306,18 @@ const AddSimplePatientFilePopup = ({ isOpen, onClose }) => {
                 <Error>{errors.bloodGroup?.message}</Error>
               </div>
               <InputRow>
+
                 <div>
-                  <Input type="text" {...register("paramedic")} placeholder="ID du paramédical" />
-                  <Error>{errors.paramedic?.message}</Error>
-                </div>
-                <div>
-                  <Input type="text" {...register("medicalRecord")} placeholder="ID du dossier médical" />
+                  <Select {...register("medicalRecord")}>
+                    <option value="">Sélectionner un dossier médical</option>
+                    {!loading && medicalRecords.map((record) => (
+                      <option key={record._id} value={record._id}>
+                        {record.reference} {/* ou une autre propriété, selon ton modèle */}
+                      </option>
+                    ))}
+                  </Select>
+
+
                   <Error>{errors.medicalRecord?.message}</Error>
                 </div>
               </InputRow>

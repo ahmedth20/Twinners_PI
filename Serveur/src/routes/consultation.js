@@ -11,5 +11,6 @@ router.get("/ByDoctorConnecter/:id", consultationController.getConsultationsByDo
 router.get("/OneByUser/:id", consultationController.getConsultationsByPatientback);
 router.put("/:id", consultationController.updateConsultation);
 router.delete("/:id", consultationController.deleteConsultation);
+router.delete("/delete/:id", consultationController.deleteConsultationsByDoctor);
 
 module.exports = router;

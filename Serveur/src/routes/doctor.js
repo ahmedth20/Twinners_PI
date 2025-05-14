@@ -16,5 +16,6 @@ router.delete("/:id", doctorController.deleteDoctor);
 
 //router.get('/specialty/:specialty', doctorController.getDoctorsBySpecialty);
 router.get('/specialty/:specialty', doctorController.getAvailableDoctorsBySpecialty);
+router.get('/specialtyy/:specialty', doctorController.getAvailableDoctorsBySpecialtyfront);
 
 module.exports = router;

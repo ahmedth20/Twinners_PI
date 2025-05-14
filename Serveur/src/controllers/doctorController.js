@@ -105,8 +105,49 @@ async getDoctorByIdback(doctorId) {
     throw new Error("Erreur lors de la récupération des médecins disponibles");
   }
 }
+,
+   async getAvailableDoctorsBySpecialtyfront(req, res) {
+  try {
+    const { specialty } = req.params;
+    const now = new Date();
 
-    
+    // Récupération des médecins disponibles avec un peu de projection pour alléger la requête
+    const doctors = await Doctor.find({ speciality: specialty, availability: true })
+      .populate("user", "firstName lastName email");
+
+    if (!doctors.length) {
+      return res.status(404).json({ message: "Aucun médecin disponible" });
+    }
+
+    // Vérification des disponibilités (en parallèle pour accélérer)
+    const promises = doctors.map(doctor =>
+     
+      appointement.findOne({ // Vérifie le nom ici, c'est bien "appointment" ?
+        doctorId: doctor._id,
+        start: { $lte: now },
+        end: { $gte: now }
+      })
+    );
+
+    // Attente de toutes les promesses
+    const availabilities = await Promise.all(promises);
+
+    // Filtrer ceux qui sont effectivement disponibles
+    const availableDoctors = doctors.filter((_, index) => availabilities[index]);
+
+    if (!availableDoctors.length) {
+      return res.status(404).json({ message: "Aucun médecin disponible" });
+    }
+
+    // Sélectionner un médecin aléatoire
+    const randomDoctor = availableDoctors[Math.floor(Math.random() * availableDoctors.length)];
+    return res.status(200).json(randomDoctor);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Erreur lors de la récupération des médecins disponibles" });
+  }
+}
+ 
     
 ,  
  // 📌 Ajouter un nouveau médecin

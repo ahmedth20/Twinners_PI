@@ -11,7 +11,7 @@ const patientSchema = new mongoose.Schema({
   consultations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Consultation" }],
   medicalRecord: { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-}, { timestamps: false, versionKey: false });
+}, { timestamps: true, versionKey: false });
 
 patientSchema.plugin(AutoIncrement, { inc_field: "reference" });
 const Patient = mongoose.models.Patient || mongoose.model("Patient", patientSchema);

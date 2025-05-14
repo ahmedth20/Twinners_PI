@@ -131,7 +131,7 @@ const checkPatientStatus = async () => {
             date: consultationResponse.data.date,
             status: consultationResponse.data.status,
             diagnostic: consultationResponse.data.diagnostic,
-            patient: `${consultationResponse.data.patient.user.firstName} ${consultationResponse.data.patient.user.lastName}`,
+            //patient: `${consultationResponse.data.patient.user.firstName} ${consultationResponse.data.patient.user.lastName}`,
             doctor: `${consultationResponse.data.doctor.user.firstName} ${consultationResponse.data.doctor.user.lastName}`,
             emergencyRoom: consultationResponse.data.emergencyRoom,
           };
@@ -143,12 +143,10 @@ const checkPatientStatus = async () => {
               <p><strong>🚑 Emergency Room:</strong> {consultationDataDetails.emergencyRoom}</p>
               <p><strong>🕒 Duration:</strong> {consultationDataDetails.duration} minutes</p>
               <p><strong>📅 Date:</strong> {new Date(consultationDataDetails.date).toLocaleString()}</p>
-                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
+                <p><strong>🕒 Duration:</strong> {consultationDataDetails.duration} minutes</p>
             </div>,
             { position: "top-center", autoClose: false }
           );
-        } else if (consultationResponse.status === 204) {
-          console.log("❌ Aucune consultation trouvée. Fin de la vérification.");
         }
       }
     } catch (error) {
@@ -201,93 +199,7 @@ const checkPatientStatus = async () => {
     console.log(" 👇 Démarrage de la vérification directement après l'ajout dans la liste d'attente")
     //checkPatientStatus(SavedPatient.patient._id);
      setPatientId(SavedPatient.patient._id);
-/*
-      // Appel pour trouver un médecin disponible avec cette spécialité
-      const doctorResponse = await axios.get(`http://localhost:5000/doctors/specialty/${specialtyCleaned}`);
-      const doctor = doctorResponse.data; // On prend le premier disponible
-      console.log("Médecin trouvé :", doctor);
 
-      // Récupération d'une salle d'urgence aléatoire dans le même département
-      console.log(doctor.departement);
-      const roomResponse = await axios.get(`http://localhost:5000/emergencyrooms/random/${doctor.departement}`);
-      const room = roomResponse.data; // On prend le premier disponible
-     
-      //const room = await emergencyRoomService.getRandomEmergencyRoomByDepartement(doctor.departement);
-      console.log("Salle d'urgence trouvée :", room);
-       
-      const consultationData = {
-        duration: 30,  // Exemple de durée, tu peux la personnaliser
-        date: new Date(),
-        status: "Planned",  // Statut initial
-        diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
-        patient: SavedPatient.patient._id,  // Assure-toi que l'ID patient est bien récupéré
-        doctor: doctor._id,  // ID du médecin
-        emergencyRoom: room._id  // ID de la salle d'urgence
-      };
-  
-      console.log("Données de la consultation :", consultationData);
-       const createdConsultation = await axios.post("http://localhost:5000/consultation", consultationData);
-      console.log("Consultation créée avec succès :", createdConsultation.data);
-  
-      alert("✅ Patient ajouté avec succès !");
-
-      await axios.put(`http://localhost:5000/doctors/${doctor._id}`, { availability: false });
-      console.log(`Médecin ${doctor._id} mis à jour à disponibilité: false`);
-
-      const newCapacity = room.capacity - 1;
-      const emergencyRoomUpdate = {
-        capacity: newCapacity,
-        availability: newCapacity > 0 // dispo seulement s'il reste de la place
-      };
-
-      await axios.put(`http://localhost:5000/emergencyrooms/${room._id}`, emergencyRoomUpdate);
-      
-      console.log(`Salle d'urgence ${room._id} mise à jour avec capacité: ${newCapacity} et disponibilité: ${emergencyRoomUpdate.availability}`);
-            const consultation = createdConsultation.data;
-            const doctorResponses = await axios.get(`http://localhost:5000/doctors/${createdConsultation.data.doctor}`);
-            const patientResponse = await axios.get(`http://localhost:5000/patient/details/${createdConsultation.data.patient}`);
-            const roomResponses = await axios.get(`http://localhost:5000/emergencyrooms/${createdConsultation.data.emergencyRoom}`);
-
-            const doctorName = `${doctorResponses.data.user.firstName} ${doctorResponses.data.user.lastName}`;
-            const patientName = `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`;
-            const roomNumber = roomResponses.data.reference;
-            console.log(SavedPatient.patient._id);
-            console.log(createdConsultation.data._id);
-            try {
-              const response = await axios.put(`http://localhost:5000/patient/add-consultation/${SavedPatient.patient._id}`, {
-                consultationId: createdConsultation.data._id // Passe l'ID de la consultation
-              });
-            
-              if (response.status === 200) {
-                console.log("🟢 Consultation ajoutée avec succès :", response.data);
-              } else {
-                console.log("⚠️ Mise à jour partielle :", response.status);
-              }
-            } catch (error) {
-              console.error("❌ Erreur lors de l'ajout de la consultation :", error.response ? error.response.data : error.message);
-            }
-            
-            
-            const consultationDataDetails = {
-              duration: 30,  // Exemple de durée, tu peux la personnaliser
-              date: new Date(),
-              status: "Planned",  // Statut initial
-              diagnostic: {},  // Diagnostic, tu peux ajouter des données ici
-              patient: `${patientResponse.data.user.firstName} ${patientResponse.data.user.lastName}`,  // Assure-toi que l'ID patient est bien récupéré
-              emergencyRoom: roomResponses.data.reference  // ID de la salle d'urgence
-            };
-            sendNotification(consultationDataDetails);
-      
-       toast.success(
-              <div>
-                <p><strong>👤 Patient:</strong> {patientName}</p>
-                <p><strong>🚑 Doctor:</strong> {doctorName}</p>
-                <p><strong>🏥 Emergency Room:</strong> Room #{roomNumber}</p>
-                <p><strong>🕒 Duration:</strong> {consultation.duration} minutes</p>
-                <p><strong>📅 Date:</strong> {new Date(consultation.date).toLocaleString()}</p>
-              </div>,
-              { position: "top-center", autoClose: false }
-            );*/
     } catch (error) {
       alert("❌ Erreur lors de l'ajout du patient.");
     }

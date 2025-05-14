@@ -47,7 +47,7 @@ const [passwordError, setPasswordError] = useState(false);
   required
   onChange={handlePasswordChange}
   className={passwordError ? "input-error" : ""}
-/>      {passwordError && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+/>      {passwordError && <small className="error-message">The password must contain at least 8 characters.</small>}
 
     <button 
   type="submit"

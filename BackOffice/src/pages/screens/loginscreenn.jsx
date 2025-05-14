@@ -155,10 +155,10 @@ function Login() {
         else if(data.message==="Utilisateur non authorizé"){      setErr("Utilisateur non authorizé"); 
         }
   
-       else  if(data.message==="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Votre compte est désactivé. Veuillez contacter l'administrateur."); 
+       else  if(data.message==="Votre compte est désactivé. Veuillez contacter l'administrateur."){      setErr("Desctivated Account."); 
        }
   
-       else  if(data.message==="mot de passe invalide"){      setErr("mot de passe invalide"); 
+       else  if(data.message==="mot de passe invalide"){      setErr("Password invalid"); 
        }
   
      
@@ -317,21 +317,21 @@ function Login() {
 
       <input
     type="email"
-    placeholder="nom@gmail.com"
+    placeholder="name@gmail.com"
     name="email"
     required
     onChange={handleEmailChange}
     className={emailError ? "input-error" : "bbb"}
   />
-      {emailError && <small className="error-msg">Email invalide</small>}
+      {emailError && <small className="error-msg">invalid Email</small>}
       <input
     type={showPassword ? "text" : "password"}
-    placeholder="mot de passe"
+    placeholder="password"
     name="password"
     required
     onChange={handlePasswordChange}
     className={passwordError ? "input-error" : ""}
-  />      {passwordError && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+  />      {passwordError && <small className="error-message">The password must contain at least 8 characters.</small>}
 
       <a href="/forgotpassword">Forgot your password?</a>
       <a href="http://localhost:5174/LoginRF">Login with FaceId</a>
@@ -359,13 +359,13 @@ function Login() {
                   <a className="toggle" onClick={() => setIsSignUp(false)}>Se connecter</a>
                   <input
                 type="email"
-                placeholder="nom@gmail.com"
+                placeholder="name@gmail.com"
                 name="email"
                 required
                 onChange={handleEmailChange1}
                 className={emailError1 ? "input-error" : "bbb"}
               />
-                  {emailError1 && <small className="error-msg">Email invalide</small>}
+                  {emailError1 && <small className="error-msg">invalid Email</small>}
                   <input
                 type={showPassword1 ? "text" : "password"}
                 placeholder="mot de passe"
@@ -373,7 +373,7 @@ function Login() {
                 required
                 onChange={handlePasswordChange1}
                 className={passwordError1 ? "input-error" : ""}
-              />      {passwordError1 && <small className="error-message">Le mot de passe doit contenir au moins 8 caractères.</small>}
+              />      {passwordError1 && <small className="error-message">The password must contain at least 8 characters.</small>}
           
           <input
                 type="text"
@@ -447,9 +447,9 @@ function Login() {
             <div className="text-slider">
               <div className="text-wrap">
                 <div className="text-group">
-                  <h2>Gérez votre santé facilement</h2>
-                  <h2>Restez en sécurité avec Smart190</h2>
-                  <h2>Consultez des professionnels en ligne</h2>
+                  <h2>Manage your health easily</h2>
+                  <h2>Stay safe with Smart190</h2>
+                  <h2>Consult professionals online</h2>
                 </div>
               </div>
               <div className="bullets">

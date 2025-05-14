@@ -1,93 +1,67 @@
-// components
 import Widget from 'components/Widget';
 import WidgetHeader from 'components/Widget/WidgetHeader';
 import WidgetBody from 'components/Widget/WidgetBody';
 import ChartLegend from 'components/OverallAppointmentChart/ChartLegend';
 import ChartBars from 'components/OverallAppointmentChart/ChartBars';
 import ScrollContainer from 'react-indiana-drag-scroll';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const DailyAppointmentChart = () => {
-    const data = [
-        {
-            label: '9am',
-            values: {
-                consultation: 10,
-                test: 25,
-                checkup: 10,
-                sick: 20
-            }
-        },
-        {
-            label: '10am',
-            values: {
-                consultation: 5,
-                test: 41,
-                sick: 12
-            }
-        },
-        {
-            label: '11am',
-            values: {
-                consultation: 45,
-                test: 18,
-            }
-        },
-        {
-            label: '12am',
-            values: {
-                consultation: 22,
-                checkup: 42,
-            }
-        },
-        {
-            label: '1pm',
-            values: {
-                consultation: 5,
-                checkup: 35,
-            }
-        },
-        {
-            label: '2pm',
-            values: {
-                consultation: 10,
-                test: 20,
-                checkup: 25,
-            }
-        },
-        {
-            label: '3pm',
-            values: {
-                consultation: 25,
-                sick: 40,
-            }
-        },
-        {
-            label: '4pm',
-            values: {
-                consultation: 20,
-                test: 30,
-                sick: 5,
-            }
-        },
-        {
-            label: '5pm',
-            values: {
-                consultation: 15,
-                checkup: 50,
-                sick: 10,
-            }
-        }
-    ]
+const DailyAppointmentChart = ({ patient }) => {
+  const [data, setData] = useState([]);
+const patientId=patient._id;
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/patient/details/${patientId}`);
+        const consultations = response.data.consultations;
 
-    return (
-        <Widget name="DailyAppointmentChart" shadow={true}>
-            <WidgetHeader title="Daily appointments"/>
-            <WidgetBody style={{justifyContent: 'space-between'}}>
-                <ChartLegend />
-                <ChartBars data={data} as={ScrollContainer} />
-            </WidgetBody>
-        </Widget>
-    )
-}
+        // On regroupe par heures
+        const hourlyData = consultations.reduce((acc, consultation) => {
+          const hour = new Date(consultation.date).getHours();
+          const label = `${hour % 12 || 12}${hour < 12 ? 'am' : 'pm'}`;
+
+          if (!acc[label]) {
+            acc[label] = 0;
+          }
+          acc[label]++;
+          return acc;
+        }, {});
+
+        // On formate les données pour l'affichage
+        const formattedData = Object.keys(hourlyData).map((hour) => ({
+          label: hour,
+          values: {
+            consultation: hourlyData[hour],
+          },
+        }));
+
+        // On trie par ordre horaire
+        formattedData.sort((a, b) => {
+          const parseHour = (label) => (label.includes('pm') ? 12 : 0) + parseInt(label);
+          return parseHour(a.label) - parseHour(b.label);
+        });
+
+        setData(formattedData);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des consultations:', error.message);
+      }
+    };
+
+    if (patientId) {
+      fetchConsultations();
+    }
+  }, [patientId]);
+
+  return (
+    <Widget name="DailyAppointmentChart" shadow={true}>
+      <WidgetHeader title="Daily Appointments" />
+      <WidgetBody style={{ justifyContent: 'space-between' }}>
+        <ChartLegend />
+        <ChartBars data={data} as={ScrollContainer} />
+      </WidgetBody>
+    </Widget>
+  );
+};
 
 export default DailyAppointmentChart;

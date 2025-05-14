@@ -6,6 +6,8 @@ import HeartRate from "widgets/HeartRate";
 import ConfirmedDiagnoses from "widgets/ConfirmedDiagnoses";
 import RecentTests from "widgets/RecentTests";
 import PatientsRadialBar from "widgets/PatientsRadialBar";
+import DashboardK from "./DashboardK";
+import PaymentsHistory from "@widgets/PaymentsHistory";
 
 const DashboardF = () => {
   const location = useLocation();
@@ -25,21 +27,18 @@ const DashboardF = () => {
         <PainLocation patient={patient}/>
       </div>
       <div key="daily-app-chart">
-        <DailyAppointmentChart />
+        <DailyAppointmentChart patient={patient} />
       </div>
       <div key="hepatitis">
-        <ConfirmedDiagnoses />
+        <ConfirmedDiagnoses patient={patient}/>
       </div>
-      <div key="payments-history">
-        <HeartRate variant="large" />
+      <div key="payments-history" >
+        <RecentTests variant="large" patient={patient} />
       </div>
-      <div key="patients-radial">
-        <PatientsRadialBar />
+        <div key="health-index-compact">
+        <HeartRate variant="large"  patient={patient}/>
       </div>
-      <div key="recent-tests">
-        <RecentTests />
-      </div>
-    </Page>
+  </Page>
   );
 };
 
