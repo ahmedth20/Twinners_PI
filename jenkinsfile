@@ -99,19 +99,21 @@ pipeline {
             }
           }
         }
-        stage('Run Prometheus') {
+       stage('Run Prometheus') {
             steps {
                 script {
                     sh """
+                        docker rm -f prometheus || true
                         docker run -d \
                             --name prometheus \
                             -p 9090:9090 \
-                            -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+                            -v /home/vagrant/prometheus.yml:/etc/prometheus/prometheus.yml \
                             prom/prometheus
                     """
                 }
             }
         }
+
 
         stage('Run Grafana') {
             steps {
